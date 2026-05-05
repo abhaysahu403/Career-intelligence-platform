@@ -625,7 +625,7 @@ async def validate_certificate_endpoint(
     file: UploadFile = File(...),
     background_tasks: BackgroundTasks = None,
 ):
-    from services.certificate_validator.engine import validate_certificate
+    from services.certificate_validator.engine import validate_certificate_pipeline
     import shutil
     import tempfile
 

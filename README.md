@@ -1,170 +1,290 @@
-# 🚀 Career Intelligence Platform (CIP)
+# Career Intelligence Platform (CIP) v2.0-lite
 
-> **AI-powered career readiness system for students** — Real-time voice interview coaching, smart resume analysis, job matching, and certificate validation.
+> AI-powered career preparation platform for students - Lightweight monolith architecture
 
-[![Java](https://img.shields.io/badge/Java-21-orange)](https://openjdk.org/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-green)](https://spring.io/projects/spring-boot)
-[![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
-[![Python](https://img.shields.io/badge/Python-3.11-blue)](https://python.org/)
-[![Gemini AI](https://img.shields.io/badge/Gemini-2.5-purple)](https://ai.google.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Java](https://img.shields.io/badge/Java-17+-orange.svg)](https://www.oracle.com/java/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![React](https://img.shields.io/badge/React-18+-blue.svg)](https://reactjs.org/)
+[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
 
----
+## 🎯 Overview
 
-## 🎯 What It Does
+Career Intelligence Platform (CIP) helps students prepare for job interviews through:
+- **AI-Powered Resume Analysis** - Get instant feedback and ATS scores
+- **Mock Interviews** - Practice with AI-generated questions
+- **Job Recommendations** - Find jobs matching your skills
+- **Certificate Validation** - Verify certificate authenticity
 
-CIP is a **full-stack AI platform** that helps students prepare for job interviews and track career readiness through:
+## ✨ Key Features
 
-| Feature | Description |
-|---|---|
-| 🎤 **AI Voice Interview** | Real-time speech-to-text → AI evaluation → spoken feedback loop |
-| 📄 **Resume Analyzer** | PDF/DOCX parsing → skill extraction → gap analysis |
-| 📊 **Career Dashboard** | Readiness score, radar charts, percentile tracking |
-| 💼 **Job Matcher** | Skill-based job recommendations with match % |
-| 🏆 **Certificate Validator** | Upload & validate professional certificates |
-| 🗺️ **Learning Roadmap** | AI-generated study plans based on weak areas |
-| 🤖 **AI Interview Mentor** | Follow-up chat with context-aware coaching |
+### 📄 Resume Intelligence
+- Upload PDF/DOCX resumes
+- AI-powered skill extraction
+- ATS compatibility scoring
+- Personalized improvement suggestions
 
----
+### 🎤 Mock Interviews
+- Technical & behavioral interviews
+- Real-time answer evaluation
+- Detailed feedback and scoring
+- Performance tracking over time
 
-## 🏗️ Architecture (v1.0 — Full Microservices)
+### 💼 Smart Job Matching
+- AI-based job recommendations
+- Skill gap analysis
+- Readiness score calculation
+- Match percentage for each job
+
+### 🛡️ Certificate Verification
+- OCR-based text extraction
+- Authenticity scoring
+- Issuer validation
+- Tamper detection
+
+### 📊 Analytics Dashboard
+- Career readiness score
+- Skill strength analysis
+- Progress tracking
+- Personalized recommendations
+
+## 🏗️ Architecture
+
+**v2.0-lite** uses a simplified monolith architecture:
 
 ```
-┌─────────────┐     ┌──────────────┐     ┌──────────────────┐
-│  Next.js 14  │────▶│ API Gateway  │────▶│  Microservices   │
-│  (Port 3000) │     │  (Port 8080) │     │  (8081–8089)     │
-└─────────────┘     └──────────────┘     └──────────────────┘
-                           │
-                    ┌──────┴──────┐
-                    │  FastAPI ML  │
-                    │  (Port 8000) │
-                    └─────────────┘
-
-Infrastructure: PostgreSQL · Redis · Kafka · Docker
+┌─────────────────┐
+│   React Web     │  Port 3000
+│   (Frontend)    │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Spring Boot    │  Port 8080
+│   (Backend)     │
+│   - Auth        │
+│   - Resume      │
+│   - Interview   │
+│   - Jobs        │
+│   - Score       │
+│   - Certificate │
+└────────┬────────┘
+         │
+         ├──────────┐
+         ▼          ▼
+┌──────────────┐  ┌──────────────┐
+│  PostgreSQL  │  │  FastAPI ML  │
+│  (Database)  │  │  (AI Engine) │
+└──────────────┘  └──────────────┘
 ```
 
-### Backend Services (Java 21 / Spring Boot 3.2)
+### Technology Stack
 
-| Service | Port | Purpose |
-|---|---|---|
-| `api-gateway` | 8080 | Routing, JWT validation, rate limiting |
-| `auth-service` | 8081 | Login, signup, OTP, JWT tokens |
-| `student-service` | 8082 | Student profiles, admin panel |
-| `resume-service` | 8083 | Resume upload, PDF/DOCX parsing |
-| `score-service` | 8084 | Composite readiness scoring |
-| `analytics-service` | 8085 | Progress tracking, percentiles |
-| `interview-service` | 8086 | Interview session management |
-| `job-service` | 8087 | Job listings, skill-based matching |
-| `recommendation-service` | 8088 | Roadmaps, job recommendations |
-| `certificate-service` | 8089 | Certificate upload & validation |
+**Backend:**
+- Spring Boot 3.2.0
+- Java 17
+- PostgreSQL 14
+- JWT Authentication
+- Async Processing (@Async)
 
-### ML Engine (Python / FastAPI)
+**Frontend:**
+- React 18
+- Vite
+- TailwindCSS
+- Axios
 
-| Endpoint | Purpose |
-|---|---|
-| `/ml/resume/upload` | Resume parsing + skill extraction |
-| `/ml/interview/question` | AI question generation (Gemini) |
-| `/ml/interview/coach` | Answer evaluation + voice feedback |
-| `/ml/interview/coach` (chat) | Follow-up mentor chat |
-| `/ml/readiness` | Career readiness computation |
-| `/ml/recommend` | Job recommendation scoring |
-| `/ml/certificate/validate` | Certificate authenticity check |
+**ML Service:**
+- FastAPI
+- Python 3.9+
+- Transformers
+- OpenCV
+- Tesseract OCR
 
-### Frontend (Next.js 14 / TypeScript / Tailwind)
-
-- Dashboard with readiness gauge & radar chart
-- Real-time AI voice interview with avatar
-- Profile with resume upload & skill tags
-- Job board with match percentages
-- Certificate manager with validation
-- Learning roadmap generator
-
----
-
-## 🚀 Quick Start (Local Development)
+## 🚀 Quick Start
 
 ### Prerequisites
-- Java 21, Maven 3.9+, Node.js 18+, Python 3.11+
-- Docker Desktop (for PostgreSQL, Redis, Kafka)
-- Gemini API Key
+- Java 17+
+- Node.js 16+
+- Python 3.9+
+- PostgreSQL 14+
 
-### 1. Infrastructure
+### 1. Clone Repository
 ```bash
-docker-compose -f cip-infra/docker-compose.yml up -d
+git clone https://github.com/abhaysahu-cse/career-intelligence-platform-light.git
+cd career-intelligence-platform-light
 ```
 
-### 2. Backend (build all services)
+### 2. Setup Database
 ```bash
-cd cip-backend && mvn clean install -DskipTests
-# Then start each service JAR individually or use start_cip.bat
+createdb cip_db
 ```
 
-### 3. ML Engine
+### 3. Start Backend
 ```bash
-cd cip-ml && pip install -r requirements.txt
-# Set GEMINI_API_KEY in .env
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+cd cip-backend-lite
+mvn clean package -DskipTests
+java -jar target/cip-backend-lite-2.0.0.jar
 ```
 
-### 4. Frontend
+### 4. Start ML Service
 ```bash
-cd cip-web && npm install && npm run dev
+cd cip-ml
+pip install -r requirements.txt
+uvicorn main:app --host 0.0.0.0 --port 8000
 ```
 
-Open **http://localhost:3000**
+### 5. Start Frontend
+```bash
+cd cip-web
+npm install
+npm run dev
+```
 
----
+### 6. Access Application
+- **Frontend**: http://localhost:3000
+- **Backend API**: http://localhost:8080
+- **ML Service**: http://localhost:8000
+- **API Docs**: http://localhost:8080/actuator
 
-## 🔑 Environment Variables
+## 📚 Documentation
 
-| Variable | Where | Example |
-|---|---|---|
-| `DB_PASSWORD` | Backend services | `cip123` |
-| `DB_PORT` | Backend services | `5433` |
-| `REDIS_PASSWORD` | Backend services | `cip-redis-pass` |
-| `GEMINI_API_KEY` | ML Engine `.env` | `AIza...` |
-| `ELEVENLABS_API_KEY` | ML Engine `.env` | (optional, for TTS) |
+- [Quick Start Guide](./START-GUIDE.md) - Detailed setup instructions
+- [API Documentation](./API-DOCS.md) - Complete API reference
+- [API Endpoints](./API_ENDPOINTS.md) - Endpoint summary
 
----
+## 🧪 Testing
+
+### Run Backend Tests
+```bash
+cd cip-backend-lite
+mvn test
+```
+
+### Test APIs
+```bash
+# Health check
+curl http://localhost:8080/actuator/health
+
+# Register user
+curl -X POST http://localhost:8080/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{"name":"John Doe","email":"john@example.com","password":"Test@123"}'
+
+# Login
+curl -X POST http://localhost:8080/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"john@example.com","password":"Test@123"}'
+```
 
 ## 📁 Project Structure
 
 ```
-career-intelligence-platform/
-├── cip-backend/          # Java microservices (Maven multi-module)
-│   ├── api-gateway/      # Spring Cloud Gateway
-│   ├── auth-service/     # Authentication & JWT
-│   ├── student-service/  # Student profiles
-│   ├── resume-service/   # Resume processing
-│   ├── score-service/    # Score aggregation
-│   ├── analytics-service/# Progress analytics
-│   ├── interview-service/# Interview sessions
-│   ├── job-service/      # Job management
-│   ├── recommendation-service/ # Roadmaps
-│   ├── certificate-service/    # Certificates
-│   └── common-lib/       # Shared DTOs, configs
-├── cip-ml/               # Python FastAPI ML engine
-│   ├── main.py           # All ML endpoints
-│   └── services/         # Resume, interview, cert engines
-├── cip-web/              # Next.js 14 frontend
-│   ├── app/              # App router pages
-│   ├── components/       # Reusable UI components
-│   ├── lib/              # API client, utilities
-│   └── store/            # Zustand state management
-├── cip-infra/            # Docker Compose, Kafka, monitoring
-├── API_ENDPOINTS.md      # Complete API reference
-├── start_cip.bat         # Windows startup script
-└── run_e2e_tests.py      # End-to-end test suite
+career-intelligence-platform-light/
+├── cip-backend-lite/       # Spring Boot backend
+│   ├── src/
+│   │   └── main/
+│   │       ├── java/com/cip/
+│   │       │   ├── auth/
+│   │       │   ├── resume/
+│   │       │   ├── interview/
+│   │       │   ├── job/
+│   │       │   ├── score/
+│   │       │   ├── certificate/
+│   │       │   └── common/
+│   │       └── resources/
+│   └── pom.xml
+│
+├── cip-ml/                 # FastAPI ML service
+│   ├── main.py
+│   ├── models/
+│   ├── services/
+│   └── requirements.txt
+│
+├── cip-web/                # React frontend
+│   ├── src/
+│   │   ├── components/
+│   │   ├── pages/
+│   │   └── services/
+│   └── package.json
+│
+├── README.md
+├── START-GUIDE.md
+└── API-DOCS.md
 ```
 
+## 🔧 Configuration
+
+### Backend Environment Variables
+```bash
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=cip_db
+DB_USER=postgres
+DB_PASSWORD=cip123
+ML_SERVICE_URL=http://localhost:8000
+JWT_SECRET=your-secret-key
+STORAGE_PATH=./uploads
+```
+
+### Frontend Environment Variables
+```bash
+VITE_API_URL=http://localhost:8080
+VITE_ML_URL=http://localhost:8000
+```
+
+## 🎯 Roadmap
+
+### v2.1 (Planned)
+- [ ] Real-time interview with video
+- [ ] Advanced analytics dashboard
+- [ ] Company-specific interview prep
+- [ ] Mobile app (React Native)
+
+### v2.2 (Future)
+- [ ] Peer-to-peer mock interviews
+- [ ] Interview scheduling
+- [ ] Resume builder
+- [ ] Job application tracking
+
+## 🤝 Contributing
+
+Contributions are welcome! Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📝 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 👥 Authors
+
+- **Abhay Sahu** - *Initial work* - [@abhaysahu-cse](https://github.com/abhaysahu-cse)
+
+## 🙏 Acknowledgments
+
+- OpenAI for GPT models
+- Hugging Face for transformer models
+- Spring Boot community
+- React community
+
+## 📞 Support
+
+- **Email**: abhaysahu.cse@example.com
+- **GitHub Issues**: [Create an issue](https://github.com/abhaysahu-cse/career-intelligence-platform-light/issues)
+- **Documentation**: [Wiki](https://github.com/abhaysahu-cse/career-intelligence-platform-light/wiki)
+
+## 📊 Project Status
+
+**Current Version**: 2.0.0-lite  
+**Status**: ✅ Production Ready  
+**Last Updated**: May 5, 2026
+
 ---
 
-## 👤 Author
-
-**Abhay Sahu** — Computer Science & Engineering  
-Built as a capstone project demonstrating full-stack AI engineering, microservices architecture, and real-time ML integration.
-
----
-
-## 📜 License
-
-This project is for educational and portfolio purposes.
+<div align="center">
+  <strong>Built with ❤️ for students preparing for their dream jobs</strong>
+</div>
