@@ -3,6 +3,7 @@ import { usePathname } from 'next/navigation';
 import { Bell, Search, Menu, Flame } from 'lucide-react';
 import { useAppStore } from '@/store';
 import { useState } from 'react';
+import { cn } from '@/lib/utils';
 
 const pageTitles: Record<string, string> = {
   '/dashboard': 'Dashboard',
@@ -12,7 +13,6 @@ const pageTitles: Record<string, string> = {
   '/jobs':      'Jobs & Internships',
   '/dashboard/certificates': 'Certificates',
   '/roadmap':   'Learning Roadmap',
-  '/admin':     'Faculty Dashboard',
   '/settings':  'Settings',
 };
 
@@ -61,88 +61,88 @@ export default function Topbar() {
   }
 
   return (
-    <header className="fixed top-0 right-0 z-30 flex items-center gap-3 px-4 md:px-6 h-16 border-b transition-all duration-300 backdrop-blur-xl bg-white/5"
+    <header className={cn(
+      "fixed top-0 right-0 z-30 flex items-center gap-4 px-4 md:px-8 h-20 border-b transition-all duration-300",
+      sidebarOpen ? "left-0 md:left-[240px]" : "left-0 md:left-[72px]"
+    )}
       style={{
-        left: sidebarOpen ? '240px' : '72px',
+        background: 'rgba(8,12,20,0.85)',
+        backdropFilter: 'blur(30px)',
         borderColor: 'rgba(255,255,255,0.06)',
       }}>
 
       {/* Mobile sidebar toggle */}
       <button onClick={() => setSidebarOpen(!sidebarOpen)}
-        className="p-2 rounded-lg transition-colors hover:bg-white/5 md:hidden"
-        style={{ color: '#A1A1AA' }}>
-        <Menu size={18} />
+        className="p-2 rounded-xl transition-all hover:bg-white/5 md:hidden"
+        style={{ color: '#64748B' }}>
+        <Menu size={20} />
       </button>
 
-      {/* Page title */}
       <div className="flex-1">
-        <h1 className="text-base font-semibold" style={{ fontFamily: 'Syne, sans-serif', color: '#FFFFFF' }}>
+        <h1 className="text-xl font-syne font-black text-white uppercase tracking-widest">
           {title}
         </h1>
       </div>
 
-      {/* Search */}
       <div className="hidden md:flex items-center gap-2">
         {showSearch ? (
           <input autoFocus onBlur={() => setShowSearch(false)}
             placeholder="Search anything…"
-            className="w-48 px-3 py-1.5 rounded-lg text-sm border transition-all"
-            style={{ background: 'rgba(255,255,255,0.06)', borderColor: 'rgba(79,70,229,0.4)', color: '#FFFFFF' }} />
+            className="w-56 px-4 py-2 rounded-xl text-sm border border-white/10 transition-all focus:outline-none focus:border-sky/40 focus:ring-4 focus:ring-sky/10"
+            style={{ background: 'rgba(255,255,255,0.02)', color: '#fff' }} />
         ) : (
           <button onClick={() => setShowSearch(true)}
-            className="p-2 rounded-lg transition-colors hover:bg-white/5"
-            style={{ color: '#A1A1AA' }}>
-            <Search size={16} />
+            className="p-2.5 rounded-xl transition-all hover:bg-white/5"
+            style={{ color: '#64748B' }}>
+            <Search size={18} />
           </button>
         )}
       </div>
 
-      {/* Interview Streak */}
       {streak > 0 && (
-        <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl"
-          style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.2)' }}>
-          <Flame size={14} style={{ color: '#F59E0B' }} />
-          <span className="text-xs font-bold" style={{ color: '#FCD34D' }}>{streak}</span>
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl border"
+          style={{ background: 'rgba(245,158,11,0.05)', borderColor: 'rgba(245,158,11,0.2)' }}>
+          <Flame size={16} className="text-amber-400 fill-amber-400" />
+          <span className="text-xs font-black text-amber-400">{streak}</span>
         </div>
       )}
 
-      {/* Notifications */}
       <div className="relative">
         <button onClick={() => setNotifOpen(!notifOpen)}
-          className="relative p-2 rounded-lg transition-colors hover:bg-white/5"
-          style={{ color: '#A1A1AA' }}>
-          <Bell size={16} />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full"
-            style={{ background: '#EF4444', boxShadow: '0 0 6px rgba(239,68,68,0.8)' }} />
+          className="relative p-2.5 rounded-xl transition-all hover:bg-white/5"
+          style={{ color: '#64748B' }}>
+          <Bell size={18} />
+          <span className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-sky"
+            style={{ boxShadow: '0 0 10px rgba(56,189,248,0.8)' }} />
         </button>
 
         {notifOpen && (
           <>
             <div className="fixed inset-0 z-40" onClick={() => setNotifOpen(false)} />
-            <div className="absolute right-0 top-full mt-2 w-72 rounded-2xl border shadow-xl z-50 overflow-hidden"
-              style={{ background: '#0A0A0A', borderColor: 'rgba(255,255,255,0.08)' }}>
-              <div className="px-4 py-3 border-b flex items-center justify-between"
+            <div className="absolute right-0 top-full mt-4 w-80 rounded-[32px] border shadow-2xl z-50 overflow-hidden backdrop-blur-[30px]"
+              style={{ background: 'rgba(8,12,20,0.95)', borderColor: 'rgba(255,255,255,0.08)' }}>
+              <div className="px-6 py-4 border-b flex items-center justify-between"
                 style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
-                <span className="text-sm font-semibold" style={{ color: '#FFFFFF' }}>Notifications</span>
-                <span className="text-xs px-2 py-0.5 rounded-full"
-                  style={{ background: 'rgba(79,70,229,0.2)', color: '#818CF8' }}>
+                <span className="text-xs font-black uppercase tracking-widest text-white">Center</span>
+                <span className="text-[10px] px-2.5 py-0.5 rounded-lg font-black uppercase tracking-widest"
+                  style={{ background: 'rgba(56,189,248,0.1)', color: '#38BDF8' }}>
                   {notifications.filter(n => n.unread).length} new
                 </span>
               </div>
-              <div className="divide-y">
+              <div className="divide-y divide-white/5 max-h-[400px] overflow-y-auto">
                 {notifications.length ? notifications.map(n => (
-                  <div key={n.id} className="px-4 py-3 hover:bg-white/3 cursor-pointer transition-colors">
-                    <div className="flex gap-2 items-start">
-                      {n.unread && <div className="w-1.5 h-1.5 rounded-full mt-1.5 flex-shrink-0" style={{ background: '#4F46E5' }} />}
-                      <div className={n.unread ? '' : 'ml-3.5'}>
-                        <p className="text-xs mb-0.5" style={{ color: n.unread ? '#FFFFFF' : '#A1A1AA' }}>{n.text}</p>
-                        <p className="text-xs" style={{ color: '#71717A' }}>{n.time}</p>
+                  <div key={n.id} className="px-6 py-5 hover:bg-white/2 cursor-pointer transition-colors">
+                    <div className="flex gap-4 items-start">
+                      {n.unread && <div className="w-2 h-2 rounded-full mt-1.5 flex-shrink-0 bg-sky" style={{ boxShadow: '0 0 10px rgba(56,189,248,0.5)' }} />}
+                      <div className={n.unread ? '' : 'ml-4'}>
+                        <p className="text-xs mb-1 font-bold leading-relaxed" style={{ color: n.unread ? '#FFFFFF' : '#64748B' }}>{n.text}</p>
+                        <p className="text-[9px] font-black uppercase tracking-widest" style={{ color: '#475569' }}>{n.time}</p>
                       </div>
                     </div>
                   </div>
                 )) : (
-                  <div className="px-4 py-6 text-sm" style={{ color: '#A1A1AA' }}>
-                    No live notifications yet.
+                  <div className="px-6 py-10 text-xs font-black uppercase tracking-widest text-center text-slate-600">
+                    No active notifications
                   </div>
                 )}
               </div>
@@ -152,8 +152,8 @@ export default function Topbar() {
       </div>
 
       {/* Avatar */}
-      <div className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold cursor-pointer"
-        style={{ background: 'linear-gradient(135deg,#4F46E5,#06B6D4)', color: '#fff' }}>
+      <div className="w-10 h-10 rounded-2xl flex items-center justify-center text-sm font-black cursor-pointer shadow-lg hover:shadow-sky/20 transition-all hover:-translate-y-0.5"
+        style={{ background: 'linear-gradient(135deg, #38BDF8, #0EA5E9)', color: '#fff', boxShadow: '0 0 15px rgba(56,189,248,0.3)' }}>
         {user?.name?.charAt(0).toUpperCase() ?? 'U'}
       </div>
     </header>

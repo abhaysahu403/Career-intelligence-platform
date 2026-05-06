@@ -1,246 +1,302 @@
 "use client";
 
-import { motion, useInView } from "framer-motion";
-import { useRef } from "react";
+import { motion } from "framer-motion";
 import {
-  FileText,
-  Video,
-  MessageSquare,
-  Target,
-  Briefcase,
+  Briefcase, MapPin, Building2, TrendingUp, Star, Zap,
+  Search, Filter, ChevronRight, CheckCircle2, Globe, Users
 } from "lucide-react";
 
-const steps = [
+const jobMatches = [
   {
-    icon: FileText,
-    title: "Upload Resume",
-    description:
-      "Drop your resume. AI instantly parses your skills, experience, and identifies gaps versus market demand.",
-    color: "#4F46E5",
-    detail: "Parsed in < 3 sec",
+    role: "Software Engineer (SDE-1)",
+    company: "Google",
+    location: "Bangalore, India",
+    type: "Full-time",
+    match: 96,
+    salary: "₹18–32 LPA",
+    color: "#4ADE80",
+    logo: "G",
+    logoColor: "#4285F4",
+    tags: ["DSA", "System Design", "Python"],
+    verified: true,
   },
   {
-    icon: Video,
-    title: "AI Mock Interview",
-    description:
-      "Choose your target role and enter a live AI interview. Real questions. Real pressure. Real voice analysis.",
-    color: "#06B6D4",
-    detail: "Voice + NLP powered",
+    role: "ML Engineer Intern",
+    company: "Microsoft",
+    location: "Hyderabad (Remote ok)",
+    type: "Internship",
+    match: 91,
+    salary: "₹60k/month",
+    color: "#38BDF8",
+    logo: "M",
+    logoColor: "#00A4EF",
+    tags: ["Python", "TensorFlow", "NLP"],
+    verified: true,
   },
   {
-    icon: MessageSquare,
-    title: "Instant Feedback",
-    description:
-      "Every answer is scored. AI breaks down content quality, communication clarity, and confidence level.",
-    color: "#8B5CF6",
-    detail: "Per-answer scoring",
+    role: "Full Stack Developer",
+    company: "Razorpay",
+    location: "Remote",
+    type: "Full-time",
+    match: 87,
+    salary: "₹12–20 LPA",
+    color: "#818CF8",
+    logo: "R",
+    logoColor: "#2DD4BF",
+    tags: ["React", "Node.js", "AWS"],
+    verified: true,
   },
   {
-    icon: Target,
-    title: "Identify Gaps",
-    description:
-      "Skill intelligence maps exactly what you're missing and shows the fastest path to bridge the gap.",
-    color: "#F59E0B",
-    detail: "Personalized roadmap",
-  },
-  {
-    icon: Briefcase,
-    title: "Match & Apply",
-    description:
-      "AI surfaces jobs where your readiness score is above the threshold. Apply with confidence.",
-    color: "#22C55E",
-    detail: "400+ live listings",
+    role: "Backend Developer Intern",
+    company: "NPCI",
+    location: "Mumbai",
+    type: "Internship",
+    match: 83,
+    salary: "₹35k/month",
+    color: "#34D399",
+    logo: "N",
+    logoColor: "#F59E0B",
+    tags: ["Java", "Spring Boot", "SQL"],
+    verified: true,
   },
 ];
 
-export default function HowItWorks() {
-  const lineRef = useRef<HTMLDivElement>(null);
-  const isInView = useInView(lineRef, { once: true, margin: "-100px" });
+const systemFeatures = [
+  { icon: Search, label: "AI-Powered Matching", desc: "Matches 400+ live jobs against your skill DNA in real-time", color: "#38BDF8" },
+  { icon: Filter, label: "Smart Filters", desc: "Filter by salary, location, role type, company tier & more", color: "#4ADE80" },
+  { icon: TrendingUp, label: "Market Intelligence", desc: "Live salary benchmarks, hiring trends, and demand signals", color: "#818CF8" },
+  { icon: Globe, label: "Pan-India + Remote", desc: "Jobs from startups to FAANG, internships to full-time roles", color: "#34D399" },
+  { icon: Users, label: "Referral Engine", desc: "AI identifies your network connections at target companies", color: "#38BDF8" },
+  { icon: Zap, label: "1-Click Apply", desc: "Auto-fill applications with your verified profile and resume", color: "#4ADE80" },
+];
 
+export default function HowItWorks() {
   return (
-    <section
-      id="how-it-works"
-      className="py-28 px-6 relative overflow-hidden"
-    >
-      {/* Background effect */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0B1120]/60 to-transparent pointer-events-none" />
-      <div className="absolute inset-0 grid-pattern opacity-30 pointer-events-none" />
+    <section id="how-it-works" className="py-28 px-6 relative overflow-hidden">
+      {/* Ambient glow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/3 w-[600px] h-[600px] blur-[120px] rounded-full -translate-y-1/2"
+          style={{ background: 'radial-gradient(ellipse, rgba(74,222,128,0.08) 0%, transparent 70%)' }} />
+        <div className="absolute top-1/2 right-1/4 w-[400px] h-[400px] blur-[100px] rounded-full -translate-y-1/2"
+          style={{ background: 'radial-gradient(ellipse, rgba(56,189,248,0.07) 0%, transparent 70%)' }} />
+      </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#06B6D4]/10 border border-[#06B6D4]/20 mb-5"
-          >
-            <span className="text-xs font-semibold text-[#06B6D4] uppercase tracking-wider">
-              The Process
-            </span>
-          </motion.div>
+        <div className="grid lg:grid-cols-2 gap-16 items-start">
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="font-syne text-4xl md:text-5xl font-extrabold text-white mb-4"
-          >
-            From Resume to{" "}
-            <span className="text-gradient">Job Offer</span>
-            <br />
-            in 5 Steps
-          </motion.h2>
-
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-[#A1A1AA] text-lg max-w-xl mx-auto"
-          >
-            A structured pipeline that transforms interview anxiety into
-            career confidence.
-          </motion.p>
-        </div>
-
-        {/* Timeline — Desktop */}
-        <div className="hidden lg:block relative" ref={lineRef}>
-          {/* Progress line */}
-          <div className="absolute top-8 left-[10%] right-[10%] h-px bg-white/[0.06]">
+          {/* LEFT: Content */}
+          <div>
             <motion.div
-              className="h-full bg-gradient-to-r from-[#4F46E5] via-[#06B6D4] via-[#8B5CF6] via-[#F59E0B] to-[#22C55E]"
-              initial={{ width: "0%" }}
-              animate={isInView ? { width: "100%" } : {}}
-              transition={{ duration: 1.5, ease: "easeInOut", delay: 0.3 }}
-            />
-          </div>
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border mb-6"
+              style={{ background: 'rgba(74,222,128,0.08)', borderColor: 'rgba(74,222,128,0.2)', boxShadow: '0 0 15px rgba(74,222,128,0.08)' }}
+            >
+              <Briefcase className="w-3.5 h-3.5 text-mint" />
+              <span className="text-xs font-black text-mint uppercase tracking-widest">AI Job Intelligence</span>
+            </motion.div>
 
-          {/* Steps */}
-          <div className="relative grid grid-cols-5 gap-4">
-            {steps.map((step, i) => (
-              <motion.div
-                key={step.title}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.2 + i * 0.15, duration: 0.6 }}
-                className="flex flex-col items-center text-center group"
-              >
-                {/* Icon circle */}
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+              className="font-syne text-4xl md:text-5xl font-black text-white mb-4 leading-tight tracking-tight"
+            >
+              Smart Job & Internship{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky to-mint">
+                Recommendation
+              </span>
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="text-slate-400 text-lg leading-relaxed mb-10 font-medium"
+            >
+              Our AI cross-references your skill DNA, interview performance, and verified certificates 
+              against 400+ live job postings — surfacing only roles where your readiness score exceeds 80%.
+              No noise. Only real opportunities.
+            </motion.p>
+
+            {/* Feature grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+              {systemFeatures.map((feat, i) => (
                 <motion.div
-                  whileHover={{ scale: 1.15 }}
-                  className="relative w-16 h-16 rounded-full flex items-center justify-center mb-5 z-10 transition-all duration-300"
-                  style={{
-                    background: `linear-gradient(135deg, ${step.color}30, ${step.color}10)`,
-                    border: `2px solid ${step.color}40`,
-                    boxShadow: `0 0 0 0 ${step.color}40`,
-                  }}
-                  whileInView={{
-                    boxShadow: [`0 0 0 0 ${step.color}40`, `0 0 0 8px transparent`],
-                  }}
-                  transition={{ delay: 0.5 + i * 0.15, duration: 0.6 }}
+                  key={feat.label}
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 + i * 0.07 }}
+                  className="flex gap-3 p-4 rounded-2xl border transition-all duration-300 hover:-translate-y-0.5 group"
+                  style={{ background: 'rgba(8,12,20,0.6)', borderColor: `${feat.color}18` }}
                 >
-                  <step.icon className="w-7 h-7" style={{ color: step.color }} />
-                  {/* Step number badge */}
-                  <div
-                    className="absolute -top-1 -right-1 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white"
-                    style={{ background: step.color }}
-                  >
-                    {i + 1}
+                  <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: `${feat.color}15`, border: `1px solid ${feat.color}25` }}>
+                    <feat.icon className="w-4 h-4" style={{ color: feat.color }} />
+                  </div>
+                  <div>
+                    <p className="text-sm font-black text-white mb-0.5 tracking-tight">{feat.label}</p>
+                    <p className="text-[11px] text-slate-500 font-medium leading-relaxed">{feat.desc}</p>
                   </div>
                 </motion.div>
+              ))}
+            </div>
 
-                {/* Detail badge */}
-                <div
-                  className="px-2.5 py-1 rounded-full text-[10px] font-medium mb-2"
-                  style={{
-                    background: `${step.color}12`,
-                    color: step.color,
-                    border: `1px solid ${step.color}25`,
-                  }}
-                >
-                  {step.detail}
-                </div>
-
-                <h4 className="font-syne font-bold text-white text-base mb-2">
-                  {step.title}
-                </h4>
-                <p className="text-xs text-[#71717A] leading-relaxed px-1">
-                  {step.description}
-                </p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-
-        {/* Timeline — Mobile (vertical) */}
-        <div className="lg:hidden space-y-6">
-          {steps.map((step, i) => (
-            <motion.div
-              key={step.title}
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+            <motion.a
+              href="/auth/signup"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="flex gap-4"
+              whileHover={{ scale: 1.04, y: -2 }}
+              whileTap={{ scale: 0.97 }}
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest text-[#020617]"
+              style={{
+                background: 'linear-gradient(135deg, #38BDF8, #4ADE80)',
+                boxShadow: '0 0 30px rgba(74,222,128,0.3)',
+              }}
             >
-              {/* Left: icon + line */}
-              <div className="flex flex-col items-center">
-                <div
-                  className="w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0"
-                  style={{
-                    background: `${step.color}20`,
-                    border: `1px solid ${step.color}40`,
-                  }}
-                >
-                  <step.icon className="w-5 h-5" style={{ color: step.color }} />
-                </div>
-                {i < steps.length - 1 && (
-                  <div className="w-px flex-1 mt-2 bg-gradient-to-b from-white/10 to-transparent" />
-                )}
-              </div>
+              Explore Opportunities
+              <ChevronRight className="w-4 h-4" />
+            </motion.a>
+          </div>
 
-              {/* Right: content */}
-              <div className="pb-6">
-                <div
-                  className="inline-block px-2 py-0.5 rounded text-[10px] font-medium mb-1"
-                  style={{ background: `${step.color}15`, color: step.color }}
-                >
-                  Step {i + 1}
-                </div>
-                <h4 className="font-syne font-bold text-white text-base mb-1">
-                  {step.title}
-                </h4>
-                <p className="text-sm text-[#71717A] leading-relaxed">
-                  {step.description}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* CTA under timeline */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.6 }}
-          className="text-center mt-16"
-        >
-          <p className="text-[#A1A1AA] text-sm mb-4">
-            Average time from first session to first offer:{" "}
-            <strong className="text-white">14 days</strong>
-          </p>
-          <motion.a
-            href="#cta"
-            whileHover={{ scale: 1.05 }}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white text-sm font-semibold hover:bg-white/[0.1] transition-all"
+          {/* RIGHT: Live Job Cards */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative"
           >
-            Start Your Journey →
-          </motion.a>
-        </motion.div>
+            {/* Glow */}
+            <div className="absolute -inset-4 rounded-[44px] blur-[50px] pointer-events-none"
+              style={{ background: 'radial-gradient(ellipse, rgba(74,222,128,0.1) 0%, rgba(56,189,248,0.06) 60%, transparent 100%)' }} />
+
+            {/* Header bar */}
+            <div className="relative rounded-[32px] overflow-hidden border mb-4 transition-all duration-500 hover:shadow-[0_0_30px_rgba(56,189,248,0.2)]"
+              style={{ background: 'rgba(8,12,20,0.85)', backdropFilter: 'blur(40px)', borderColor: 'rgba(56,189,248,0.3)', boxShadow: '0 8px 30px -10px rgba(56,189,248,0.1), inset 0 0 20px rgba(56,189,248,0.05)' }}>
+              <div className="flex items-center justify-between px-6 py-4 border-b"
+                style={{ borderColor: 'rgba(56,189,248,0.15)', background: 'rgba(0,0,0,0.3)' }}>
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 rounded-full bg-mint animate-pulse" style={{ boxShadow: '0 0 6px rgba(74,222,128,0.6)' }} />
+                  <span className="text-[11px] font-black text-mint uppercase tracking-widest">AI Job Intelligence — LIVE</span>
+                </div>
+                <div className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                  427 matches found
+                </div>
+              </div>
+
+              {/* Search bar mock */}
+              <div className="px-6 py-4 border-b flex items-center gap-3" style={{ borderColor: 'rgba(255,255,255,0.04)' }}>
+                <Search className="w-4 h-4 text-slate-600" />
+                <span className="text-sm text-slate-600 font-medium flex-1">Software Engineer, ML, Full Stack...</span>
+                <div className="flex items-center gap-1 px-3 py-1 rounded-full border text-[10px] font-black text-sky uppercase tracking-widest"
+                  style={{ borderColor: 'rgba(56,189,248,0.3)', background: 'rgba(56,189,248,0.08)' }}>
+                  <Filter className="w-3 h-3" />
+                  Filters
+                </div>
+              </div>
+
+              {/* Job cards */}
+              <div className="p-4 space-y-3 max-h-[480px] overflow-hidden">
+                {jobMatches.map((job, i) => (
+                  <motion.div
+                    key={job.company}
+                    initial={{ opacity: 0, y: 12 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: 0.15 + i * 0.1 }}
+                    className="flex items-center gap-4 p-4 rounded-2xl border cursor-pointer group transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+                    style={{
+                      background: 'rgba(255,255,255,0.02)',
+                      borderColor: 'rgba(255,255,255,0.05)',
+                    }}
+                    onMouseEnter={(e) => {
+                      (e.currentTarget as HTMLElement).style.borderColor = job.color + '60';
+                      (e.currentTarget as HTMLElement).style.boxShadow = `0 0 15px ${job.color}30, inset 0 0 10px ${job.color}10`;
+                    }}
+                    onMouseLeave={(e) => {
+                      (e.currentTarget as HTMLElement).style.borderColor = 'rgba(255,255,255,0.05)';
+                      (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+                    }}
+                  >
+                    {/* Company logo */}
+                    <div className="w-11 h-11 rounded-xl flex items-center justify-center font-black text-lg flex-shrink-0 border"
+                      style={{ background: `${job.logoColor}18`, borderColor: `${job.logoColor}30`, color: job.logoColor }}>
+                      {job.logo}
+                    </div>
+
+                    {/* Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 mb-0.5">
+                        <p className="text-sm font-black text-white truncate">{job.role}</p>
+                        {job.verified && (
+                          <CheckCircle2 className="w-3.5 h-3.5 text-mint flex-shrink-0" style={{ filter: 'drop-shadow(0 0 4px rgba(74,222,128,0.5))' }} />
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                        <span className="flex items-center gap-1"><Building2 className="w-3 h-3" />{job.company}</span>
+                        <span className="flex items-center gap-1"><MapPin className="w-3 h-3" />{job.location}</span>
+                      </div>
+                      <div className="flex flex-wrap gap-1 mt-2">
+                        {job.tags.map(tag => (
+                          <span key={tag} className="text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-wider"
+                            style={{ background: 'rgba(255,255,255,0.05)', color: '#64748B' }}>{tag}</span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Match + salary */}
+                    <div className="text-right flex-shrink-0">
+                      <div className="font-black text-lg leading-none mb-1" style={{ color: job.color, textShadow: `0 0 10px ${job.color}50` }}>
+                        {job.match}%
+                      </div>
+                      <div className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-1">match</div>
+                      <div className="text-[10px] font-black text-slate-400">{job.salary}</div>
+                      <span className="text-[9px] font-black px-2 py-0.5 rounded-full mt-1 inline-block"
+                        style={{
+                          background: job.type === 'Internship' ? 'rgba(56,189,248,0.12)' : 'rgba(74,222,128,0.12)',
+                          color: job.type === 'Internship' ? '#38BDF8' : '#4ADE80',
+                        }}>
+                        {job.type}
+                      </span>
+                    </div>
+
+                    <ChevronRight className="w-4 h-4 text-slate-700 group-hover:text-white transition-colors flex-shrink-0" />
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Footer */}
+              <div className="px-6 py-3 border-t flex items-center justify-between"
+                style={{ borderColor: 'rgba(255,255,255,0.05)', background: 'rgba(0,0,0,0.2)' }}>
+                <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Showing 4 of 427 AI-matched opportunities</span>
+                <span className="text-[10px] font-black text-sky uppercase tracking-widest cursor-pointer hover:text-white transition-colors">View All →</span>
+              </div>
+            </div>
+
+            {/* Stats row */}
+            <div className="grid grid-cols-3 gap-3">
+              {[
+                { value: "427+", label: "Live Jobs", color: "#4ADE80" },
+                { value: "89%", label: "Avg Match Rate", color: "#38BDF8" },
+                { value: "₹28L", label: "Avg Package", color: "#818CF8" },
+              ].map(stat => (
+                <div key={stat.label} className="rounded-2xl border p-3 text-center"
+                  style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)', backdropFilter: 'blur(20px)' }}>
+                  <p className="font-black text-xl leading-none mb-1" style={{ color: stat.color, textShadow: `0 0 10px ${stat.color}40` }}>
+                    {stat.value}
+                  </p>
+                  <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+        </div>
       </div>
     </section>
   );

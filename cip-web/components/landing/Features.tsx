@@ -16,8 +16,8 @@ const features = [
     title: "AI Interview Coach",
     description:
       "Practice with realistic AI interviews. The system analyzes tone, content, confidence, and pacing, then gives focused feedback after every answer.",
-    color: "#4F46E5",
-    gradient: "from-[#4F46E5]/20 to-[#4F46E5]/5",
+    color: "#38BDF8",
+    gradient: "from-sky/20 to-sky/5",
     tag: "Core Module",
     bullets: ["Voice recognition", "Sentiment analysis", "Adaptive difficulty"],
   },
@@ -26,8 +26,8 @@ const features = [
     title: "Skill Intelligence",
     description:
       "Upload your resume and get an instant 360° skill audit. AI identifies your gaps, maps learning paths, and shows exactly what companies want.",
-    color: "#06B6D4",
-    gradient: "from-[#06B6D4]/20 to-[#06B6D4]/5",
+    color: "#818CF8",
+    gradient: "from-[#818CF8]/20 to-[#818CF8]/5",
     tag: "Smart Analysis",
     bullets: ["Resume parsing", "Gap mapping", "Learning paths"],
   },
@@ -36,8 +36,8 @@ const features = [
     title: "Smart Job Matching",
     description:
       "AI cross-references your skill DNA against 400+ live job postings and surfaces only roles where your match score exceeds 75%. No noise.",
-    color: "#22C55E",
-    gradient: "from-[#22C55E]/20 to-[#22C55E]/5",
+    color: "#4ADE80",
+    gradient: "from-mint/20 to-mint/5",
     tag: "Live Jobs",
     bullets: ["400+ companies", "Real-time sync", "Match scoring"],
   },
@@ -46,8 +46,8 @@ const features = [
     title: "Certificate Validator",
     description:
       "ML-powered OCR verifies certificate authenticity instantly. Detect tampering, confirm credentials, and build a verified portfolio employers trust.",
-    color: "#F59E0B",
-    gradient: "from-[#F59E0B]/20 to-[#F59E0B]/5",
+    color: "#34D399",
+    gradient: "from-[#34D399]/20 to-[#34D399]/5",
     tag: "Trust Layer",
     bullets: ["OCR scanning", "Tamper detection", "Verified badges"],
   },
@@ -56,8 +56,9 @@ const features = [
 export default function Features() {
   return (
     <section id="features" className="py-28 px-6 relative overflow-hidden">
-      {/* Section background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0B1120]/40 to-transparent pointer-events-none" />
+      {/* Section background & ambient glows */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0B1120]/60 to-transparent pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-sky/5 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header */}
@@ -66,10 +67,10 @@ export default function Features() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#4F46E5]/10 border border-[#4F46E5]/20 mb-5"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-mint/10 border border-mint/20 mb-5 shadow-[0_0_10px_rgba(74,222,128,0.1)]"
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#4F46E5]" />
-            <span className="text-xs font-semibold text-[#4F46E5] uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5 text-mint" />
+            <span className="text-xs font-black text-mint uppercase tracking-widest">
               Four Powerful Modules
             </span>
           </motion.div>
@@ -82,7 +83,7 @@ export default function Features() {
             className="font-syne text-4xl md:text-5xl font-extrabold text-white mb-4"
           >
             Everything You Need to{" "}
-            <span className="text-gradient">Land Your Dream Job</span>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky to-mint">Land Your Dream Job</span>
           </motion.h2>
 
           <motion.p
@@ -107,18 +108,21 @@ export default function Features() {
               viewport={{ once: true }}
               transition={{ delay: i * 0.1, duration: 0.6 }}
               whileHover={{ scale: 1.03, y: -6 }}
-              className="group relative p-6 rounded-2xl bg-white/[0.04] border border-white/[0.07] backdrop-blur-xl hover:border-white/20 transition-all duration-300 cursor-pointer overflow-hidden"
+              className="group relative p-6 rounded-[32px] bg-[rgba(8,12,20,0.7)] border backdrop-blur-[40px] saturate-150 transition-all duration-500 cursor-pointer overflow-hidden hover:-translate-y-2"
+              style={{
+                boxShadow: `0 8px 30px -10px ${f.color}30, inset 0 0 30px ${f.color}15`,
+                borderColor: `${f.color}40`
+              }}
             >
-              {/* Hover glow bg */}
-              <div
-                className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${f.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
-              />
+              {/* Permanent subtle inner glow */}
+              <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${f.gradient} opacity-40 group-hover:opacity-100 transition-opacity duration-500`} />
 
-              {/* Top shimmer line */}
+              {/* Top shimmer line - constant glow */}
               <div
-                className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                className="absolute top-0 left-0 right-0 h-[2px] opacity-70 group-hover:opacity-100 transition-opacity duration-300"
                 style={{
                   background: `linear-gradient(90deg, transparent, ${f.color}, transparent)`,
+                  boxShadow: `0 0 15px ${f.color}`,
                 }}
               />
 
@@ -147,7 +151,7 @@ export default function Features() {
                 </div>
 
                 {/* Title */}
-                <h3 className="font-syne text-xl font-bold text-white mb-2">
+                <h3 className="font-syne text-xl font-black text-white mb-2 tracking-tight">
                   {f.title}
                 </h3>
 
@@ -205,7 +209,7 @@ export default function Features() {
             href="#cta"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.97 }}
-            className="flex-shrink-0 px-6 py-3 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#06B6D4] text-white text-sm font-semibold hover:shadow-lg hover:shadow-[#4F46E5]/30 transition-all"
+            className="flex-shrink-0 px-8 py-3.5 rounded-full bg-gradient-to-r from-sky to-mint text-[#020617] text-xs font-black shadow-[0_0_20px_rgba(74,222,128,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.5)] transition-all uppercase tracking-widest"
           >
             Start for Free →
           </motion.a>

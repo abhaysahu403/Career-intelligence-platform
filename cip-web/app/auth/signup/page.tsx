@@ -48,8 +48,8 @@ export default function SignupPage() {
 
       Cookies.set('cip_token', token, { expires: 7, sameSite: 'strict' });
       setUser(user);
-      toast.success('Account created! Redirecting to OTP verification…');
-      router.push('/auth/verify');
+      toast.success('Account created! Welcome to CIP.');
+      router.push('/dashboard');
     } catch {
       const newUser = {
         id: `u-${Date.now()}`, name: data.name, email: data.email,
@@ -68,27 +68,40 @@ export default function SignupPage() {
   return (
     <div className="flex items-center justify-center min-h-screen px-4 py-12">
       <div className="w-full max-w-md animate-fade-in">
+        {/* Header */}
         <div className="text-center mb-6">
           <div className="inline-flex items-center gap-2 mb-3">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-              style={{ background: 'linear-gradient(135deg,#4F46E5,#06B6D4)' }}>
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg"
+              style={{ background: 'linear-gradient(135deg, #38BDF8, #4ADE80)' }}>
               <Zap size={18} className="text-white" />
             </div>
-            <span className="text-lg font-bold grad-text" style={{ fontFamily: 'Syne, sans-serif' }}>CIP</span>
+            <span className="text-lg font-bold font-syne text-white">CIP</span>
           </div>
-          <h1 className="text-2xl font-bold mb-1" style={{ fontFamily: 'Syne, sans-serif' }}>Create Account</h1>
-          <p className="text-sm" style={{ color: '#A1A1AA' }}>Start your career journey today</p>
+          <h1 className="text-2xl font-bold mb-1 text-white font-syne">Create Account</h1>
+          <p className="text-sm font-medium text-[#94A3B8]">Start your career journey today</p>
         </div>
 
-        <div className="rounded-2xl p-6 border" style={{ background: '#0A0A0A', borderColor: 'rgba(255,255,255,0.08)' }}>
+        {/* Card */}
+        <div className="relative rounded-2xl p-6 border backdrop-blur-[20px] transition-all duration-300"
+          style={{
+            background: 'rgba(8,12,20,0.7)',
+            borderColor: 'rgba(255,255,255,0.06)',
+            boxShadow: '0 8px 30px -10px rgba(56,189,248,0.2)'
+          }}>
+          
+          {/* Top shimmer line */}
+          <div className="absolute top-0 left-0 right-0 h-[2px] opacity-70"
+            style={{ background: 'linear-gradient(90deg, transparent, #38BDF8, transparent)', boxShadow: '0 0 15px #38BDF8' }} />
+
           {/* Role Toggle */}
-          <div className="flex rounded-xl p-1 mb-5" style={{ background: 'rgba(255,255,255,0.04)' }}>
+          <div className="flex rounded-xl p-1 mb-5 backdrop-blur-xl"
+            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
             {(['student', 'faculty'] as const).map(r => (
               <button key={r} onClick={() => setRole(r)}
-                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-medium transition-all duration-200"
+                className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-bold transition-all duration-200"
                 style={role === r
-                  ? { background: 'linear-gradient(135deg,#4F46E5,#06B6D4)', color: '#fff' }
-                  : { color: '#A1A1AA' }}>
+                  ? { background: 'linear-gradient(135deg, #38BDF8, #4ADE80)', color: '#fff', boxShadow: '0 4px 15px rgba(56,189,248,0.3)' }
+                  : { color: '#94A3B8' }}>
                 {r === 'student' ? <GraduationCap size={14} /> : <BookOpen size={14} />}
                 {r === 'student' ? 'Student' : 'Faculty'}
               </button>
@@ -102,59 +115,117 @@ export default function SignupPage() {
               { name: 'college' as const, label: 'College/University', type: 'text', placeholder: 'RGPV University' },
             ].map(f => (
               <div key={f.name}>
-                <label className="block text-sm font-medium mb-1.5" style={{ color: '#A1A1AA' }}>{f.label}</label>
+                <label className="block text-sm font-bold mb-1.5 text-[#94A3B8]">{f.label}</label>
                 <input {...register(f.name)} type={f.type} placeholder={f.placeholder}
-                  className="w-full px-4 py-3 rounded-xl text-sm border transition-all"
-                  style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)', color: '#FFFFFF' }} />
-                {errors[f.name] && <p className="text-xs mt-1" style={{ color: '#EF4444' }}>{errors[f.name]?.message}</p>}
+                  className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-white placeholder-[#64748B] transition-all focus:outline-none"
+                  style={{
+                    background: 'rgba(255,255,255,0.03)',
+                    borderColor: 'rgba(255,255,255,0.06)',
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#38BDF8';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(56,189,248,0.15)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = 'rgba(255,255,255,0.06)';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                />
+                {errors[f.name] && <p className="text-xs mt-1 font-bold text-[#EF4444]">{errors[f.name]?.message}</p>}
               </div>
             ))}
 
             <div>
-              <label className="block text-sm font-medium mb-1.5" style={{ color: '#A1A1AA' }}>Branch</label>
+              <label className="block text-sm font-bold mb-1.5 text-[#94A3B8]">Branch</label>
               <select {...register('branch')}
-                className="w-full px-4 py-3 rounded-xl text-sm border transition-all appearance-none"
-                style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)', color: '#FFFFFF' }}>
-                <option value="" className="bg-[#0A0A0A] text-white">Select branch</option>
-                {branches.map(b => <option key={b} value={b} className="bg-[#0A0A0A] text-white">{b}</option>)}
+                className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-white transition-all appearance-none focus:outline-none"
+                style={{
+                  background: 'rgba(255,255,255,0.03)',
+                  borderColor: 'rgba(255,255,255,0.06)',
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#38BDF8';
+                  e.target.style.boxShadow = '0 0 0 3px rgba(56,189,248,0.15)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'rgba(255,255,255,0.06)';
+                  e.target.style.boxShadow = 'none';
+                }}>
+                <option value="" style={{ background: '#0F172A', color: '#94A3B8' }}>Select branch</option>
+                {branches.map(b => <option key={b} value={b} style={{ background: '#0F172A', color: '#fff' }}>{b}</option>)}
               </select>
-              {errors.branch && <p className="text-xs mt-1" style={{ color: '#EF4444' }}>{errors.branch.message}</p>}
+              {errors.branch && <p className="text-xs mt-1 font-bold text-[#EF4444]">{errors.branch.message}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1.5" style={{ color: '#A1A1AA' }}>Password</label>
+              <label className="block text-sm font-bold mb-1.5 text-[#94A3B8]">Password</label>
               <div className="relative">
                 <input {...register('password')} type={showPw ? 'text' : 'password'} placeholder="Min. 8 characters"
-                  className="w-full px-4 py-3 rounded-xl text-sm border transition-all pr-11"
-                  style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)', color: '#FFFFFF' }} />
+                  className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-white placeholder-[#64748B] transition-all pr-11 focus:outline-none"
+                  style={{
+                    background: 'rgba(255,255,255,0.03)',
+                    borderColor: 'rgba(255,255,255,0.06)',
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#38BDF8';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(56,189,248,0.15)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = 'rgba(255,255,255,0.06)';
+                    e.target.style.boxShadow = 'none';
+                  }}
+                />
                 <button type="button" onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100">
-                  {showPw ? <EyeOff size={15} style={{ color: '#A1A1AA' }} /> : <Eye size={15} style={{ color: '#A1A1AA' }} />}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100 text-[#94A3B8]">
+                  {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
-              {errors.password && <p className="text-xs mt-1" style={{ color: '#EF4444' }}>{errors.password.message}</p>}
+              {errors.password && <p className="text-xs mt-1 font-bold text-[#EF4444]">{errors.password.message}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1.5" style={{ color: '#A1A1AA' }}>Confirm Password</label>
+              <label className="block text-sm font-bold mb-1.5 text-[#94A3B8]">Confirm Password</label>
               <input {...register('confirm')} type="password" placeholder="Re-enter password"
-                className="w-full px-4 py-3 rounded-xl text-sm border transition-all"
-                style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)', color: '#FFFFFF' }} />
-              {errors.confirm && <p className="text-xs mt-1" style={{ color: '#EF4444' }}>{errors.confirm.message}</p>}
+                className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-white placeholder-[#64748B] transition-all focus:outline-none"
+                style={{
+                  background: 'rgba(255,255,255,0.03)',
+                  borderColor: 'rgba(255,255,255,0.06)',
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#38BDF8';
+                  e.target.style.boxShadow = '0 0 0 3px rgba(56,189,248,0.15)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'rgba(255,255,255,0.06)';
+                  e.target.style.boxShadow = 'none';
+                }}
+              />
+              {errors.confirm && <p className="text-xs mt-1 font-bold text-[#EF4444]">{errors.confirm.message}</p>}
             </div>
 
             <button type="submit" disabled={loading}
-              className="w-full py-3 rounded-xl font-semibold text-sm flex items-center justify-center gap-2 transition-all duration-200 hover:shadow-lg disabled:opacity-60 mt-2"
-              style={{ background: 'linear-gradient(135deg,#4F46E5,#06B6D4)', color: '#fff', boxShadow: '0 4px 15px rgba(79,70,229,0.4)' }}>
+              className="w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg disabled:opacity-60 mt-2 text-white"
+              style={{
+                background: 'linear-gradient(135deg, #38BDF8, #4ADE80)',
+                boxShadow: '0 8px 20px -5px rgba(56,189,248,0.4)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 12px 30px -5px rgba(56,189,248,0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 8px 20px -5px rgba(56,189,248,0.4)';
+              }}>
               {loading
                 ? <div className="w-4 h-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
                 : <>Create Account <ArrowRight size={15} /></>}
             </button>
           </form>
 
-          <p className="mt-4 text-center text-sm" style={{ color: '#71717A' }}>
+          <p className="mt-4 text-center text-sm font-medium text-[#94A3B8]">
             Already have an account?{' '}
-            <Link href="/auth/login" className="font-medium hover:underline" style={{ color: '#818CF8' }}>Sign in</Link>
+            <Link href="/auth/login" className="font-bold text-[#38BDF8] hover:underline">Sign in</Link>
           </p>
         </div>
       </div>

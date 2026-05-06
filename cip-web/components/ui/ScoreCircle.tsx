@@ -20,7 +20,7 @@ export default function ScoreCircle({
   const radius       = (size - strokeWidth) / 2;
   const circumference = 2 * Math.PI * radius;
   const offset        = circumference - (displayed / 100) * circumference;
-  const color = getReadinessColor(displayed);
+  const color = displayed < 50 ? '#EF4444' : displayed < 80 ? '#38BDF8' : '#4ADE80';
   const level = getReadinessLevel(displayed);
 
   useEffect(() => {
@@ -48,8 +48,8 @@ export default function ScoreCircle({
           filter="url(#glow)" />
         <defs>
           <linearGradient id="sg" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor={displayed < 50 ? '#EF4444' : displayed < 80 ? '#4F46E5' : '#10B981'} />
-            <stop offset="100%" stopColor={displayed < 50 ? '#F59E0B' : displayed < 80 ? '#06B6D4' : '#4ADE80'} />
+            <stop offset="0%" stopColor={displayed < 50 ? '#EF4444' : displayed < 80 ? '#38BDF8' : '#4ADE80'} />
+            <stop offset="100%" stopColor={displayed < 50 ? '#F59E0B' : displayed < 80 ? '#4ADE80' : '#10B981'} />
           </linearGradient>
           <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
             <feGaussianBlur stdDeviation="4" result="blur" />
@@ -59,8 +59,8 @@ export default function ScoreCircle({
       </svg>
       {showLabel && (
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="font-bold tabular-nums leading-none"
-            style={{ fontSize: size*0.22, fontFamily:'JetBrains Mono,monospace', color:'#F8FAFC' }}>
+          <span className="font-bold tabular-nums leading-none text-white"
+            style={{ fontSize: size*0.22, fontFamily:'JetBrains Mono,monospace' }}>
             {displayed}
           </span>
           {showLevel && (

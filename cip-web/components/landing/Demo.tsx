@@ -1,64 +1,183 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
-  CheckCircle2,
-  Play,
-  Mic,
-  MicOff,
-  Brain,
-  BarChart3,
-  TrendingUp,
-  Award,
-  ChevronRight,
+  ShieldCheck, ShieldX, AlertTriangle, CheckCircle2,
+  Scan, Award, QrCode, FileText, ChevronRight
 } from "lucide-react";
 
-const features = [
-  "Real-time voice recognition & analysis",
-  "AI-generated per-answer feedback",
-  "Adaptive question difficulty engine",
-  "Skill gap identification on-the-fly",
-  "Export full session report as PDF",
+const certificates = [
+  {
+    id: 1,
+    imgSrc: "/cert-nptel.png",
+    fallback: "NPTEL",
+    title: "Programming In Java",
+    issuer: "IIT Kharagpur — NPTEL",
+    issuerType: "Ministry of Education",
+    score: 98,
+    status: "GENUINE",
+    verdict: "Verified",
+    color: "#4ADE80",
+    borderColor: "rgba(74,222,128,0.5)",
+    glowColor: "rgba(74,222,128,0.2)",
+    badgeLabel: "ELITE ✓",
+    badgeColor: "#4ADE80",
+    details: ["OCR: 98%", "Issuer: IIT Kharagpur ✓", "Anti-tamper: Clean", "QR: Valid"],
+    icon: ShieldCheck,
+    stampColor: "#4ADE80",
+    stampText: "VERIFIED",
+    stampIcon: "✓",
+  },
+  {
+    id: 2,
+    imgSrc: "/cert-oracle.png",
+    fallback: "ORACLE",
+    title: "Gen AI Professional",
+    issuer: "Oracle University",
+    issuerType: "Corporate Certification",
+    score: 96,
+    status: "GENUINE",
+    verdict: "Verified",
+    color: "#38BDF8",
+    borderColor: "rgba(56,189,248,0.5)",
+    glowColor: "rgba(56,189,248,0.2)",
+    badgeLabel: "ORACLE ✓",
+    badgeColor: "#38BDF8",
+    details: ["OCR: 96%", "Issuer: Oracle ✓", "Anti-tamper: Clean", "Registry: Match"],
+    icon: ShieldCheck,
+    stampColor: "#38BDF8",
+    stampText: "VERIFIED",
+    stampIcon: "✓",
+  },
+  {
+    id: 3,
+    imgSrc: "/cert-localskills.png",
+    fallback: "LocalSkills\nAcademy",
+    title: "Digital Marketing Mastery",
+    issuer: "LocalSkills Academy",
+    issuerType: "Unaccredited",
+    score: 12,
+    status: "SUSPICIOUS",
+    verdict: "Unverified",
+    color: "#EF4444",
+    borderColor: "rgba(239,68,68,0.5)",
+    glowColor: "rgba(239,68,68,0.15)",
+    badgeLabel: "REJECTED",
+    badgeColor: "#EF4444",
+    details: ["OCR: 0%", "Issuer: UNKNOWN ✕", "Tampering: Detected", "Cert ID: Invalid"],
+    icon: ShieldX,
+    stampColor: "#EF4444",
+    stampText: "SUSPICIOUS",
+    stampIcon: "⚠",
+  },
+  {
+    id: 4,
+    imgSrc: null,
+    fallback: "Online\nPlatform\nBasic",
+    title: "Web Development Bootcamp",
+    issuer: "CourseTech Online",
+    issuerType: "Unregistered",
+    score: 42,
+    status: "LOW CONFIDENCE",
+    verdict: "Warning",
+    color: "#F59E0B",
+    borderColor: "rgba(245,158,11,0.5)",
+    glowColor: "rgba(245,158,11,0.15)",
+    badgeLabel: "⚠ WARN",
+    badgeColor: "#F59E0B",
+    details: ["OCR: 42%", "Issuer: NOT Verified", "Anti-tamper: Suspicious", "No Registry"],
+    icon: AlertTriangle,
+    stampColor: "#F59E0B",
+    stampText: "WARNING",
+    stampIcon: "⚠",
+  },
 ];
 
-const questions = [
-  "Tell me about a time you led a high-stakes project under a tight deadline.",
-  "How do you handle conflict within a cross-functional team?",
-  "Describe your experience with system design at scale.",
-  "What's your approach to mentoring junior engineers?",
+const engineFeatures = [
+  { icon: Scan, label: "ML-Powered OCR", desc: "Reads any PDF/image certificate at 98% accuracy" },
+  { icon: ShieldCheck, label: "Issuer Verification", desc: "Validates against 2,000+ accredited institutes & global registries" },
+  { icon: QrCode, label: "QR Code Validation", desc: "Real-time QR scan and registry cross-check" },
+  { icon: FileText, label: "Tamper Detection", desc: "Pixel-level analysis catches edited metadata and forged signatures" },
 ];
 
-const skillBars = [
-  { skill: "Communication", score: 82, color: "#4F46E5" },
-  { skill: "Technical Depth", score: 91, color: "#06B6D4" },
-  { skill: "Problem Solving", score: 76, color: "#22C55E" },
-  { skill: "Leadership", score: 68, color: "#F59E0B" },
-];
+function CertThumbnail({ cert }: { cert: typeof certificates[0] }) {
+  if (cert.imgSrc) {
+    return (
+      <div className="relative w-full h-32 rounded-xl overflow-hidden">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={cert.imgSrc}
+          alt={cert.title}
+          className="w-full h-full object-cover"
+          style={{ filter: cert.score < 50 ? 'brightness(0.85) saturate(0.8)' : 'brightness(0.9)' }}
+          onError={(e) => {
+            (e.target as HTMLImageElement).style.display = 'none';
+          }}
+        />
+        {/* AI Scan overlay */}
+        <div className="absolute inset-0" style={{ background: 'linear-gradient(to bottom, transparent 40%, rgba(2,6,23,0.9) 100%)' }} />
+        {/* Scan line */}
+        <motion.div
+          className="absolute inset-x-0 h-[1px] pointer-events-none"
+          style={{ background: `linear-gradient(90deg, transparent, ${cert.color}80, transparent)` }}
+          animate={{ top: ['5%', '95%', '5%'] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+        />
+        {/* Verdict stamp overlay */}
+        <div className="absolute bottom-2 right-2 px-2 py-1 rounded-lg"
+          style={{ background: `${cert.color}20`, border: `1px solid ${cert.color}50`, backdropFilter: 'blur(8px)' }}>
+          <span className="text-[10px] font-black uppercase tracking-widest" style={{ color: cert.color }}>
+            {cert.stampIcon} {cert.verdict}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
+  // Fallback styled placeholder
+  return (
+    <div className="w-full h-32 rounded-xl flex flex-col items-center justify-center border relative overflow-hidden"
+      style={{ background: `${cert.color}06`, borderColor: `${cert.color}20` }}>
+      <div className="text-center mb-1">
+        <span className="font-black text-xs uppercase tracking-widest whitespace-pre-line text-center leading-tight"
+          style={{ color: cert.color, opacity: 0.6 }}>{cert.fallback}</span>
+      </div>
+      <cert.icon className="w-6 h-6 mt-1" style={{ color: cert.color, opacity: 0.4 }} />
+      {/* Scan line */}
+      <motion.div
+        className="absolute inset-x-0 h-[1px] pointer-events-none"
+        style={{ background: `linear-gradient(90deg, transparent, ${cert.color}60, transparent)` }}
+        animate={{ top: ['5%', '95%', '5%'] }}
+        transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+      />
+    </div>
+  );
+}
 
 export default function Demo() {
-  const [activeQuestion, setActiveQuestion] = useState(0);
-  const [recording, setRecording] = useState(false);
-
   return (
     <section id="demo" className="py-28 px-6 relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0B1120]/50 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] blur-[110px] rounded-full"
+          style={{ background: 'radial-gradient(ellipse, rgba(74,222,128,0.07) 0%, transparent 70%)' }} />
+        <div className="absolute bottom-1/3 right-1/4 w-[400px] h-[400px] blur-[100px] rounded-full"
+          style={{ background: 'radial-gradient(ellipse, rgba(239,68,68,0.05) 0%, transparent 70%)' }} />
+      </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Left: Content */}
+        <div className="grid lg:grid-cols-2 gap-16 items-start">
+
+          {/* LEFT */}
           <div>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#22C55E]/10 border border-[#22C55E]/20 mb-6"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border mb-6"
+              style={{ background: 'rgba(74,222,128,0.08)', borderColor: 'rgba(74,222,128,0.2)', boxShadow: '0 0 15px rgba(74,222,128,0.08)' }}
             >
-              <Play className="w-3.5 h-3.5 text-[#22C55E]" />
-              <span className="text-xs font-semibold text-[#22C55E] uppercase tracking-wider">
-                See It In Action
-              </span>
+              <ShieldCheck className="w-3.5 h-3.5 text-mint" />
+              <span className="text-xs font-black text-mint uppercase tracking-widest">Certificate Intelligence</span>
             </motion.div>
 
             <motion.h2
@@ -66,10 +185,12 @@ export default function Demo() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="font-syne text-4xl md:text-5xl font-extrabold text-white mb-6 leading-tight"
+              className="font-syne text-4xl md:text-5xl font-black text-white mb-4 leading-tight tracking-tight"
             >
-              AI That Coaches You{" "}
-              <span className="text-gradient">Like a Real Mentor</span>
+              AI Certificate{" "}
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky to-mint">
+                Trust Engine
+              </span>
             </motion.h2>
 
             <motion.p
@@ -77,55 +198,66 @@ export default function Demo() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="text-lg text-[#A1A1AA] mb-8 leading-relaxed"
+              className="text-slate-400 text-lg leading-relaxed mb-8 font-medium"
             >
-              Our AI doesn't just listen — it understands. It evaluates your
-              answers the way a senior hiring manager would, then teaches you
-              to do better.
+              ML-powered OCR validates certificates from any institution in seconds.
+              IIT, NIT, NPTEL — verified instantly. Fake or unaccredited certificates are flagged with evidence.
             </motion.p>
 
-            {/* Feature list */}
-            <motion.ul
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={{
-                visible: { transition: { staggerChildren: 0.08 } },
-              }}
-              className="space-y-3 mb-10"
-            >
-              {features.map((f) => (
-                <motion.li
-                  key={f}
-                  variants={{
-                    hidden: { opacity: 0, x: -20 },
-                    visible: { opacity: 1, x: 0 },
-                  }}
-                  className="flex items-center gap-3"
+            <div className="space-y-4 mb-10">
+              {engineFeatures.map((feat, i) => (
+                <motion.div
+                  key={feat.label}
+                  initial={{ opacity: 0, x: -20 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 + i * 0.08 }}
+                  className="flex gap-4 items-start"
                 >
-                  <div className="w-5 h-5 rounded-full bg-[#22C55E]/15 flex items-center justify-center flex-shrink-0">
-                    <CheckCircle2 className="w-3.5 h-3.5 text-[#22C55E]" />
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                    style={{ background: 'rgba(74,222,128,0.12)', border: '1px solid rgba(74,222,128,0.2)' }}>
+                    <feat.icon className="w-5 h-5 text-mint" />
                   </div>
-                  <span className="text-[#FFFFFF] text-sm">{f}</span>
-                </motion.li>
+                  <div>
+                    <p className="text-sm font-black text-white mb-0.5">{feat.label}</p>
+                    <p className="text-xs text-slate-500 font-medium leading-relaxed">{feat.desc}</p>
+                  </div>
+                </motion.div>
               ))}
-            </motion.ul>
+            </div>
+
+            {/* Legend */}
+            <div className="p-5 rounded-2xl border mb-8"
+              style={{ background: 'rgba(8,12,20,0.6)', borderColor: 'rgba(255,255,255,0.06)' }}>
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Result Legend</p>
+              <div className="grid grid-cols-2 gap-2.5">
+                {[
+                  { label: "IIT / NIT / NPTEL", color: "#4ADE80", icon: "✓" },
+                  { label: "Coursera / edX / Udemy", color: "#38BDF8", icon: "✓" },
+                  { label: "Low Confidence", color: "#F59E0B", icon: "⚠" },
+                  { label: "Fake / Unregistered", color: "#EF4444", icon: "✕" },
+                ].map(item => (
+                  <div key={item.label} className="flex items-center gap-2">
+                    <span className="font-black text-base w-4 text-center" style={{ color: item.color }}>{item.icon}</span>
+                    <span className="text-[10px] font-bold text-slate-400">{item.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             <motion.a
-              href="#cta"
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
+              href="/auth/signup"
               whileHover={{ scale: 1.04, y: -2 }}
               whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center gap-2 px-7 py-4 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#06B6D4] text-white font-semibold text-base shadow-lg shadow-[#4F46E5]/30 hover:shadow-xl transition-all"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest text-[#020617]"
+              style={{ background: 'linear-gradient(135deg, #38BDF8, #4ADE80)', boxShadow: '0 0 30px rgba(74,222,128,0.3)' }}
             >
-              Try It Now — Free
+              Validate Your Certificates
               <ChevronRight className="w-4 h-4" />
             </motion.a>
           </div>
 
-          {/* Right: Interactive Mock Interface */}
+          {/* RIGHT: Certificate Cards with Images */}
           <motion.div
             initial={{ opacity: 0, x: 40 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -133,194 +265,96 @@ export default function Demo() {
             transition={{ duration: 0.8 }}
             className="relative"
           >
-            {/* Glow backdrop */}
-            <div className="absolute -inset-4 bg-gradient-to-br from-[#4F46E5]/20 to-[#06B6D4]/20 blur-3xl rounded-3xl" />
+            <div className="absolute -inset-4 rounded-[44px] blur-[60px] pointer-events-none"
+              style={{ background: 'radial-gradient(ellipse, rgba(74,222,128,0.08) 0%, rgba(239,68,68,0.04) 70%, transparent 100%)' }} />
 
-            <div className="relative rounded-2xl overflow-hidden border border-white/[0.08] bg-[#0B1120]/80 backdrop-blur-xl shadow-2xl">
-              {/* Browser bar */}
-              <div className="flex items-center gap-2 px-4 py-3 border-b border-white/[0.06] bg-black/30">
-                <div className="flex gap-1.5">
-                  {["#EF4444", "#F59E0B", "#22C55E"].map((c) => (
-                    <div key={c} className="w-2.5 h-2.5 rounded-full" style={{ background: c }} />
-                  ))}
-                </div>
-                <div className="flex-1 flex items-center justify-center gap-2">
-                  <span className="font-mono-jetbrains text-xs text-[#71717A]">
-                    cip.ai / interview / software-engineer
-                  </span>
-                </div>
+            {/* ML Engine header */}
+            <div className="relative flex items-center justify-between px-5 py-3 rounded-2xl border mb-4"
+              style={{ background: 'rgba(8,12,20,0.85)', borderColor: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(20px)' }}>
+              <div className="flex items-center gap-2">
+                <motion.div className="w-2 h-2 rounded-full bg-mint"
+                  animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 1.5, repeat: Infinity }}
+                  style={{ boxShadow: '0 0 6px rgba(74,222,128,0.6)' }} />
+                <span className="text-[11px] font-black text-mint uppercase tracking-widest">ML Validation Engine — Active</span>
               </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="w-3.5 h-3.5 text-mint" />
+                <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">4 certificates scanned</span>
+              </div>
+            </div>
 
-              {/* Main content */}
-              <div className="p-5 space-y-4">
-                {/* Header bar */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Brain className="w-4 h-4 text-[#4F46E5]" />
-                    <span className="text-sm font-medium text-white">
-                      AI Interview Coach
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs">
-                    <motion.div
-                      className="w-2 h-2 rounded-full bg-[#22C55E]"
-                      animate={{ opacity: [1, 0.3, 1] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                    />
-                    <span className="text-[#22C55E]">Session Active</span>
-                  </div>
-                </div>
+            {/* 2x2 Certificate Grid */}
+            <div className="grid grid-cols-2 gap-4">
+              {certificates.map((cert, i) => (
+                <motion.div
+                  key={cert.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 + i * 0.1 }}
+                  className="group relative rounded-2xl border overflow-hidden transition-all duration-500 hover:-translate-y-2 cursor-pointer hover:shadow-[0_0_30px_rgba(var(--tw-color-rgb),0.3)]"
+                  style={{
+                    background: `rgba(8,12,20,0.9)`,
+                    borderColor: cert.borderColor,
+                    boxShadow: `0 8px 30px -10px ${cert.color}25, inset 0 0 20px ${cert.glowColor}`,
+                  }}
+                >
+                  <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  {/* Top shimmer */}
+                  <div className="absolute top-0 inset-x-0 h-[1px]"
+                    style={{ background: `linear-gradient(90deg, transparent, ${cert.color}60, transparent)` }} />
 
-                {/* Question selector */}
-                <div className="space-y-2">
-                  <div className="text-xs text-[#71717A] uppercase tracking-wider mb-2">
-                    Question {activeQuestion + 1} / {questions.length}
-                  </div>
-                  <div className="p-4 rounded-xl bg-[#4F46E5]/10 border border-[#4F46E5]/20">
-                    <AnimatePresence mode="wait">
-                      <motion.p
-                        key={activeQuestion}
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -10 }}
-                        className="text-sm text-[#FFFFFF] leading-relaxed"
-                      >
-                        {questions[activeQuestion]}
-                      </motion.p>
-                    </AnimatePresence>
-                  </div>
+                  <div className="p-4">
+                    {/* Certificate image/thumbnail */}
+                    <CertThumbnail cert={cert} />
 
-                  {/* Question nav */}
-                  <div className="flex gap-1.5">
-                    {questions.map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => setActiveQuestion(i)}
-                        className="h-1 flex-1 rounded-full transition-all duration-300"
-                        style={{
-                          background:
-                            i === activeQuestion
-                              ? "#4F46E5"
-                              : i < activeQuestion
-                              ? "#4F46E5" + "60"
-                              : "rgba(255,255,255,0.08)",
-                        }}
-                      />
-                    ))}
-                  </div>
-                </div>
-
-                {/* Recording button */}
-                <div className="flex items-center justify-between">
-                  <button
-                    onClick={() => setRecording(!recording)}
-                    className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
-                      recording
-                        ? "bg-red-500/20 border border-red-500/30 text-red-400"
-                        : "bg-[#4F46E5]/15 border border-[#4F46E5]/25 text-[#4F46E5]"
-                    }`}
-                  >
-                    {recording ? (
-                      <>
-                        <motion.div
-                          animate={{ scale: [1, 1.3, 1] }}
-                          transition={{ duration: 0.8, repeat: Infinity }}
-                        >
-                          <MicOff className="w-4 h-4" />
-                        </motion.div>
-                        Stop Recording
-                      </>
-                    ) : (
-                      <>
-                        <Mic className="w-4 h-4" />
-                        Start Recording
-                      </>
-                    )}
-                  </button>
-                  <div className="text-xs text-[#71717A]">
-                    {recording ? (
-                      <motion.span
-                        className="text-red-400"
-                        animate={{ opacity: [1, 0, 1] }}
-                        transition={{ duration: 1, repeat: Infinity }}
-                      >
-                        ● Recording...
-                      </motion.span>
-                    ) : (
-                      "Press to answer"
-                    )}
-                  </div>
-                </div>
-
-                {/* Skill bars */}
-                <div className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.06] space-y-3">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-1.5 text-xs font-medium text-[#A1A1AA]">
-                      <BarChart3 className="w-3.5 h-3.5" />
-                      Session Skills
-                    </div>
-                    <div className="flex items-center gap-1 text-xs text-[#22C55E]">
-                      <TrendingUp className="w-3 h-3" />
-                      +12% this week
-                    </div>
-                  </div>
-                  {skillBars.map((bar, i) => (
-                    <div key={bar.skill}>
-                      <div className="flex items-center justify-between text-xs mb-1">
-                        <span className="text-[#A1A1AA]">{bar.skill}</span>
-                        <span
-                          className="font-semibold"
-                          style={{ color: bar.color }}
-                        >
-                          {bar.score}%
+                    {/* Info */}
+                    <div className="mt-3">
+                      <div className="flex items-center justify-between mb-1">
+                        <p className="text-[11px] font-black text-white leading-tight truncate pr-2">{cert.title}</p>
+                        <span className="text-[9px] font-black px-1.5 py-0.5 rounded flex-shrink-0"
+                          style={{ background: `${cert.color}15`, color: cert.color, border: `1px solid ${cert.color}30` }}>
+                          {cert.badgeLabel}
                         </span>
                       </div>
-                      <div className="h-1.5 bg-white/[0.05] rounded-full overflow-hidden">
-                        <motion.div
-                          className="h-full rounded-full"
-                          style={{ background: bar.color }}
-                          initial={{ width: 0 }}
-                          whileInView={{ width: `${bar.score}%` }}
-                          viewport={{ once: true }}
-                          transition={{
-                            delay: 0.3 + i * 0.1,
-                            duration: 0.8,
-                            ease: "easeOut",
-                          }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                      <p className="text-[10px] text-slate-500 font-medium truncate">{cert.issuer}</p>
 
-                {/* Bottom stats */}
-                <div className="grid grid-cols-3 gap-2">
-                  {[
-                    { icon: Award, label: "Overall", value: "B+", color: "#06B6D4" },
-                    { icon: Brain, label: "AI Feedback", value: "14", color: "#4F46E5" },
-                    { icon: TrendingUp, label: "Readiness", value: "78%", color: "#22C55E" },
-                  ].map((stat) => (
-                    <div
-                      key={stat.label}
-                      className="p-2.5 rounded-lg bg-white/[0.03] border border-white/[0.05] text-center"
-                    >
-                      <stat.icon
-                        className="w-4 h-4 mx-auto mb-1"
-                        style={{ color: stat.color }}
-                      />
-                      <div
-                        className="text-lg font-bold font-syne"
-                        style={{ color: stat.color }}
-                      >
-                        {stat.value}
-                      </div>
-                      <div className="text-[10px] text-[#71717A]">
-                        {stat.label}
+                      {/* Score bar */}
+                      <div className="mt-2">
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="text-[9px] font-black text-slate-600 uppercase tracking-widest">Score</span>
+                          <span className="text-[10px] font-black" style={{ color: cert.color }}>{cert.score}/100</span>
+                        </div>
+                        <div className="h-1 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
+                          <motion.div
+                            className="h-full rounded-full"
+                            style={{ background: cert.color, boxShadow: `0 0 6px ${cert.color}80` }}
+                            initial={{ width: 0 }}
+                            whileInView={{ width: `${cert.score}%` }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.3 + i * 0.1, duration: 0.8, ease: "easeOut" }}
+                          />
+                        </div>
                       </div>
                     </div>
-                  ))}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Summary bar */}
+            <div className="grid grid-cols-3 gap-3 mt-4">
+              {[
+                { value: "2", label: "Verified", color: "#4ADE80" },
+                { value: "1", label: "Warning", color: "#F59E0B" },
+                { value: "1", label: "Rejected", color: "#EF4444" },
+              ].map(s => (
+                <div key={s.label} className="rounded-2xl border p-3 text-center"
+                  style={{ background: 'rgba(8,12,20,0.7)', borderColor: `${s.color}20`, backdropFilter: 'blur(20px)' }}>
+                  <p className="font-black text-xl" style={{ color: s.color, textShadow: `0 0 10px ${s.color}40` }}>{s.value}</p>
+                  <p className="text-[9px] font-black text-slate-600 uppercase tracking-widest">{s.label}</p>
                 </div>
-              </div>
+              ))}
             </div>
           </motion.div>
         </div>

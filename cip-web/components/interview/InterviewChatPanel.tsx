@@ -56,11 +56,11 @@ export default function InterviewChatPanel({ question, lastUserAnswer }: Intervi
   };
 
   return (
-    <div className="flex flex-col bg-slate-900/50 border border-slate-700/50 rounded-xl overflow-hidden mt-6 shadow-lg shadow-black/20">
+    <div className="flex flex-col bg-white border border-slate-200 rounded-xl overflow-hidden mt-6 shadow-sm">
       {/* Header */}
-      <div className="bg-slate-800/80 px-4 py-3 border-b border-slate-700/50 flex items-center gap-2">
-        <Bot className="w-5 h-5 text-indigo-400" />
-        <h3 className="font-semibold text-slate-200 text-sm">Interactive AI Interview Mentor</h3>
+      <div className="bg-slate-50 px-4 py-3 border-b border-slate-100 flex items-center gap-2">
+        <Bot className="w-5 h-5 text-blue-600" />
+        <h3 className="font-bold text-slate-900 text-sm">Interactive AI Interview Mentor</h3>
       </div>
 
       {/* Chat Area */}
@@ -68,22 +68,22 @@ export default function InterviewChatPanel({ question, lastUserAnswer }: Intervi
         {messages.map((msg, idx) => (
           <div key={idx} className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
             {msg.role === "ai" && (
-              <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0 border border-indigo-500/30">
-                <Bot className="w-4 h-4 text-indigo-400" />
+              <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100 shadow-inner">
+                <Bot className="w-4 h-4 text-blue-600" />
               </div>
             )}
             
-            <div className={`px-4 py-2 rounded-2xl max-w-[85%] text-sm ${
+            <div className={`px-4 py-2 rounded-2xl max-w-[85%] text-sm font-medium ${
               msg.role === "user" 
-                ? "bg-indigo-600 text-white rounded-br-sm" 
-                : "bg-slate-800 text-slate-300 rounded-bl-sm border border-slate-700/50"
+                ? "bg-blue-600 text-white rounded-br-sm shadow-sm" 
+                : "bg-slate-50 text-slate-700 rounded-bl-sm border border-slate-200 shadow-sm"
             }`}>
               {msg.text}
             </div>
 
             {msg.role === "user" && (
-              <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center shrink-0">
-                <User className="w-4 h-4 text-slate-300" />
+              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center shrink-0 shadow-inner">
+                <User className="w-4 h-4 text-slate-600" />
               </div>
             )}
           </div>
@@ -91,12 +91,12 @@ export default function InterviewChatPanel({ question, lastUserAnswer }: Intervi
         
         {isLoading && (
           <div className="flex gap-3 justify-start">
-            <div className="w-8 h-8 rounded-full bg-indigo-500/20 flex items-center justify-center shrink-0 border border-indigo-500/30">
-              <Bot className="w-4 h-4 text-indigo-400" />
+            <div className="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100 shadow-inner">
+              <Bot className="w-4 h-4 text-blue-600" />
             </div>
-            <div className="px-4 py-3 rounded-2xl bg-slate-800 rounded-bl-sm border border-slate-700/50 flex items-center gap-2">
-              <Loader2 className="w-4 h-4 text-indigo-400 animate-spin" />
-              <span className="text-xs text-slate-400">Thinking...</span>
+            <div className="px-4 py-3 rounded-2xl bg-slate-50 rounded-bl-sm border border-slate-200 flex items-center gap-2 shadow-sm">
+              <Loader2 className="w-4 h-4 text-blue-600 animate-spin" />
+              <span className="text-xs font-bold text-slate-500">Thinking...</span>
             </div>
           </div>
         )}
@@ -104,7 +104,7 @@ export default function InterviewChatPanel({ question, lastUserAnswer }: Intervi
       </div>
 
       {/* Input Area */}
-      <div className="p-3 bg-slate-800/50 border-t border-slate-700/50">
+      <div className="p-3 bg-slate-50 border-t border-slate-100">
         <form 
           onSubmit={(e) => { e.preventDefault(); handleSend(); }}
           className="flex items-center gap-2"
@@ -114,13 +114,13 @@ export default function InterviewChatPanel({ question, lastUserAnswer }: Intervi
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask why your answer was wrong, or for a better explanation..."
-            className="flex-1 bg-slate-900/50 border border-slate-700 rounded-lg px-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500 transition-colors"
+            className="flex-1 bg-white border border-slate-200 rounded-lg px-4 py-2 text-sm font-medium text-slate-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all shadow-inner"
             disabled={isLoading}
           />
           <button
             type="submit"
             disabled={!input.trim() || isLoading}
-            className="p-2 bg-indigo-600 hover:bg-indigo-500 disabled:bg-slate-700 disabled:text-slate-500 text-white rounded-lg transition-colors flex items-center justify-center"
+            className="p-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-200 disabled:text-slate-400 text-white rounded-lg transition-all shadow-sm flex items-center justify-center"
           >
             <Send className="w-4 h-4" />
           </button>

@@ -1,17 +1,11 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Syne, JetBrains_Mono } from 'next/font/google';
+import { Plus_Jakarta_Sans, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
 import { Providers } from '@/components/providers';
 
-const inter = Inter({
+const jakarta = Plus_Jakarta_Sans({
   subsets: ['latin'],
-  variable: '--font-inter',
-});
-
-const syne = Syne({
-  subsets: ['latin'],
-  weight: ['700', '800'],
-  variable: '--font-syne',
+  variable: '--font-jakarta',
 });
 
 const jetbrainsMono = JetBrains_Mono({
@@ -21,14 +15,14 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: { default: 'CIP — AI Career Intelligence Platform', template: '%s | CIP' },
-  description: 'Real-time interview coaching, skill intelligence, and job matching powered by AI. Prepare smarter, get hired faster.',
-  keywords: ['AI interview coach', 'career intelligence', 'job matching', 'skill analysis', 'interview prep', 'career', 'placement'],
-  authors: [{ name: 'CIP Team' }],
+  title: { default: 'CIP — AI Hiring Intelligence', template: '%s | CIP Intelligence' },
+  description: 'AI-powered candidate intelligence engine. Analyze. Verify. Decide. Real-time interview coaching, OCR certificate validation, and smart job matching.',
+  keywords: ['AI interview', 'AI hiring', 'career intelligence', 'certificate validator', 'job matching', 'interview coach', 'recruitment AI'],
+  authors: [{ name: 'CIP Intelligence Team' }],
   icons: { icon: '/favicon.ico' },
   openGraph: {
-    title: 'CIP — AI Career Intelligence Platform',
-    description: 'Prepare. Improve. Get Hired — with AI.',
+    title: 'CIP — AI Hiring Intelligence',
+    description: 'Recruitment Verdict. Unified AI Decision Engine.',
     type: 'website',
   },
 };
@@ -36,13 +30,13 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#020617',
+  themeColor: '#000000',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" suppressHydrationWarning className="dark">
-      <body className={`${inter.variable} ${syne.variable} ${jetbrainsMono.variable} antialiased`}>
+    <html lang="en" suppressHydrationWarning className="light">
+      <body className={`${jakarta.variable} ${jetbrainsMono.variable} antialiased`}>
         <Providers>{children}</Providers>
       </body>
     </html>

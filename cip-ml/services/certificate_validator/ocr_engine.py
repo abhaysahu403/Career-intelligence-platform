@@ -33,6 +33,13 @@ except ImportError:
     USE_PDF2IMAGE = False
 
 try:
+    import fitz  # PyMuPDF
+    USE_PYMUPDF = True
+except ImportError:
+    USE_PYMUPDF = False
+    logger.warning("PyMuPDF not available")
+
+try:
     from pyzbar import pyzbar
     USE_PYZBAR = True
 except ImportError:
@@ -152,13 +159,36 @@ def _deskew(img: np.ndarray) -> np.ndarray:
 
 def _pdf_to_image(pdf_path: str) -> np.ndarray:
     """Convert first page of PDF to OpenCV image"""
+    if USE_PYMUPDF:
+        try:
+            doc = fitz.open(pdf_path)
+            if len(doc) > 0:
+                page = doc.load_page(0)
+                # Zoom for higher resolution OCR
+                pix = page.get_pixmap(matrix=fitz.Matrix(2.0, 2.0))
+                img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.height, pix.width, pix.n)
+                # Convert to BGR for OpenCV
+                if pix.n == 4:
+                    img = cv2.cvtColor(img, cv2.COLOR_RGBA2BGR)
+                elif pix.n == 3:
+                    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+                elif pix.n == 1:
+                    img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+                return img
+        except Exception as e:
+            logger.error(f"[PyMuPDF] Failed: {e}")
+
     if USE_PDF2IMAGE:
-        pages = convert_from_path(pdf_path, dpi=200, first_page=1, last_page=1)
-        if pages:
-            pil_img = pages[0]
-            img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
-            return img
-    # Fallback: try to read directly (some PDFs are image-based)
+        try:
+            pages = convert_from_path(pdf_path, dpi=200, first_page=1, last_page=1)
+            if pages:
+                pil_img = pages[0]
+                img = cv2.cvtColor(np.array(pil_img), cv2.COLOR_RGB2BGR)
+                return img
+        except Exception as e:
+            logger.error(f"[PDF2Image] Failed: {e}")
+
+    # Fallback: try to read directly
     img = cv2.imread(pdf_path)
     return img
 

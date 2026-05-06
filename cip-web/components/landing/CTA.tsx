@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { ArrowRight, Sparkles, CheckCircle2, Star } from "lucide-react";
+import { ArrowRight, Sparkles, CheckCircle2, Brain, ShieldCheck, Zap, Target } from "lucide-react";
 
 const perks = [
   "Free forever plan — no credit card required",
@@ -11,174 +10,194 @@ const perks = [
   "Export reports and certificates",
 ];
 
-const testimonials = [
-  {
-    name: "Priya S.",
-    role: "Got hired at Google",
-    text: "CIP's AI feedback was brutally honest — and that's exactly what I needed. 3 weeks later, offer from Google.",
-    score: 5,
-    color: "#4F46E5",
-  },
-  {
-    name: "Rahul M.",
-    role: "Placed at Amazon",
-    text: "The skill gap analysis alone saved me months of guesswork. I knew exactly what to study.",
-    score: 5,
-    color: "#06B6D4",
-  },
-  {
-    name: "Sneha K.",
-    role: "Joined a Series B startup",
-    text: "I went from blanking on behavioral questions to answering fluently. Night and day difference.",
-    score: 5,
-    color: "#22C55E",
-  },
+const platformStats = [
+  { icon: Brain, value: "10,000+", label: "AI Interviews Conducted", color: "#38BDF8" },
+  { icon: ShieldCheck, value: "98.2%", label: "Certificate Accuracy", color: "#4ADE80" },
+  { icon: Target, value: "427+", label: "Live Job Matches", color: "#818CF8" },
+  { icon: Zap, value: "14 days", label: "Avg. Time to Offer", color: "#34D399" },
 ];
 
 export default function CTA() {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (email) setSubmitted(true);
-  };
-
   return (
     <section id="cta" className="py-28 px-6 relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent to-[#020617] pointer-events-none" />
-
-      {/* Glowing orbs */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-gradient-to-br from-[#4F46E5]/10 to-[#06B6D4]/10 blur-3xl pointer-events-none" />
+      {/* Ambient glow */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full blur-[120px]"
+          style={{ background: 'radial-gradient(ellipse, rgba(74,222,128,0.10) 0%, rgba(56,189,248,0.05) 60%, transparent 100%)' }} />
+      </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Testimonials */}
+
+        {/* ── Platform Stats Row ── */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="grid md:grid-cols-3 gap-5 mb-20"
+          className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-24"
         >
-          {testimonials.map((t, i) => (
+          {platformStats.map((stat, i) => (
             <motion.div
-              key={t.name}
+              key={stat.label}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              whileHover={{ scale: 1.02, y: -4 }}
-              className="p-6 rounded-2xl bg-white/[0.04] border border-white/[0.07] backdrop-blur-xl"
+              whileHover={{ scale: 1.03, y: -4 }}
+              className="p-6 rounded-[28px] border text-center transition-all duration-500 cursor-default"
+              style={{
+                background: 'rgba(8,12,20,0.7)',
+                backdropFilter: 'blur(40px)',
+                borderColor: `${stat.color}20`,
+                boxShadow: `0 15px 40px -10px rgba(0,0,0,0.4), inset 0 0 30px ${stat.color}06`,
+              }}
             >
-              {/* Stars */}
-              <div className="flex gap-0.5 mb-3">
-                {[...Array(t.score)].map((_, j) => (
-                  <Star
-                    key={j}
-                    className="w-3.5 h-3.5 text-[#F59E0B] fill-[#F59E0B]"
-                  />
-                ))}
-              </div>
-              <p className="text-sm text-[#A1A1AA] leading-relaxed mb-4">
-                "{t.text}"
+              <div className="absolute top-0 inset-x-0 h-[1px] rounded-t-[28px]"
+                style={{ background: `linear-gradient(90deg, transparent, ${stat.color}30, transparent)` }} />
+              <stat.icon className="w-6 h-6 mx-auto mb-3" style={{ color: stat.color, filter: `drop-shadow(0 0 8px ${stat.color}50)` }} />
+              <p className="font-black text-2xl md:text-3xl mb-1" style={{ color: stat.color, textShadow: `0 0 15px ${stat.color}40` }}>
+                {stat.value}
               </p>
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white"
-                  style={{ background: t.color }}
-                >
-                  {t.name[0]}
-                </div>
-                <div>
-                  <div className="text-sm font-semibold text-white">
-                    {t.name}
-                  </div>
-                  <div className="text-xs" style={{ color: t.color }}>
-                    {t.role}
-                  </div>
-                </div>
-              </div>
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{stat.label}</p>
             </motion.div>
           ))}
         </motion.div>
 
-        {/* Main CTA block */}
+        {/* ── Main CTA Block ── */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center"
+          className="relative"
         >
-          <motion.div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#4F46E5]/10 border border-[#4F46E5]/25 mb-6"
+          {/* Outer glow */}
+          <div className="absolute -inset-8 rounded-[60px] blur-[80px] pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse, rgba(74,222,128,0.14) 0%, rgba(56,189,248,0.05) 70%, transparent 100%)' }} />
+
+          <div
+            className="relative rounded-[48px] overflow-hidden border-2 text-center px-8 py-16 md:py-20"
+            style={{
+              background: 'rgba(5,8,18,0.85)',
+              backdropFilter: 'blur(50px)',
+              borderColor: 'rgba(74,222,128,0.25)',
+              boxShadow: '0 0 100px -20px rgba(74,222,128,0.25), inset 0 0 60px rgba(74,222,128,0.03)',
+            }}
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#4F46E5]" />
-            <span className="text-xs font-semibold text-[#4F46E5] uppercase tracking-wider">
-              Start Free Today
-            </span>
-          </motion.div>
+            {/* Top shimmer */}
+            <div className="absolute top-0 inset-x-0 h-[1px]"
+              style={{ background: 'linear-gradient(90deg, transparent, rgba(74,222,128,0.5), rgba(56,189,248,0.3), transparent)' }} />
 
-          <h2 className="font-syne text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-6 leading-tight">
-            Your AI Career Coach
-            <br />
-            <span className="text-gradient">Is Waiting</span>
-          </h2>
-
-          <p className="text-xl text-[#A1A1AA] max-w-2xl mx-auto mb-10">
-            Join thousands of candidates who stopped guessing and started
-            landing offers with AI-powered precision.
-          </p>
-
-          {/* Perks */}
-          <div className="flex flex-wrap justify-center gap-4 mb-10">
-            {perks.map((perk) => (
-              <div
-                key={perk}
-                className="flex items-center gap-2 text-sm text-[#A1A1AA]"
-              >
-                <CheckCircle2 className="w-4 h-4 text-[#22C55E]" />
-                {perk}
-              </div>
-            ))}
-          </div>
-
-          {/* Email form */}
-          {!submitted ? (
+            {/* Scanning line */}
             <motion.div
-              className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto mb-6"
+              className="absolute inset-x-0 h-[1px] pointer-events-none"
+              style={{ background: 'linear-gradient(90deg, transparent, rgba(56,189,248,0.3), transparent)' }}
+              animate={{ top: ['5%', '95%', '5%'] }}
+              transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+            />
+
+            {/* Eyebrow badge */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border mb-8"
+              style={{ background: 'rgba(74,222,128,0.08)', borderColor: 'rgba(74,222,128,0.2)', boxShadow: '0 0 15px rgba(74,222,128,0.1)' }}
+            >
+              <Sparkles className="w-3.5 h-3.5 text-mint" />
+              <span className="text-xs font-black text-mint uppercase tracking-[0.3em]">Start Free Today</span>
+            </motion.div>
+
+            {/* Headline */}
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.25 }}
+              className="font-syne font-black tracking-tight mb-4"
+              style={{ fontSize: 'clamp(2.2rem, 7vw, 5rem)', lineHeight: 1.05 }}
+            >
+              <span className="text-white">Your AI Career Coach</span>
+              <br />
+              <span
+                style={{
+                  background: 'linear-gradient(135deg, #38BDF8 0%, #4ADE80 50%, #38BDF8 100%)',
+                  backgroundSize: '200% auto',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                  animation: 'shimmer 4s linear infinite',
+                }}
+              >
+                Is Waiting.
+              </span>
+            </motion.h2>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.35 }}
+              className="text-slate-400 text-lg max-w-xl mx-auto mb-10 font-medium leading-relaxed"
+            >
+              Join thousands of candidates who stopped guessing and started landing offers
+              with AI-powered precision. Practice. Verify. Match. Get hired.
+            </motion.p>
+
+            {/* Perks */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.4 }}
+              className="flex flex-wrap justify-center gap-5 mb-12"
+            >
+              {perks.map((perk) => (
+                <div key={perk} className="flex items-center gap-2 text-sm text-slate-400 font-medium">
+                  <CheckCircle2 className="w-4 h-4 text-mint flex-shrink-0"
+                    style={{ filter: 'drop-shadow(0 0 5px rgba(74,222,128,0.5))' }} />
+                  {perk}
+                </div>
+              ))}
+            </motion.div>
+
+            {/* CTA Buttons */}
+            <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
+              transition={{ delay: 0.5 }}
+              className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-8"
             >
               <motion.a
                 href="/auth/signup"
-                whileHover={{ scale: 1.04 }}
-                whileTap={{ scale: 0.97 }}
-                className="flex items-center justify-center gap-2 px-7 py-4 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#06B6D4] text-white font-semibold text-sm hover:shadow-xl hover:shadow-[#4F46E5]/30 transition-all whitespace-nowrap"
+                whileHover={{ scale: 1.06, y: -3 }}
+                whileTap={{ scale: 0.96 }}
+                className="flex items-center gap-2.5 px-10 py-5 rounded-full font-black text-sm uppercase tracking-widest text-[#020617]"
+                style={{
+                  background: 'linear-gradient(135deg, #38BDF8, #4ADE80)',
+                  boxShadow: '0 0 50px rgba(74,222,128,0.4), 0 0 100px rgba(56,189,248,0.10)',
+                }}
               >
                 Start Free Interview
                 <ArrowRight className="w-4 h-4" />
               </motion.a>
+              <motion.a
+                href="/dashboard"
+                whileHover={{ scale: 1.04 }}
+                className="flex items-center gap-2 px-8 py-5 rounded-full font-black text-sm uppercase tracking-widest text-white border transition-all"
+                style={{
+                  background: 'rgba(15,23,42,0.5)',
+                  backdropFilter: 'blur(20px)',
+                  borderColor: 'rgba(255,255,255,0.1)',
+                }}
+              >
+                View Dashboard →
+              </motion.a>
             </motion.div>
-          ) : (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="flex items-center justify-center gap-3 py-4 mb-6"
-            >
-              <CheckCircle2 className="w-6 h-6 text-[#22C55E]" />
-              <span className="text-white font-semibold">
-                You're in! We'll be in touch very soon.
-              </span>
-            </motion.div>
-          )}
 
-          <p className="text-xs text-[#71717A]">
-            No spam, ever. Unsubscribe anytime.{" "}
-            <a href="#" className="underline hover:text-[#A1A1AA]">
-              Privacy Policy
-            </a>
-          </p>
+            <p className="text-xs text-slate-600 font-bold uppercase tracking-widest">
+              No spam, ever. Unsubscribe anytime.
+            </p>
+          </div>
         </motion.div>
       </div>
     </section>

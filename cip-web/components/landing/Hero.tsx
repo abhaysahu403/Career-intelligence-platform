@@ -1,343 +1,258 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import {
-  ArrowRight,
-  Play,
-  ChevronRight,
-  Star,
-  Mic,
-  Brain,
-  CheckCircle2,
-} from "lucide-react";
-import AnimatedBackground from "./AnimatedBackground";
+import { ArrowRight, Play, Zap, ShieldCheck, Brain, Mic } from "lucide-react";
 
-
-
-const stats = [
-  { value: "10K+", label: "Interviews Conducted", color: "#4F46E5" },
-  { value: "95%", label: "Success Rate", color: "#06B6D4" },
-  { value: "500+", label: "Top Companies", color: "#22C55E" },
+const floatingStats = [
+  { label: "Match Score", value: "96%", color: "#4ADE80", glow: "rgba(74,222,128,0.3)" },
+  { label: "Trust Level", value: "VERIFIED", color: "#38BDF8", glow: "rgba(56,189,248,0.3)" },
+  { label: "AI Verdict", value: "HIRE", color: "#4ADE80", glow: "rgba(74,222,128,0.5)" },
 ];
 
-const sampleMessages = [
-  { role: "ai", text: "Tell me about a challenging project you led." },
-  {
-    role: "user",
-    text: "I led a team of 5 to rebuild our microservices architecture...",
-  },
-  {
-    role: "ai",
-    text: "Great structure! Add quantifiable impact — e.g. latency reduced by X%.",
-    isFeeback: true,
-  },
+const pulseRings = [
+  { delay: 0, size: 80 },
+  { delay: 0.6, size: 120 },
+  { delay: 1.2, size: 160 },
 ];
 
 export default function Hero() {
-
-
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-      <AnimatedBackground />
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-24 pb-16">
+      {/* Ambient glow zones */}
+      <div className="absolute top-1/4 left-1/4 w-[700px] h-[700px] bg-sky/8 blur-[140px] pointer-events-none rounded-full" />
+      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-mint/10 blur-[120px] pointer-events-none rounded-full" />
 
-      <div className="relative z-10 max-w-7xl mx-auto px-6 py-20 text-center">
-        {/* Top badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="inline-flex items-center gap-2 mb-8"
-        >
-          <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.06] border border-white/[0.1] text-sm">
-            <motion.span
-              className="w-2 h-2 rounded-full bg-[#22C55E]"
-              animate={{ scale: [1, 1.4, 1], opacity: [1, 0.5, 1] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            />
-            <span className="text-[#22C55E] font-mono-jetbrains text-xs font-medium">
-              LIVE
-            </span>
-            <span className="text-[#A1A1AA]">AI Interview Platform — Now in Beta</span>
-          </div>
-        </motion.div>
+      <div className="relative z-10 max-w-7xl mx-auto px-6 w-full">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
 
-
-
-        {/* Main heading */}
-        <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.1 }}
-          className="font-syne text-5xl md:text-6xl lg:text-7xl font-extrabold leading-tight mb-6 tracking-wide"
-        >
-          <span className="text-white block">Your AI Career Copilot.</span>
-          <span className="text-white block mt-2">Turn Interviews into</span>
-          <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-indigo-400">
-            Offers.
-          </span>
-        </motion.h1>
-
-        {/* Subheading */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.25 }}
-          className="text-lg md:text-xl text-[#A1A1AA] max-w-2xl mx-auto mb-10 leading-relaxed"
-        >
-          Real-time AI coaching for interviews, instant skill gap analysis,
-          and smart job matching — all in one platform built for serious
-          candidates.
-        </motion.p>
-
-        {/* CTA Buttons */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.35 }}
-          className="flex flex-col sm:flex-row gap-4 justify-center mb-6"
-        >
-          <motion.a
-            href="/auth/signup"
-            whileHover={{ scale: 1.04, y: -2 }}
-            whileTap={{ scale: 0.97 }}
-            className="group flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#06B6D4] text-white font-semibold text-base shadow-lg shadow-[#4F46E5]/30 hover:shadow-[0_0_20px_rgba(79,70,229,0.5)] transition-all"
-          >
-            Start Your Interview
-            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-          </motion.a>
-          <motion.a
-            href="#demo"
-            whileHover={{ scale: 1.04, y: -2 }}
-            whileTap={{ scale: 0.97 }}
-            className="group flex items-center justify-center gap-2.5 px-8 py-4 rounded-xl bg-white/[0.06] border border-white/[0.1] text-white font-semibold text-base hover:bg-white/[0.1] transition-all"
-          >
-            <Play className="w-4 h-4" />
-            Watch Demo
-          </motion.a>
-        </motion.div>
-
-        {/* Social proof stars */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="flex items-center justify-center gap-3 mb-16 text-sm text-[#71717A]"
-        >
-          <div className="flex">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className="w-4 h-4 text-[#F59E0B] fill-[#F59E0B]"
-              />
-            ))}
-          </div>
-          <span>
-            <strong className="text-[#FFFFFF]">4.9/5</strong> from 2,400+
-            candidates
-          </span>
-        </motion.div>
-
-        {/* Main visual: split cards */}
-        <div className="grid lg:grid-cols-2 gap-6 max-w-5xl mx-auto">
-          {/* Left: Live interview preview */}
-          <motion.div
-            initial={{ opacity: 0, x: -40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="glass-card rounded-2xl overflow-hidden text-left"
-          >
-            {/* Browser bar */}
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-white/[0.06] bg-white/[0.02]">
-              <div className="flex gap-1.5">
-                {["#EF4444", "#F59E0B", "#22C55E"].map((c) => (
-                  <div
-                    key={c}
-                    className="w-3 h-3 rounded-full"
-                    style={{ background: c }}
-                  />
-                ))}
-              </div>
-              <div className="flex-1 text-center">
-                <span className="font-mono-jetbrains text-xs text-[#71717A]">
-                  cip.ai / interview
-                </span>
-              </div>
-              <div className="flex items-center gap-1 text-xs text-[#22C55E]">
-                <Mic className="w-3 h-3" />
-                <span>REC</span>
+          {/* ── LEFT: Cinematic Headline ── */}
+          <div>
+            {/* Live badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="inline-flex items-center gap-3 mb-10"
+            >
+              <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full border"
+                style={{ background: 'rgba(74,222,128,0.08)', borderColor: 'rgba(74,222,128,0.2)', boxShadow: '0 0 20px rgba(74,222,128,0.1)' }}>
                 <motion.span
-                  className="w-1.5 h-1.5 rounded-full bg-[#22C55E]"
-                  animate={{ opacity: [1, 0, 1] }}
-                  transition={{ duration: 1, repeat: Infinity }}
+                  className="w-2 h-2 rounded-full"
+                  style={{ background: '#4ADE80', boxShadow: '0 0 8px rgba(74,222,128,0.8)' }}
+                  animate={{ scale: [1, 1.5, 1], opacity: [1, 0.4, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
                 />
-              </div>
-            </div>
-
-            {/* Chat messages */}
-            <div className="p-4 space-y-3 min-h-[220px]">
-              {sampleMessages.map((msg, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.8 + i * 0.4 }}
-                  className={`flex gap-2.5 ${msg.role === "user" ? "flex-row-reverse" : ""}`}
-                >
-                  <div
-                    className={`flex-shrink-0 w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${
-                      msg.role === "ai"
-                        ? "bg-gradient-to-br from-[#4F46E5] to-[#06B6D4]"
-                        : "bg-[#0A0A0A] border border-white/10"
-                    }`}
-                  >
-                    {msg.role === "ai" ? (
-                      <Brain className="w-3.5 h-3.5 text-white" />
-                    ) : (
-                      "U"
-                    )}
-                  </div>
-                  <div
-                    className={`max-w-[80%] px-3 py-2 rounded-xl text-xs leading-relaxed ${
-                      (msg as { isFeeback?: boolean }).isFeeback
-                        ? "bg-[#22C55E]/10 border border-[#22C55E]/20 text-[#22C55E]"
-                        : msg.role === "ai"
-                        ? "bg-white/[0.05] border border-white/[0.06] text-[#FFFFFF]"
-                        : "bg-[#4F46E5]/20 border border-[#4F46E5]/30 text-[#FFFFFF]"
-                    }`}
-                  >
-                    {(msg as { isFeeback?: boolean }).isFeeback && (
-                      <div className="flex items-center gap-1 mb-1 font-semibold">
-                        <CheckCircle2 className="w-3 h-3" />
-                        AI Tip
-                      </div>
-                    )}
-                    {msg.text}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Score bar */}
-            <div className="px-4 pb-4">
-              <div className="flex items-center justify-between text-xs text-[#71717A] mb-1.5">
-                <span>Confidence Score</span>
-                <span className="text-[#22C55E] font-semibold">87%</span>
-              </div>
-              <div className="h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
-                <motion.div
-                  className="h-full rounded-full bg-gradient-to-r from-[#4F46E5] to-[#22C55E]"
-                  initial={{ width: 0 }}
-                  animate={{ width: "87%" }}
-                  transition={{ delay: 1.8, duration: 1.2, ease: "easeOut" }}
-                />
-              </div>
-            </div>
-          </motion.div>
-
-          {/* Right: Skill radar + job cards */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.6 }}
-            className="space-y-4"
-          >
-            {/* Stats */}
-            <div className="grid grid-cols-3 gap-3">
-              {stats.map((s, i) => (
-                <motion.div
-                  key={s.label}
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.8 + i * 0.1 }}
-                  className="glass-card rounded-xl p-3 text-center"
-                >
-                  <div
-                    className="font-syne text-2xl font-bold"
-                    style={{ color: s.color }}
-                  >
-                    {s.value}
-                  </div>
-                  <div className="text-[10px] text-[#71717A] mt-0.5 leading-tight">
-                    {s.label}
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Job matches */}
-            <div className="glass-card rounded-2xl p-4 text-left">
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-semibold text-[#A1A1AA] uppercase tracking-wider">
-                  AI Job Matches
+                <span className="text-mint font-mono-jetbrains text-[10px] font-black tracking-[0.3em] uppercase">LIVE</span>
+                <span className="text-slate-400 text-xs font-bold border-l border-mint/20 pl-3 uppercase tracking-widest">
+                  AI Hiring Intelligence
                 </span>
-                <span className="text-xs text-[#4F46E5]">View All →</span>
               </div>
-              {[
-                {
-                  role: "Senior Software Engineer",
-                  co: "Google",
-                  match: 94,
-                  color: "#22C55E",
-                },
-                {
-                  role: "Product Manager",
-                  co: "Stripe",
-                  match: 87,
-                  color: "#06B6D4",
-                },
-                {
-                  role: "ML Engineer",
-                  co: "OpenAI",
-                  match: 82,
-                  color: "#4F46E5",
-                },
-              ].map((job, i) => (
-                <motion.div
-                  key={job.co}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 1 + i * 0.15 }}
-                  className="flex items-center justify-between py-2.5 border-b border-white/[0.04] last:border-0"
-                >
-                  <div>
-                    <div className="text-sm font-medium text-[#FFFFFF]">
-                      {job.role}
-                    </div>
-                    <div className="text-xs text-[#71717A]">{job.co}</div>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="text-sm font-bold"
-                      style={{ color: job.color }}
-                    >
-                      {job.match}%
-                    </div>
-                    <ChevronRight className="w-3.5 h-3.5 text-[#71717A]" />
-                  </div>
-                </motion.div>
-              ))}
-            </div>
+            </motion.div>
 
-            {/* Trusted by */}
+            {/* Giant headline */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.9, delay: 0.1 }}
+            >
+              <h1 className="font-syne leading-[0.9] mb-6 tracking-tighter">
+                <span className="block text-6xl md:text-7xl lg:text-8xl font-black text-white">
+                  Recruitment
+                </span>
+                <span
+                  className="block text-6xl md:text-7xl lg:text-8xl font-black mt-2"
+                  style={{
+                    background: 'linear-gradient(135deg, #38BDF8 0%, #4ADE80 50%, #38BDF8 100%)',
+                    backgroundSize: '200% auto',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    animation: 'shimmer 4s linear infinite',
+                    filter: 'drop-shadow(0 0 30px rgba(74,222,128,0.3))',
+                  }}
+                >
+                  Verdict.
+                </span>
+              </h1>
+            </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.3 }}
+              className="text-xl text-slate-400 font-medium max-w-lg mb-4 leading-relaxed"
+            >
+              Unified AI Decision Engine. Analyze. Verify. Decide.
+            </motion.p>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.4 }}
+              className="text-sm text-slate-500 font-bold uppercase tracking-[0.4em] mb-10"
+            >
+              AI-powered candidate intelligence engine // AV-9942
+            </motion.p>
+
+            {/* CTAs */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.5 }}
+              className="flex flex-col sm:flex-row gap-4 mb-14"
+            >
+              <motion.a
+                href="/auth/signup"
+                whileHover={{ scale: 1.05, y: -3 }}
+                whileTap={{ scale: 0.95 }}
+                className="group flex items-center justify-center gap-2.5 px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest text-[#020617]"
+                style={{
+                  background: 'linear-gradient(135deg, #38BDF8, #4ADE80)',
+                  boxShadow: '0 0 40px rgba(74,222,128,0.35), 0 0 80px rgba(56,189,248,0.15)',
+                }}
+              >
+                Start Intelligence Engine
+                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </motion.a>
+              <motion.a
+                href="#demo"
+                whileHover={{ scale: 1.05, y: -3 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center justify-center gap-2.5 px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest text-white border transition-all"
+                style={{
+                  background: 'rgba(15,23,42,0.6)',
+                  backdropFilter: 'blur(20px)',
+                  borderColor: 'rgba(255,255,255,0.1)',
+                }}
+              >
+                <Play className="w-4 h-4 text-sky" />
+                Watch Demo
+              </motion.a>
+            </motion.div>
+
+            {/* Trust indicators */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 1.4 }}
-              className="glass-card rounded-xl px-4 py-3 flex items-center justify-between"
+              transition={{ delay: 0.8 }}
+              className="flex flex-wrap gap-6"
             >
-              <span className="text-[10px] text-[#71717A] uppercase tracking-wider">
-                Trusted by employees at
-              </span>
-              <div className="flex gap-4 text-xs font-semibold text-[#71717A]">
-                {["Google", "Meta", "Amazon", "Apple"].map((co) => (
-                  <span key={co} className="hover:text-white transition-colors cursor-default">
-                    {co}
-                  </span>
-                ))}
-              </div>
+              {[
+                { icon: Brain, label: "AI Interview Engine", color: "#38BDF8" },
+                { icon: ShieldCheck, label: "OCR Cert Validation", color: "#4ADE80" },
+                { icon: Zap, label: "Real-time Verdict", color: "#818CF8" },
+              ].map((item) => (
+                <div key={item.label} className="flex items-center gap-2">
+                  <item.icon className="w-4 h-4" style={{ color: item.color }} />
+                  <span className="text-[11px] font-black text-slate-500 uppercase tracking-widest">{item.label}</span>
+                </div>
+              ))}
             </motion.div>
+          </div>
+
+          {/* ── RIGHT: Hero Image with Glass Overlay ── */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 1, delay: 0.3 }}
+            className="relative"
+          >
+            {/* Glow halo behind image */}
+            <div className="absolute -inset-8 rounded-[48px] blur-[60px] pointer-events-none"
+              style={{ background: 'radial-gradient(ellipse, rgba(74,222,128,0.18) 0%, rgba(56,189,248,0.08) 60%, transparent 100%)' }} />
+
+            {/* Pulse rings */}
+            {pulseRings.map((ring, i) => (
+              <motion.div
+                key={i}
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-mint/20 pointer-events-none"
+                style={{ width: ring.size, height: ring.size }}
+                animate={{ scale: [1, 1.4, 1], opacity: [0.3, 0, 0.3] }}
+                transition={{ duration: 3, delay: ring.delay, repeat: Infinity, ease: "easeOut" }}
+              />
+            ))}
+
+            {/* Main image card */}
+            <div className="relative rounded-[32px] overflow-hidden border"
+              style={{
+                borderColor: 'rgba(255,255,255,0.08)',
+                boxShadow: '0 40px 80px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)',
+              }}>
+              {/* Real interview image from Unsplash */}
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/hero-ai-interview.png"
+                alt="AI Interview Session - Student with AI analysis overlay"
+                className="w-full h-[420px] object-cover"
+                style={{ filter: 'brightness(0.75) saturate(1.1)' }}
+              />
+
+              {/* Cinematic gradient overlay */}
+              <div className="absolute inset-0" style={{
+                background: 'linear-gradient(to right, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.2) 50%, rgba(0,0,0,0.1) 100%)',
+              }} />
+
+              {/* Blue AI scan line */}
+              <motion.div
+                className="absolute inset-x-0 h-[1px] pointer-events-none"
+                style={{ background: 'linear-gradient(90deg, transparent, rgba(56,189,248,0.6), transparent)' }}
+                animate={{ top: ['10%', '90%', '10%'] }}
+                transition={{ duration: 5, repeat: Infinity, ease: "linear" }}
+              />
+
+              {/* Recording badge */}
+              <div className="absolute top-5 right-5 flex items-center gap-2 px-3 py-1.5 rounded-full"
+                style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)', border: '1px solid rgba(74,222,128,0.3)' }}>
+                <motion.span
+                  className="w-2 h-2 rounded-full bg-mint"
+                  animate={{ opacity: [1, 0, 1] }}
+                  transition={{ duration: 1, repeat: Infinity }}
+                  style={{ boxShadow: '0 0 6px rgba(74,222,128,0.8)' }}
+                />
+                <Mic className="w-3 h-3 text-mint" />
+                <span className="text-[10px] font-black text-mint uppercase tracking-widest">Recording</span>
+              </div>
+
+              {/* Bottom glass info strip */}
+              <div className="absolute bottom-0 left-0 right-0 p-5"
+                style={{ background: 'linear-gradient(to top, rgba(2,6,23,0.95), transparent)', backdropFilter: 'blur(4px)' }}>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="text-white font-black text-base">AI Interview Analysis</p>
+                    <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest mt-0.5">Software Engineer Role // Session Active</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-mint font-black text-xl" style={{ textShadow: '0 0 10px rgba(74,222,128,0.5)' }}>94%</p>
+                    <p className="text-slate-500 text-[10px] uppercase tracking-widest font-bold">Readiness</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Floating stat cards */}
+            {floatingStats.map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                className="absolute px-4 py-2.5 rounded-2xl border"
+                style={{
+                  background: 'rgba(2,6,23,0.85)',
+                  backdropFilter: 'blur(20px)',
+                  borderColor: `${stat.glow.replace('rgba', 'rgba').replace(/[\d.]+\)$/, '0.3)')}`,
+                  boxShadow: `0 0 20px ${stat.glow}`,
+                  top: `${20 + i * 30}%`,
+                  left: i % 2 === 0 ? '-60px' : 'auto',
+                  right: i % 2 === 1 ? '-60px' : 'auto',
+                }}
+                initial={{ opacity: 0, x: i % 2 === 0 ? -20 : 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.8 + i * 0.2 }}
+              >
+                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{stat.label}</p>
+                <p className="font-black text-lg leading-none" style={{ color: stat.color, textShadow: `0 0 10px ${stat.color}60` }}>
+                  {stat.value}
+                </p>
+              </motion.div>
+            ))}
           </motion.div>
+
         </div>
       </div>
     </section>

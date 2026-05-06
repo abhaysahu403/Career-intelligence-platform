@@ -196,6 +196,17 @@ export async function pollForResult(
 }
 
 /**
+ * Delete a certificate
+ */
+export async function deleteCertificate(
+  certificateId: number
+): Promise<{ message: string }> {
+  return apiRequest<{ message: string }>(`/certificates/${certificateId}`, {
+    method: 'DELETE',
+  });
+}
+
+/**
  * Compute score color for UI display
  */
 export function getScoreColor(score: number): string {

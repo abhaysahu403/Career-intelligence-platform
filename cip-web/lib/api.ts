@@ -18,10 +18,23 @@ export const mlApi = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Request interceptor — attach JWT from cookie
+// Request interceptor — attach JWT from cookie and extract user info
 api.interceptors.request.use((config) => {
   const token = Cookies.get('cip_token');
-  if (token) config.headers.Authorization = `Bearer ${token}`;
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+    
+    // Decode JWT to extract userId, email, role, name
+    try {
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.userId) config.headers['X-User-Id'] = payload.userId;
+      if (payload.sub) config.headers['X-User-Email'] = payload.sub; // 'sub' is the email
+      if (payload.role) config.headers['X-User-Role'] = payload.role;
+      if (payload.name) config.headers['X-User-Name'] = payload.name;
+    } catch (e) {
+      console.error('Failed to decode JWT:', e);
+    }
+  }
   return config;
 });
 
@@ -46,8 +59,6 @@ export const authApi = {
     api.post('/auth/signup', data),
   me:        () => api.get('/auth/me'),
   logout:    () => api.post('/auth/logout'),
-  verifyOtp: (data: { email: string; otp: string }) =>
-    api.post('/auth/verify-otp', data),
 };
 
 // ─── Student ──────────────────────────────────────────────────────────────────
@@ -56,11 +67,17 @@ export const studentApi = {
   getProfile:    () => api.get('/student/profile'),
   updateProfile: (data: unknown) => api.put('/student/profile', data),
   uploadResume:  (file: File) => {
+    console.log('📤 [API] Starting resume upload:', file.name, file.size, 'bytes');
     const fd = new FormData();
     fd.append('file', file);
-    return api.post('/resume/upload', fd, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+    // Note: userId is sent via X-User-Id header by the interceptor
+    // Don't set Content-Type manually - let axios set it with boundary
+    console.log('📤 [API] Sending FormData to /resume/upload');
+    return api.post('/resume/upload', fd);
+  },
+  uploadResumeText: (text: string, fileName: string) => {
+    console.log('📤 [API] Starting resume text upload:', fileName, text.length, 'chars');
+    return api.post('/resume/upload-text', { text, fileName });
   },
 };
 
@@ -68,7 +85,6 @@ export const studentApi = {
 // Gateway routes: /score/** → score-service:8084
 export const scoreApi = {
   get:    () => api.get('/score'),
-  getById: (studentId: string) => api.get(`/score/${studentId}`),
 };
 
 // ─── Analytics ────────────────────────────────────────────────────────────────
@@ -76,6 +92,7 @@ export const scoreApi = {
 export const analyticsApi = {
   get:        () => api.get('/analytics'),
   getStudent: (studentId: string) => api.get(`/analytics/student/${studentId}`),
+  getCareerAnalysis: (userId: number) => api.get(`/analytics/career/${userId}`),
 };
 
 // ─── Interview ────────────────────────────────────────────────────────────────
@@ -97,6 +114,10 @@ export const interviewApi = {
   end:       (interviewId: number) => api.post(`/interview/end?interviewId=${interviewId}`),
   getResult: (id: string) => api.get(`/interview/result/${id}`),
   history:   () => api.get('/interview/history'),
+  // NEW: Hybrid endpoints (AI + Fallback)
+  getNextQuestion: (interviewId: number) => api.get(`/interview/question/${interviewId}`),
+  evaluateAnswer: (data: { question: string; answer: string; topic: string; ideal: string }) =>
+    api.post('/interview/evaluate', data),
 };
 
 // ─── Jobs ─────────────────────────────────────────────────────────────────────
@@ -105,28 +126,32 @@ export const jobsApi = {
   list:        (params?: { role?: string; location?: string; minScore?: number }) =>
     api.get('/jobs', { params }),
   recommended: (params?: { readiness?: number; skills?: string[] }) => api.get('/jobs/recommended', { params }),
-  apply:       (jobId: number) => api.post(`/jobs/${jobId}/apply`),
 };
 
 // ─── Roadmap / Recommendations ────────────────────────────────────────────────
 // Gateway routes: /roadmap/**, /recommendations/** → recommendation-service:8088
 export const roadmapApi = {
   get:          () => api.get('/roadmap'),
-  completeTask: (taskId: string) => api.put(`/roadmap/task/${taskId}/complete`),
 };
 
-export const recommendApi = {
-  getJobs: () => api.get('/recommendations/jobs'),
+// ─── Certificates ─────────────────────────────────────────────────────────────
+// Gateway routes: /certificates/** → certificate-service (integrated in backend)
+export const certificateApi = {
+  upload: (file: File, userId: number) => {
+    const fd = new FormData();
+    fd.append('file', file);
+    fd.append('userId', userId.toString());
+    return api.post('/certificates/upload', fd, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
+  get: (id: number) => api.get(`/certificates/${id}`),
+  getResult: (id: number) => api.get(`/certificates/${id}/result`),
+  getUserCertificates: (userId: number, page: number, size: number) =>
+    api.get(`/certificates/user/${userId}?page=${page}&size=${size}`),
 };
 
-// ─── Admin ────────────────────────────────────────────────────────────────────
-// Gateway routes: /student/admin/** → student-service:8082 (admin endpoints)
-export const adminApi = {
-  getStudents:   (params?: { risk?: string; search?: string }) =>
-    api.get('/student/admin/students', { params }),
-  exportCsv:     () => api.get('/student/admin/export', { responseType: 'blob' }),
-  getBatchStats: () => api.get('/student/admin/batch-stats'),
-};
+
 
 // ─── ML Direct Endpoints ──────────────────────────────────────────────────────
 // Calls FastAPI ML service directly (port 8000)

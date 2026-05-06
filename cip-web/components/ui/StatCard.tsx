@@ -16,15 +16,31 @@ interface Props {
 
 export default function StatCard({
   title, value, subtitle, icon: Icon,
-  iconColor = '#818CF8', iconBg = 'rgba(79,70,229,0.15)',
+  iconColor = '#38BDF8', iconBg = 'rgba(56,189,248,0.15)',
   trend, className, onClick,
 }: Props) {
   return (
     <div
       onClick={onClick}
-      className={cn('rounded-2xl p-5 border border-white/5 shadow-md shadow-black/20 card-hover-glow', onClick && 'cursor-pointer', className)}
-      style={{ background: '#0A0A0A' }}
+      className={cn('relative rounded-2xl p-5 border backdrop-blur-[20px] transition-all duration-300 hover:-translate-y-1', onClick && 'cursor-pointer', className)}
+      style={{
+        background: 'rgba(8,12,20,0.7)',
+        borderColor: 'rgba(255,255,255,0.06)',
+        boxShadow: '0 4px 15px -5px rgba(0,0,0,0.3)'
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.borderColor = 'rgba(56,189,248,0.3)';
+        e.currentTarget.style.boxShadow = '0 8px 25px -5px rgba(56,189,248,0.2)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.06)';
+        e.currentTarget.style.boxShadow = '0 4px 15px -5px rgba(0,0,0,0.3)';
+      }}
     >
+      {/* Top shimmer line */}
+      <div className="absolute top-0 left-0 right-0 h-[1px] opacity-50"
+        style={{ background: 'linear-gradient(90deg, transparent, #38BDF8, transparent)' }} />
+
       <div className="flex items-start justify-between mb-3">
         <div className="w-10 h-10 rounded-xl flex items-center justify-center" style={{ background: iconBg }}>
           <Icon size={18} style={{ color: iconColor }} />
@@ -32,17 +48,17 @@ export default function StatCard({
         {trend && (
           <span className="text-xs font-medium px-2 py-1 rounded-lg"
             style={{
-              background: trend.value >= 0 ? 'rgba(34,197,94,0.12)' : 'rgba(239,68,68,0.12)',
-              color:      trend.value >= 0 ? '#4ADE80' : '#FCA5A5',
+              background: trend.value >= 0 ? 'rgba(74,222,128,0.15)' : 'rgba(239,68,68,0.15)',
+              color:      trend.value >= 0 ? '#4ADE80' : '#EF4444',
             }}>
             {trend.value >= 0 ? '↑' : '↓'} {Math.abs(trend.value)}%
           </span>
         )}
       </div>
-      <p className="text-sm font-medium mb-1" style={{ color: '#A1A1AA' }}>{title}</p>
-      <p className="text-2xl font-bold tabular-nums" style={{ fontFamily:'Syne,sans-serif', color:'#FFFFFF' }}>{value}</p>
-      {subtitle && <p className="text-xs mt-1" style={{ color: '#71717A' }}>{subtitle}</p>}
-      {trend && <p className="text-xs mt-1" style={{ color: '#71717A' }}>{trend.label}</p>}
+      <p className="text-sm font-semibold mb-1 text-[#94A3B8]">{title}</p>
+      <p className="text-2xl font-bold tabular-nums font-syne text-white">{value}</p>
+      {subtitle && <p className="text-xs mt-1 text-[#94A3B8]">{subtitle}</p>}
+      {trend && <p className="text-xs mt-1 font-medium text-[#94A3B8]">{trend.label}</p>}
     </div>
   );
 }

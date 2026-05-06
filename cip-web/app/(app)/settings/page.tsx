@@ -1,15 +1,15 @@
 'use client';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { Moon, Bell, Shield, User, Save } from 'lucide-react';
+import { Bell, Shield, Save } from 'lucide-react';
 
 export default function SettingsPage() {
   const [notifications, setNotifications] = useState({ email: true, score: true, jobs: true, interview: false });
   const [privacy, setPrivacy]             = useState({ public: false, analytics: true });
 
   return (
-    <div className="space-y-6 pb-8 max-w-2xl">
-      <h2 className="text-xl font-bold" style={{ fontFamily:'Syne,sans-serif', color:'#FFFFFF' }}>Settings</h2>
+    <div className="space-y-6 pb-12 max-w-2xl">
+      <h2 className="text-3xl font-syne font-black text-white uppercase tracking-widest">Settings</h2>
 
       {[
         {
@@ -29,24 +29,23 @@ export default function SettingsPage() {
           ],
         },
       ].map(section => (
-        <div key={section.title} className="rounded-2xl border overflow-hidden"
-          style={{ background:'#0A0A0A', borderColor:'rgba(255,255,255,0.08)' }}>
-          <div className="flex items-center gap-2 px-5 py-4 border-b" style={{ borderColor:'rgba(255,255,255,0.06)' }}>
-            <section.icon size={15} style={{ color:'#818CF8' }} />
-            <h3 className="font-semibold text-sm" style={{ color:'#FFFFFF' }}>{section.title}</h3>
+        <div key={section.title} className="rounded-[32px] border overflow-hidden backdrop-blur-[20px]" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
+          <div className="flex items-center gap-2 px-6 py-5 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+            <section.icon size={16} className="text-sky" />
+            <h3 className="font-syne font-black text-white uppercase tracking-widest text-sm">{section.title}</h3>
           </div>
-          <div className="divide-y">
+          <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
             {section.items.map(item => (
-              <div key={item.key} className="flex items-center justify-between px-5 py-4">
+              <div key={item.key} className="flex items-center justify-between px-6 py-5 transition-colors hover:bg-white/1">
                 <div>
-                  <p className="text-sm font-medium" style={{ color:'#FFFFFF' }}>{item.label}</p>
-                  <p className="text-xs" style={{ color:'#71717A' }}>{item.desc}</p>
+                  <p className="text-sm font-bold text-white">{item.label}</p>
+                  <p className="text-xs font-medium text-slate-400">{item.desc}</p>
                 </div>
                 <button onClick={() => item.set(!item.val)}
                   className="relative w-11 h-6 rounded-full transition-all flex-shrink-0"
-                  style={{ background: item.val ? 'linear-gradient(135deg,#4F46E5,#06B6D4)' : 'rgba(255,255,255,0.1)' }}>
-                  <div className="absolute w-5 h-5 rounded-full bg-white top-0.5 transition-all"
-                    style={{ left: item.val ? '22px' : '2px', boxShadow:'0 1px 4px rgba(0,0,0,0.3)' }} />
+                  style={{ background: item.val ? 'linear-gradient(135deg, #38BDF8, #0EA5E9)' : 'rgba(255,255,255,0.1)' }}>
+                  <div className="absolute w-5 h-5 rounded-full bg-white top-0.5 transition-all shadow-sm"
+                    style={{ left: item.val ? '22px' : '2px', boxShadow: item.val ? '0 0 10px rgba(56,189,248,0.5)' : 'none' }} />
                 </button>
               </div>
             ))}
@@ -55,9 +54,9 @@ export default function SettingsPage() {
       ))}
 
       <button onClick={() => toast.success('Settings saved!')}
-        className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm transition-all"
-        style={{ background:'linear-gradient(135deg,#4F46E5,#06B6D4)', color:'#fff' }}>
-        <Save size={14} /> Save Settings
+        className="flex items-center gap-2 px-6 py-3.5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all hover:shadow-[0_0_20px_rgba(56,189,248,0.4)] hover:-translate-y-1"
+        style={{ background: 'linear-gradient(135deg, #38BDF8, #0EA5E9)', color: '#fff' }}>
+        <Save size={16} /> Save Settings
       </button>
     </div>
   );

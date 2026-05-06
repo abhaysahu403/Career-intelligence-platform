@@ -638,7 +638,7 @@ async def validate_certificate_endpoint(
             shutil.copyfileobj(file.file, tmp_file)
             tmp_path = tmp_file.name
 
-        result = validate_certificate(certificate_id=certificate_id, image_path=tmp_path)
+        result = validate_certificate_pipeline(file_path=tmp_path, certificate_id=certificate_id)
         result["processing_time_ms"] = round((time.time() - start) * 1000, 2)
 
         if background_tasks:

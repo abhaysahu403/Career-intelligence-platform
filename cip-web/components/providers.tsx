@@ -23,14 +23,15 @@ export function Providers({ children }: { children: React.ReactNode }) {
         position="top-right"
         toastOptions={{
           style: {
-            background: '#0A0A0A',
-            color: '#FFFFFF',
-            border: '1px solid rgba(255,255,255,0.08)',
+            background: '#FFFFFF',
+            color: '#0F172A',
+            border: '1px solid #E2E8F0',
             borderRadius: '12px',
             fontSize: '14px',
+            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
           },
-          success: { iconTheme: { primary: '#22C55E', secondary: '#0F172A' } },
-          error:   { iconTheme: { primary: '#EF4444', secondary: '#0F172A' } },
+          success: { iconTheme: { primary: '#22C55E', secondary: '#FFFFFF' } },
+          error:   { iconTheme: { primary: '#EF4444', secondary: '#FFFFFF' } },
         }}
       />
     </QueryClientProvider>

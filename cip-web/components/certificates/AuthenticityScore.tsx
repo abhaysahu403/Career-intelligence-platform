@@ -13,12 +13,12 @@ interface AuthenticityScoreProps {
 
 const getStatusStyle = (status: string) => {
   switch (status?.toLowerCase()) {
-    case 'genuine': return { bg: 'rgba(34,197,94,0.12)', color: '#4ADE80' };
-    case 'likely genuine': return { bg: 'rgba(132,204,22,0.12)', color: '#A3E635' };
-    case 'suspicious': return { bg: 'rgba(245,158,11,0.12)', color: '#FBBF24' };
-    case 'likely fake': return { bg: 'rgba(249,115,22,0.12)', color: '#FB923C' };
-    case 'fake': return { bg: 'rgba(239,68,68,0.12)', color: '#FCA5A5' };
-    default: return { bg: 'rgba(255,255,255,0.06)', color: '#A1A1AA' };
+    case 'genuine': return { bg: 'rgba(16,185,129,0.1)', color: '#047857' };
+    case 'likely genuine': return { bg: 'rgba(132,204,22,0.1)', color: '#4D7C0F' };
+    case 'suspicious': return { bg: 'rgba(245,158,11,0.1)', color: '#B45309' };
+    case 'likely fake': return { bg: 'rgba(249,115,22,0.1)', color: '#C2410C' };
+    case 'fake': return { bg: 'rgba(239,68,68,0.1)', color: '#B91C1C' };
+    default: return { bg: '#F1F5F9', color: '#64748B' };
   }
 };
 
@@ -50,7 +50,7 @@ export default function AuthenticityScore({
             cy={viewBoxSize / 2}
             r={radius}
             fill="none"
-            stroke="rgba(255,255,255,0.06)"
+            stroke="#E2E8F0"
             strokeWidth="8"
           />
           <circle
@@ -71,17 +71,17 @@ export default function AuthenticityScore({
             {score}
           </span>
           {size !== 'sm' && (
-            <span className="text-xs font-medium" style={{ color: '#71717A' }}>/ 100</span>
+            <span className="text-xs font-medium text-slate-500">/ 100</span>
           )}
         </div>
       </div>
       {size !== 'sm' && (
         <div className="text-center">
-          <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-semibold"
+          <span className="inline-block px-2.5 py-0.5 rounded-full text-xs font-bold"
             style={{ background: sts.bg, color: sts.color }}>
             {status}
           </span>
-          <p className="text-xs mt-1" style={{ color: '#71717A' }}>{confidenceLevel} confidence</p>
+          <p className="text-xs mt-1 font-medium text-slate-500">{confidenceLevel} confidence</p>
         </div>
       )}
     </div>

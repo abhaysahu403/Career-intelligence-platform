@@ -168,7 +168,7 @@ export default function AIAvatar({ state, speechText, personaMode = 'friendly' }
         <div className="absolute -bottom-0.5 right-0 w-4 h-4 rounded-full border-2 flex items-center justify-center"
           style={{
             background: state === 'speaking' ? '#22C55E' : state === 'thinking' ? '#F59E0B' : state === 'listening' ? '#EF4444' : '#71717A',
-            borderColor: '#0A0A0A',
+            borderColor: '#FFFFFF',
             animation: state === 'listening' ? 'subtlePulse 1.5s ease-in-out infinite' : 'none',
           }}>
           {state === 'listening' && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
@@ -188,7 +188,7 @@ export default function AIAvatar({ state, speechText, personaMode = 'friendly' }
             style={{ background: `${colors.primary}20`, borderTop: `1px solid ${colors.primary}30`, borderLeft: `1px solid ${colors.primary}30` }} />
           {/* Bubble */}
           <div className="rounded-xl px-3 py-2 text-xs leading-relaxed"
-            style={{ background: `${colors.primary}15`, border: `1px solid ${colors.primary}25`, color: '#FFFFFF' }}>
+            style={{ background: `${colors.primary}15`, border: `1px solid ${colors.primary}25`, color: '#334155' }}>
             {speechText.length > 100 ? `${speechText.slice(0, 100)}...` : speechText}
           </div>
         </div>

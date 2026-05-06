@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Brain, Twitter, Github, Linkedin, Heart } from "lucide-react";
+import { Brain, Twitter, Github, Linkedin, Heart, Zap } from "lucide-react";
 
 const footerLinks = {
   Product: ["Features", "How It Works", "Demo", "Pricing", "Roadmap"],
@@ -12,37 +12,61 @@ const footerLinks = {
 
 export default function Footer() {
   return (
-    <footer className="border-t border-white/[0.06] relative">
-      {/* Top gradient */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#4F46E5]/50 to-transparent" />
+    <footer className="relative border-t" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+      {/* Top shimmer line */}
+      <div className="absolute inset-x-0 top-0 h-px"
+        style={{ background: 'linear-gradient(90deg, transparent, rgba(56,189,248,0.4), rgba(74,222,128,0.4), transparent)' }} />
 
-      <div className="max-w-7xl mx-auto px-6 py-16">
+      {/* Ambient glow */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[200px] pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse, rgba(56,189,248,0.05) 0%, transparent 70%)' }} />
+
+      <div className="max-w-7xl mx-auto px-6 py-16 relative z-10">
         {/* Top section */}
         <div className="grid md:grid-cols-5 gap-12 mb-12">
           {/* Brand col */}
           <div className="md:col-span-1">
-            <div className="flex items-center gap-2.5 mb-4">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#4F46E5] to-[#06B6D4] flex items-center justify-center">
-                <Brain className="w-5 h-5 text-white" />
+            <div className="flex items-center gap-2.5 mb-5">
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+                style={{ background: 'linear-gradient(135deg, #38BDF8, #4ADE80)', boxShadow: '0 0 15px rgba(74,222,128,0.3)' }}>
+                <Brain className="w-5 h-5 text-[#020617]" />
               </div>
-              <span className="font-syne text-xl font-bold text-gradient-primary">
-                CIP
+              <span className="font-syne text-xl font-black text-white tracking-tight">CIP</span>
+              <span className="text-[9px] font-black text-mint border border-mint/30 px-1.5 py-0.5 rounded bg-mint/10 uppercase tracking-widest">
+                BETA
               </span>
             </div>
-            <p className="text-sm text-[#71717A] leading-relaxed mb-5">
+            <p className="text-sm text-slate-500 leading-relaxed mb-6 font-medium">
               AI-powered career intelligence platform for serious candidates.
             </p>
+            {/* System status */}
+            <div className="flex items-center gap-2 mb-5 px-3 py-2 rounded-xl border"
+              style={{ background: 'rgba(74,222,128,0.06)', borderColor: 'rgba(74,222,128,0.15)' }}>
+              <motion.span
+                className="w-2 h-2 rounded-full bg-mint"
+                animate={{ opacity: [1, 0.3, 1] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+                style={{ boxShadow: '0 0 6px rgba(74,222,128,0.6)' }}
+              />
+              <span className="text-[10px] font-black text-mint uppercase tracking-widest">All Systems Operational</span>
+            </div>
             <div className="flex gap-3">
               {[
-                { Icon: Twitter, href: "#" },
-                { Icon: Github, href: "#" },
-                { Icon: Linkedin, href: "#" },
-              ].map(({ Icon, href }) => (
+                { Icon: Twitter, label: "Twitter" },
+                { Icon: Github, label: "GitHub" },
+                { Icon: Linkedin, label: "LinkedIn" },
+              ].map(({ Icon, label }) => (
                 <motion.a
-                  key={href + Icon.name}
-                  href={href}
+                  key={label}
+                  href="#"
                   whileHover={{ scale: 1.15, y: -2 }}
-                  className="w-8 h-8 rounded-lg bg-white/[0.05] border border-white/[0.08] flex items-center justify-center text-[#71717A] hover:text-white hover:border-white/20 transition-colors"
+                  className="w-8 h-8 rounded-lg flex items-center justify-center border transition-all"
+                  style={{
+                    background: 'rgba(255,255,255,0.03)',
+                    borderColor: 'rgba(255,255,255,0.08)',
+                    color: '#4B5563',
+                  }}
+                  aria-label={label}
                 >
                   <Icon className="w-3.5 h-3.5" />
                 </motion.a>
@@ -53,15 +77,13 @@ export default function Footer() {
           {/* Link columns */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h4 className="text-sm font-semibold text-white mb-4">
-                {category}
-              </h4>
-              <ul className="space-y-2.5">
+              <h4 className="text-xs font-black text-white uppercase tracking-[0.2em] mb-5">{category}</h4>
+              <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link}>
                     <a
                       href="#"
-                      className="text-sm text-[#71717A] hover:text-[#A1A1AA] transition-colors"
+                      className="text-sm text-slate-600 hover:text-slate-300 transition-colors font-medium"
                     >
                       {link}
                     </a>
@@ -73,23 +95,25 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="pt-8 border-t border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-[#71717A]">
-            © 2026 CIP. All rights reserved.
+        <div className="pt-8 border-t flex flex-col md:flex-row items-center justify-between gap-4"
+          style={{ borderColor: 'rgba(255,255,255,0.05)' }}>
+          <p className="text-xs text-slate-600 font-bold uppercase tracking-widest">
+            © 2026 CIP Intelligence. All rights reserved.
           </p>
-          <div className="flex items-center gap-1.5 text-sm text-[#71717A]">
+          <div className="flex items-center gap-1.5 text-xs text-slate-600 font-bold uppercase tracking-widest">
             Built with{" "}
             <motion.span
               animate={{ scale: [1, 1.2, 1] }}
               transition={{ duration: 1.5, repeat: Infinity }}
             >
-              <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500 inline" />
-            </motion.span>{" "}
+              <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500 inline mx-0.5" />
+            </motion.span>
             and AI for ambitious candidates
           </div>
-          <div className="flex items-center gap-1.5 text-xs font-mono-jetbrains text-[#71717A]">
-            <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse" />
-            All systems operational
+          <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest"
+            style={{ color: '#38BDF8' }}>
+            <Zap className="w-3.5 h-3.5" />
+            Powered by CIP Intelligence v2.0
           </div>
         </div>
       </div>

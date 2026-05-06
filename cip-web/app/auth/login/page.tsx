@@ -61,33 +61,43 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="w-full max-w-md animate-fade-in">
+        {/* Header */}
         <div className="mb-8 text-center">
           <div className="mb-4 inline-flex items-center gap-2">
-            <div
-              className="flex h-10 w-10 items-center justify-center rounded-xl"
-              style={{ background: 'linear-gradient(135deg, #4F46E5, #06B6D4)' }}
-            >
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl shadow-lg"
+              style={{ background: 'linear-gradient(135deg, #38BDF8, #4ADE80)' }}>
               <Zap size={20} className="text-white" />
             </div>
-            <span className="text-xl font-bold" style={{ fontFamily: 'Syne, sans-serif' }}>
-              <span className="grad-text">CIP</span>
-            </span>
+            <span className="text-xl font-bold font-syne text-white">CIP</span>
           </div>
-          <h1 className="mb-1 text-2xl font-bold" style={{ fontFamily: 'Syne, sans-serif' }}>Welcome back</h1>
-          <p className="text-sm" style={{ color: '#A1A1AA' }}>Sign in to your Career Intelligence Platform</p>
+          <h1 className="mb-1 text-2xl font-bold text-white font-syne">Welcome back</h1>
+          <p className="text-sm font-medium text-[#94A3B8]">Sign in to your Career Intelligence Platform</p>
         </div>
 
-        <div className="rounded-2xl border p-6" style={{ background: '#0A0A0A', borderColor: 'rgba(255,255,255,0.08)' }}>
-          <div className="mb-6 flex rounded-xl p-1" style={{ background: 'rgba(255,255,255,0.04)' }}>
+        {/* Card */}
+        <div className="relative rounded-2xl border backdrop-blur-[20px] p-6 transition-all duration-300"
+          style={{
+            background: 'rgba(8,12,20,0.7)',
+            borderColor: 'rgba(255,255,255,0.06)',
+            boxShadow: '0 8px 30px -10px rgba(56,189,248,0.2)'
+          }}>
+          
+          {/* Top shimmer line */}
+          <div className="absolute top-0 left-0 right-0 h-[2px] opacity-70"
+            style={{ background: 'linear-gradient(90deg, transparent, #38BDF8, transparent)', boxShadow: '0 0 15px #38BDF8' }} />
+
+          {/* Role Toggle */}
+          <div className="mb-6 flex rounded-xl p-1 backdrop-blur-xl"
+            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
             {(['student', 'faculty'] as const).map((currentRole) => (
               <button
                 key={currentRole}
                 type="button"
                 onClick={() => setRole(currentRole)}
-                className="flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-sm font-medium transition-all duration-200"
+                className="flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-sm font-bold transition-all duration-200"
                 style={role === currentRole
-                  ? { background: 'linear-gradient(135deg,#4F46E5,#06B6D4)', color: '#fff' }
-                  : { color: '#A1A1AA' }}
+                  ? { background: 'linear-gradient(135deg, #38BDF8, #4ADE80)', color: '#fff', boxShadow: '0 4px 15px rgba(56,189,248,0.3)' }
+                  : { color: '#94A3B8' }}
               >
                 {currentRole === 'student' ? <GraduationCap size={15} /> : <BookOpen size={15} />}
                 {currentRole === 'student' ? 'Student' : 'Faculty'}
@@ -97,40 +107,62 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-sm font-medium" style={{ color: '#A1A1AA' }}>Email</label>
+              <label className="mb-1.5 block text-sm font-bold text-[#94A3B8]">Email</label>
               <input
                 {...register('email')}
                 type="email"
                 placeholder="you@college.edu"
-                className="w-full rounded-xl border px-4 py-3 text-sm transition-all"
-                style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)', color: '#FFFFFF' }}
+                className="w-full rounded-xl border px-4 py-3 text-sm font-bold text-white placeholder-[#64748B] transition-all focus:outline-none"
+                style={{
+                  background: 'rgba(255,255,255,0.03)',
+                  borderColor: 'rgba(255,255,255,0.06)',
+                }}
+                onFocus={(e) => {
+                  e.target.style.borderColor = '#38BDF8';
+                  e.target.style.boxShadow = '0 0 0 3px rgba(56,189,248,0.15)';
+                }}
+                onBlur={(e) => {
+                  e.target.style.borderColor = 'rgba(255,255,255,0.06)';
+                  e.target.style.boxShadow = 'none';
+                }}
               />
-              {errors.email && <p className="mt-1 text-xs" style={{ color: '#EF4444' }}>{errors.email.message}</p>}
+              {errors.email && <p className="mt-1 text-xs font-bold text-[#EF4444]">{errors.email.message}</p>}
             </div>
 
             <div>
-              <label className="mb-1.5 block text-sm font-medium" style={{ color: '#A1A1AA' }}>Password</label>
+              <label className="mb-1.5 block text-sm font-bold text-[#94A3B8]">Password</label>
               <div className="relative">
                 <input
                   {...register('password')}
                   type={showPw ? 'text' : 'password'}
                   placeholder="••••••••"
-                  className="w-full rounded-xl border px-4 py-3 pr-11 text-sm transition-all"
-                  style={{ background: 'rgba(255,255,255,0.04)', borderColor: 'rgba(255,255,255,0.08)', color: '#FFFFFF' }}
+                  className="w-full rounded-xl border px-4 py-3 pr-11 text-sm font-bold text-white placeholder-[#64748B] transition-all focus:outline-none"
+                  style={{
+                    background: 'rgba(255,255,255,0.03)',
+                    borderColor: 'rgba(255,255,255,0.06)',
+                  }}
+                  onFocus={(e) => {
+                    e.target.style.borderColor = '#38BDF8';
+                    e.target.style.boxShadow = '0 0 0 3px rgba(56,189,248,0.15)';
+                  }}
+                  onBlur={(e) => {
+                    e.target.style.borderColor = 'rgba(255,255,255,0.06)';
+                    e.target.style.boxShadow = 'none';
+                  }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 transition-opacity hover:opacity-100"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 transition-opacity hover:opacity-100 text-[#94A3B8]"
                 >
-                  {showPw ? <EyeOff size={16} style={{ color: '#A1A1AA' }} /> : <Eye size={16} style={{ color: '#A1A1AA' }} />}
+                  {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
               </div>
-              {errors.password && <p className="mt-1 text-xs" style={{ color: '#EF4444' }}>{errors.password.message}</p>}
+              {errors.password && <p className="mt-1 text-xs font-bold text-[#EF4444]">{errors.password.message}</p>}
             </div>
 
             <div className="flex justify-end">
-              <Link href="/auth/forgot-password" className="text-xs hover:underline" style={{ color: '#6366F1' }}>
+              <Link href="/auth/forgot-password" className="text-xs font-bold text-[#38BDF8] hover:underline">
                 Forgot password?
               </Link>
             </div>
@@ -138,8 +170,19 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition-all duration-200 hover:shadow-lg disabled:opacity-60"
-              style={{ background: 'linear-gradient(135deg,#4F46E5,#06B6D4)', color: '#fff', boxShadow: '0 4px 15px rgba(79,70,229,0.4)' }}
+              className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all duration-300 hover:shadow-lg disabled:opacity-60 text-white"
+              style={{
+                background: 'linear-gradient(135deg, #38BDF8, #4ADE80)',
+                boxShadow: '0 8px 20px -5px rgba(56,189,248,0.4)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 12px 30px -5px rgba(56,189,248,0.5)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = '0 8px 20px -5px rgba(56,189,248,0.4)';
+              }}
             >
               {loading ? (
                 <div className="h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white" />
@@ -150,8 +193,8 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-4 text-center">
-            <span className="text-sm" style={{ color: '#71717A' }}>Don&apos;t have an account? </span>
-            <Link href="/auth/signup" className="text-sm font-medium hover:underline" style={{ color: '#818CF8' }}>
+            <span className="text-sm font-medium text-[#94A3B8]">Don&apos;t have an account? </span>
+            <Link href="/auth/signup" className="text-sm font-bold text-[#38BDF8] hover:underline">
               Sign up
             </Link>
           </div>

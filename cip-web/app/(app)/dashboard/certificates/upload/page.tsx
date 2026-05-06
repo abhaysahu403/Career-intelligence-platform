@@ -98,9 +98,9 @@ export default function UploadPage() {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold" style={{ fontFamily: 'Syne,sans-serif', color: '#FFFFFF' }}>Verify Certificate</h1>
-        <p className="mt-1 text-sm" style={{ color: '#A1A1AA' }}>
+      <div className="mb-10">
+        <h1 className="text-3xl font-syne font-black text-white uppercase tracking-widest">Verify Certificate</h1>
+        <p className="mt-2 text-sm font-medium text-slate-400">
           Upload a PDF or image. Our AI will check authenticity in under 8 seconds.
         </p>
       </div>
@@ -110,11 +110,13 @@ export default function UploadPage() {
         onDrop={onDrop}
         onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
         onDragLeave={() => setDragOver(false)}
-        className="relative rounded-2xl p-10 text-center transition-all duration-200 border-2 border-dashed"
-        style={{
-          background: dragOver ? 'rgba(79,70,229,0.1)' : file ? 'rgba(34,197,94,0.05)' : 'rgba(255,255,255,0.02)',
-          borderColor: dragOver ? '#4F46E5' : file ? 'rgba(34,197,94,0.3)' : 'rgba(255,255,255,0.12)',
-        }}
+        className={`relative rounded-[32px] p-12 text-center transition-all duration-300 border-2 border-dashed backdrop-blur-[20px] ${
+          dragOver 
+            ? 'bg-sky/5 border-sky shadow-[0_0_30px_rgba(56,189,248,0.2)]' 
+            : file 
+              ? 'bg-mint/5 border-mint shadow-[0_0_30px_rgba(74,222,128,0.2)]' 
+              : 'bg-white/2 border-white/10 hover:bg-white/4 hover:border-white/20'
+        }`}
       >
         <input
           type="file"
@@ -126,64 +128,58 @@ export default function UploadPage() {
 
         {!file ? (
           <div className="pointer-events-none">
-            <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
-              style={{ background: 'rgba(79,70,229,0.12)' }}>
-              <Upload size={28} style={{ color: '#818CF8' }} />
+            <div className={`w-20 h-20 mx-auto mb-6 rounded-3xl flex items-center justify-center transition-all ${dragOver ? 'bg-sky/20 text-sky' : 'bg-white/5 text-slate-500'}`}>
+              <Upload size={32} />
             </div>
-            <p className="text-lg font-medium" style={{ color: '#FFFFFF' }}>
+            <p className="text-xl font-syne font-black text-white uppercase tracking-widest">
               Drop your certificate here
             </p>
-            <p className="text-sm mt-1" style={{ color: '#A1A1AA' }}>or click to browse</p>
-            <p className="text-xs mt-3" style={{ color: '#71717A' }}>PDF, JPG, PNG · Max 10MB</p>
+            <p className="text-sm mt-2 text-slate-500 font-medium tracking-wide">or click to browse your files</p>
+            <p className="text-[10px] mt-4 text-slate-600 font-black uppercase tracking-widest">PDF, JPG, PNG · Max 10MB</p>
           </div>
         ) : (
           <div className="pointer-events-none">
             {preview ? (
-              <img src={preview} alt="Preview" className="max-h-48 mx-auto rounded-lg shadow mb-3 object-contain" />
+              <img src={preview} alt="Preview" className="max-h-56 mx-auto rounded-2xl shadow-2xl mb-4 object-contain border border-white/10" />
             ) : (
-              <div className="w-16 h-16 mx-auto mb-3 rounded-2xl flex items-center justify-center"
-                style={{ background: 'rgba(34,197,94,0.12)' }}>
-                <FileText size={28} style={{ color: '#4ADE80' }} />
+              <div className="w-20 h-20 mx-auto mb-4 rounded-3xl flex items-center justify-center bg-mint/10 border border-mint/20 shadow-[0_0_15px_rgba(74,222,128,0.2)]">
+                <FileText size={32} className="text-mint" />
               </div>
             )}
-            <p className="font-semibold" style={{ color: '#FFFFFF' }}>{file.name}</p>
-            <p className="text-sm" style={{ color: '#A1A1AA' }}>{(file.size / 1024).toFixed(1)} KB</p>
+            <p className="font-black text-white uppercase tracking-widest">{file.name}</p>
+            <p className="text-xs text-slate-500 font-black uppercase tracking-widest mt-1">{(file.size / 1024).toFixed(1)} KB</p>
           </div>
         )}
       </div>
 
       {/* Error */}
       {error && (
-        <div className="mt-4 p-3 rounded-xl flex items-start gap-2"
-          style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)' }}>
-          <AlertCircle size={16} className="flex-shrink-0 mt-0.5" style={{ color: '#FCA5A5' }} />
-          <span className="text-sm" style={{ color: '#FCA5A5' }}>{error}</span>
+        <div className="mt-6 p-4 rounded-2xl flex items-start gap-3 border" style={{ background: 'rgba(239,68,68,0.05)', borderColor: 'rgba(239,68,68,0.1)' }}>
+          <AlertCircle size={18} className="flex-shrink-0 mt-0.5 text-red-400" />
+          <span className="text-sm font-bold text-red-400 uppercase tracking-widest">{error}</span>
         </div>
       )}
 
       {/* Status */}
       {isLoading && (
-        <div className="mt-4 p-4 rounded-xl" style={{ background: 'rgba(79,70,229,0.08)', border: '1px solid rgba(79,70,229,0.2)' }}>
-          <div className="flex items-center gap-3">
-            <div className="w-5 h-5 border-2 border-t-transparent rounded-full animate-spin flex-shrink-0"
-              style={{ borderColor: '#818CF8', borderTopColor: 'transparent' }} />
-            <span className="text-sm font-medium" style={{ color: '#A5B4FC' }}>{statusMsg}</span>
+        <div className="mt-6 p-5 rounded-2xl border backdrop-blur-[20px]" style={{ background: 'rgba(56,189,248,0.05)', borderColor: 'rgba(56,189,248,0.1)' }}>
+          <div className="flex items-center gap-4">
+            <div className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin flex-shrink-0 border-sky" />
+            <span className="text-sm font-black text-sky uppercase tracking-widest">{statusMsg}</span>
           </div>
-          <div className="mt-3 rounded-full h-1.5 overflow-hidden" style={{ background: 'rgba(255,255,255,0.08)' }}>
-            <div className={`h-full rounded-full transition-all duration-1000
-              ${stage === 'uploading' ? 'w-1/4' : 'w-3/4 animate-pulse'}`}
-              style={{ background: 'linear-gradient(90deg, #4F46E5, #06B6D4)' }} />
+          <div className="mt-4 rounded-full h-1.5 overflow-hidden bg-white/5">
+            <div className={`h-full rounded-full transition-all duration-1000 bg-sky shadow-[0_0_10px_rgba(56,189,248,0.5)] ${stage === 'uploading' ? 'w-1/4' : 'w-3/4 animate-pulse'}`} />
           </div>
         </div>
       )}
 
       {/* Actions */}
-      <div className="mt-6 flex gap-3">
+      <div className="mt-8 flex gap-4">
         {file && !isLoading && (
           <button
             onClick={reset}
-            className="flex-1 py-3 px-6 font-medium rounded-xl border transition-all hover:bg-white/5"
-            style={{ borderColor: 'rgba(255,255,255,0.12)', color: '#A1A1AA' }}
+            className="flex-1 py-4 px-6 font-black uppercase tracking-widest rounded-2xl border backdrop-blur-[20px] text-white transition-all hover:bg-white/5"
+            style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.05)' }}
           >
             Clear
           </button>
@@ -191,25 +187,28 @@ export default function UploadPage() {
         <button
           onClick={handleUpload}
           disabled={!file || isLoading}
-          className="flex-1 py-3 px-6 font-semibold rounded-xl transition-all duration-200"
-          style={!file || isLoading
-            ? { background: 'rgba(255,255,255,0.05)', color: '#71717A', cursor: 'not-allowed' }
-            : { background: 'linear-gradient(135deg,#4F46E5,#06B6D4)', color: '#fff' }}
+          className={`flex-1 py-4 px-6 font-black uppercase tracking-widest rounded-2xl transition-all duration-300 ${
+            !file || isLoading
+              ? 'bg-white/5 text-slate-600 cursor-not-allowed border border-white/5'
+              : 'bg-gradient-to-r from-sky to-blue-600 text-white shadow-[0_0_20px_rgba(56,189,248,0.3)] hover:shadow-[0_0_30px_rgba(56,189,248,0.5)] hover:-translate-y-1'
+          }`}
         >
           {isLoading ? 'Processing...' : 'Verify Certificate'}
         </button>
       </div>
 
       {/* Info */}
-      <div className="mt-8 grid grid-cols-3 gap-4 text-center text-xs">
+      <div className="mt-12 grid grid-cols-3 gap-5 text-center text-[10px]">
         {[
-          { icon: Search, label: 'OCR Extraction', color: '#818CF8' },
-          { icon: Shield, label: 'Issuer Validation', color: '#67E8F9' },
-          { icon: ShieldCheck, label: 'Tamper Detection', color: '#4ADE80' },
+          { icon: Search, label: 'OCR Extraction', color: 'text-indigo-400', bg: 'rgba(129,140,248,0.1)' },
+          { icon: Shield, label: 'Issuer Validation', color: 'text-sky', bg: 'rgba(56,189,248,0.1)' },
+          { icon: ShieldCheck, label: 'Tamper Detection', color: 'text-mint', bg: 'rgba(74,222,128,0.1)' },
         ].map((item) => (
-          <div key={item.label} className="p-3 rounded-xl" style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
-            <item.icon size={20} className="mx-auto mb-2" style={{ color: item.color }} />
-            <span style={{ color: '#A1A1AA' }}>{item.label}</span>
+          <div key={item.label} className="p-4 rounded-2xl border backdrop-blur-[20px] transition-all hover:-translate-y-1" style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.05)' }}>
+            <div className={`w-10 h-10 mx-auto mb-3 rounded-xl flex items-center justify-center`} style={{ background: item.bg }}>
+              <item.icon size={20} className={item.color} />
+            </div>
+            <span className="font-black text-slate-400 uppercase tracking-widest">{item.label}</span>
           </div>
         ))}
       </div>

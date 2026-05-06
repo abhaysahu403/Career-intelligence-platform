@@ -3,8 +3,9 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getUserCertificates, getScoreColor, CertificateSummary } from '@/lib/api/certificates';
-import { Plus, ChevronRight, ShieldCheck, Clock, XCircle, FileText } from 'lucide-react';
+import { getUserCertificates, getScoreColor, deleteCertificate, CertificateSummary } from '@/lib/api/certificates';
+import { Plus, ChevronRight, ShieldCheck, Clock, XCircle, FileText, Trash2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function CertificatesPage() {
   const router = useRouter();
@@ -13,6 +14,7 @@ export default function CertificatesPage() {
   const [page, setPage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [deleting, setDeleting] = useState<number | null>(null);
 
   const PAGE_SIZE = 10;
   const userId = typeof window !== 'undefined'
@@ -43,79 +45,98 @@ export default function CertificatesPage() {
     });
   };
 
+  const handleDelete = async (certId: number, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent navigation to detail page
+    
+    if (!confirm('Are you sure you want to delete this certificate? This action cannot be undone.')) {
+      return;
+    }
+
+    setDeleting(certId);
+    try {
+      await deleteCertificate(certId);
+      toast.success('Certificate deleted successfully');
+      // Refresh the list
+      await load();
+    } catch (err) {
+      toast.error('Failed to delete certificate');
+      console.error('Delete error:', err);
+    } finally {
+      setDeleting(null);
+    }
+  };
+
   const getStatusStyle = (status: string) => {
     switch (status?.toLowerCase()) {
-      case 'genuine': return { bg: 'rgba(34,197,94,0.12)', color: '#4ADE80' };
-      case 'likely genuine': return { bg: 'rgba(132,204,22,0.12)', color: '#A3E635' };
-      case 'suspicious': return { bg: 'rgba(245,158,11,0.12)', color: '#FBBF24' };
-      case 'likely fake': return { bg: 'rgba(249,115,22,0.12)', color: '#FB923C' };
-      case 'fake': return { bg: 'rgba(239,68,68,0.12)', color: '#FCA5A5' };
-      default: return { bg: 'rgba(255,255,255,0.06)', color: '#A1A1AA' };
+      case 'genuine': return { bg: 'rgba(16,185,129,0.1)', color: '#047857' };
+      case 'likely genuine': return { bg: 'rgba(132,204,22,0.1)', color: '#4D7C0F' };
+      case 'suspicious': return { bg: 'rgba(245,158,11,0.1)', color: '#B45309' };
+      case 'likely fake': return { bg: 'rgba(249,115,22,0.1)', color: '#C2410C' };
+      case 'fake': return { bg: 'rgba(239,68,68,0.1)', color: '#B91C1C' };
+      default: return { bg: '#F1F5F9', color: '#64748B' };
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="max-w-4xl mx-auto space-y-6 pb-12">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-2xl font-bold" style={{ fontFamily: 'Syne,sans-serif', color: '#FFFFFF' }}>My Certificates</h1>
-          <p className="text-sm mt-1" style={{ color: '#A1A1AA' }}>{total} certificate{total !== 1 ? 's' : ''} verified</p>
+          <h1 className="text-3xl font-syne font-black text-white uppercase tracking-widest">My Certificates</h1>
+          <p className="text-sm mt-2 text-slate-400 font-medium">{total} certificate{total !== 1 ? 's' : ''} verified</p>
         </div>
         <button
           onClick={() => router.push('/dashboard/certificates/upload')}
-          className="flex items-center gap-2 px-5 py-2 rounded-xl font-semibold text-sm transition-all hover:shadow-lg"
-          style={{ background: 'linear-gradient(135deg,#4F46E5,#06B6D4)', color: '#fff' }}
+          className="flex items-center gap-2 px-6 py-3 rounded-2xl font-black text-sm uppercase tracking-widest transition-all hover:shadow-[0_0_20px_rgba(56,189,248,0.4)] hover:-translate-y-1"
+          style={{ background: 'linear-gradient(135deg, #38BDF8, #0EA5E9)', color: '#fff' }}
         >
-          <Plus size={15} /> Verify New
+          <Plus size={18} /> Verify New
         </button>
       </div>
 
       {error && (
-        <div className="p-4 rounded-xl text-sm mb-4 flex items-start gap-2"
-          style={{ background: 'rgba(239,68,68,0.08)', border: '1px solid rgba(239,68,68,0.2)', color: '#FCA5A5' }}>
+        <div className="p-4 rounded-xl text-sm mb-6 flex items-start gap-2 border font-medium" style={{ background: 'rgba(239,68,68,0.05)', borderColor: 'rgba(239,68,68,0.1)', color: '#EF4444' }}>
           <XCircle size={16} className="flex-shrink-0 mt-0.5" /> {error}
         </div>
       )}
 
       {loading ? (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="rounded-2xl h-20 animate-pulse" style={{ background: 'rgba(255,255,255,0.04)' }} />
+            <div key={i} className="rounded-[32px] h-20 animate-pulse" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }} />
           ))}
         </div>
       ) : certificates.length === 0 ? (
-        <div className="text-center py-20 rounded-2xl border" style={{ background: '#0A0A0A', borderColor: 'rgba(255,255,255,0.08)' }}>
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center"
-            style={{ background: 'rgba(79,70,229,0.12)' }}>
-            <ShieldCheck size={28} style={{ color: '#818CF8' }} />
+        <div className="text-center py-24 rounded-[40px] border backdrop-blur-[30px]" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
+          <div className="w-20 h-20 mx-auto mb-6 rounded-[28px] flex items-center justify-center bg-sky/5 border border-sky/10 shadow-[0_0_20px_rgba(56,189,248,0.1)]">
+            <ShieldCheck size={36} className="text-sky" />
           </div>
-          <h3 className="text-lg font-semibold" style={{ color: '#FFFFFF' }}>No certificates yet</h3>
-          <p className="text-sm mt-1" style={{ color: '#71717A' }}>Upload your first certificate to get started</p>
+          <h3 className="text-xl font-syne font-black text-white uppercase tracking-widest">No certificates yet</h3>
+          <p className="text-sm mt-2 text-slate-400 font-medium">Upload your first certificate to get started</p>
           <button
             onClick={() => router.push('/dashboard/certificates/upload')}
-            className="mt-5 px-6 py-2.5 rounded-xl font-semibold text-sm transition-all hover:shadow-lg"
-            style={{ background: 'linear-gradient(135deg,#4F46E5,#06B6D4)', color: '#fff' }}
+            className="mt-8 px-8 py-3.5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all hover:shadow-[0_0_20px_rgba(56,189,248,0.4)] bg-gradient-to-r from-sky to-blue-600 text-white"
           >
             Verify a Certificate
           </button>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-4">
           {certificates.map((cert) => {
             const sts = getStatusStyle(cert.authenticityStatus ?? '');
             return (
               <div
                 key={cert.id}
                 onClick={() => router.push(`/dashboard/certificates/${cert.id}`)}
-                className="rounded-2xl border p-4 flex items-center gap-4 cursor-pointer transition-all card-hover-glow"
-                style={{ background: '#0A0A0A', borderColor: 'rgba(255,255,255,0.08)' }}
+                className="rounded-[32px] border backdrop-blur-[20px] p-5 flex items-center gap-5 cursor-pointer transition-all hover:shadow-2xl hover:border-sky/40 hover:-translate-y-1"
+                style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}
               >
                 {/* Score circle */}
                 <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center">
                   {cert.authenticityScore != null ? (
                     <div className="relative w-14 h-14">
                       <svg className="w-full h-full -rotate-90" viewBox="0 0 56 56">
-                        <circle cx="28" cy="28" r="24" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="4" />
+                        <circle cx="28" cy="28" r="24" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="4" />
                         <circle
                           cx="28" cy="28" r="24"
                           fill="none"
@@ -124,51 +145,66 @@ export default function CertificatesPage() {
                           strokeDasharray={2 * Math.PI * 24}
                           strokeDashoffset={2 * Math.PI * 24 * (1 - cert.authenticityScore / 100)}
                           strokeLinecap="round"
+                          style={{ filter: `drop-shadow(0 0 5px ${getScoreColor(cert.authenticityScore)}66)` }}
                         />
                       </svg>
-                      <span className="absolute inset-0 flex items-center justify-center text-xs font-bold font-mono"
-                        style={{ color: getScoreColor(cert.authenticityScore) }}>
+                      <span className="absolute inset-0 flex items-center justify-center text-xs font-black font-mono text-white">
                         {cert.authenticityScore}
                       </span>
                     </div>
                   ) : (
-                    <div className="w-14 h-14 rounded-full flex items-center justify-center"
-                      style={{ background: 'rgba(255,255,255,0.04)' }}>
-                      {cert.status === 'PROCESSING' ? <Clock size={20} style={{ color: '#818CF8' }} className="animate-pulse" /> :
-                       cert.status === 'FAILED' ? <XCircle size={20} style={{ color: '#FCA5A5' }} /> :
-                       <FileText size={20} style={{ color: '#71717A' }} />}
+                    <div className="w-14 h-14 rounded-full flex items-center justify-center border transition-all" style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.05)' }}>
+                      {cert.status === 'PROCESSING' ? <Clock size={20} className="text-sky animate-pulse" /> :
+                       cert.status === 'FAILED' ? <XCircle size={20} className="text-red-400" /> :
+                       <FileText size={20} className="text-slate-500" />}
                     </div>
                   )}
                 </div>
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <p className="font-semibold truncate text-sm" style={{ color: '#FFFFFF' }}>{cert.fileName}</p>
-                  <p className="text-xs mt-0.5" style={{ color: '#71717A' }}>{formatDate(cert.createdAt)}</p>
+                  <p className="font-bold truncate text-sm text-white">{cert.fileName}</p>
+                  <p className="text-xs mt-0.5 text-slate-500 font-medium tracking-wide uppercase">{formatDate(cert.createdAt)}</p>
                 </div>
 
                 {/* Badges */}
                 <div className="flex flex-col items-end gap-1.5 flex-shrink-0">
                   {cert.authenticityStatus ? (
-                    <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold"
-                      style={{ background: sts.bg, color: sts.color }}>
+                    <span className="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border"
+                      style={{ background: sts.bg, color: sts.color, borderColor: `${sts.color}30` }}>
                       {cert.authenticityStatus}
                     </span>
                   ) : (
-                    <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold"
+                    <span className="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest border"
                       style={{
-                        background: cert.status === 'PROCESSING' ? 'rgba(79,70,229,0.12)' : cert.status === 'FAILED' ? 'rgba(239,68,68,0.12)' : 'rgba(255,255,255,0.06)',
-                        color: cert.status === 'PROCESSING' ? '#818CF8' : cert.status === 'FAILED' ? '#FCA5A5' : '#A1A1AA',
+                        background: cert.status === 'PROCESSING' ? 'rgba(56,189,248,0.1)' : cert.status === 'FAILED' ? 'rgba(239,68,68,0.1)' : 'rgba(255,255,255,0.05)',
+                        color: cert.status === 'PROCESSING' ? '#38BDF8' : cert.status === 'FAILED' ? '#EF4444' : '#94A3B8',
+                        borderColor: cert.status === 'PROCESSING' ? 'rgba(56,189,248,0.2)' : cert.status === 'FAILED' ? 'rgba(239,68,68,0.2)' : 'rgba(255,255,255,0.1)'
                       }}>
                       {cert.status}
                     </span>
                   )}
                   {cert.confidenceLevel && (
-                    <span className="text-xs" style={{ color: '#71717A' }}>{cert.confidenceLevel} conf.</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">{cert.confidenceLevel} conf.</span>
                   )}
                 </div>
 
-                <ChevronRight size={16} style={{ color: '#4B5563' }} />
+                {/* Delete button */}
+                <button
+                  onClick={(e) => handleDelete(cert.id, e)}
+                  disabled={deleting === cert.id}
+                  className="flex-shrink-0 p-2 rounded-xl border transition-all hover:bg-red-500/10 hover:border-red-500/30 disabled:opacity-50"
+                  style={{ 
+                    background: 'rgba(239,68,68,0.05)', 
+                    borderColor: 'rgba(239,68,68,0.1)',
+                    opacity: deleting === cert.id ? 0.5 : 1
+                  }}
+                  title="Delete certificate"
+                >
+                  <Trash2 size={16} className="text-red-400" />
+                </button>
+
+                <ChevronRight size={18} className="text-slate-600 flex-shrink-0" />
               </div>
             );
           })}
@@ -177,23 +213,23 @@ export default function CertificatesPage() {
 
       {/* Pagination */}
       {total > PAGE_SIZE && (
-        <div className="flex items-center justify-center gap-3 mt-6">
+        <div className="flex items-center justify-center gap-4 mt-10">
           <button
             onClick={() => setPage(p => Math.max(0, p - 1))}
             disabled={page === 0}
-            className="px-4 py-2 rounded-lg border text-sm disabled:opacity-40 transition-all hover:bg-white/5"
-            style={{ borderColor: 'rgba(255,255,255,0.1)', color: '#A1A1AA' }}
+            className="px-6 py-2.5 rounded-xl border backdrop-blur-[20px] text-sm font-black uppercase tracking-widest text-white disabled:opacity-20 transition-all hover:bg-white/5"
+            style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.05)' }}
           >
             Previous
           </button>
-          <span className="text-sm" style={{ color: '#71717A' }}>
-            Page {page + 1} of {Math.ceil(total / PAGE_SIZE)}
+          <span className="text-xs font-black uppercase tracking-widest text-slate-500">
+            Page <span className="text-white">{page + 1}</span> / {Math.ceil(total / PAGE_SIZE)}
           </span>
           <button
             onClick={() => setPage(p => p + 1)}
             disabled={(page + 1) * PAGE_SIZE >= total}
-            className="px-4 py-2 rounded-lg border text-sm disabled:opacity-40 transition-all hover:bg-white/5"
-            style={{ borderColor: 'rgba(255,255,255,0.1)', color: '#A1A1AA' }}
+            className="px-6 py-2.5 rounded-xl border backdrop-blur-[20px] text-sm font-black uppercase tracking-widest text-white disabled:opacity-20 transition-all hover:bg-white/5"
+            style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.05)' }}
           >
             Next
           </button>
