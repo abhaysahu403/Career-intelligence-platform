@@ -1,250 +1,323 @@
-# Career Intelligence Platform (CIP) v2.0-lite
+# 🚀 Career Intelligence Platform - Production v1.0
 
-> AI-powered career preparation platform for students - Lightweight monolith architecture
+> AI-Powered Career Intelligence & Interview Coaching Platform
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Java](https://img.shields.io/badge/Java-17+-orange.svg)](https://www.oracle.com/java/)
-[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2.0-brightgreen.svg)](https://spring.io/projects/spring-boot)
-[![React](https://img.shields.io/badge/React-18+-blue.svg)](https://reactjs.org/)
-[![Python](https://img.shields.io/badge/Python-3.9+-blue.svg)](https://www.python.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.2-green)](https://spring.io/projects/spring-boot)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.104-teal)](https://fastapi.tiangolo.com/)
 
-## 🎯 Overview
+## 📋 Overview
 
-Career Intelligence Platform (CIP) helps students prepare for job interviews through:
-- **AI-Powered Resume Analysis** - Get instant feedback and ATS scores
-- **Mock Interviews** - Practice with AI-generated questions
-- **Job Recommendations** - Find jobs matching your skills
-- **Certificate Validation** - Verify certificate authenticity
+A comprehensive career intelligence platform that helps students and professionals prepare for technical interviews, validate certificates, analyze career readiness, and get personalized job recommendations.
 
-## ✨ Key Features
+### ✨ Key Features
 
-### 📄 Resume Intelligence
-- Upload PDF/DOCX resumes
-- AI-powered skill extraction
-- ATS compatibility scoring
-- Personalized improvement suggestions
-
-### 🎤 Mock Interviews
-- Technical & behavioral interviews
-- Real-time answer evaluation
-- Detailed feedback and scoring
-- Performance tracking over time
-
-### 💼 Smart Job Matching
-- AI-based job recommendations
-- Skill gap analysis
-- Readiness score calculation
-- Match percentage for each job
-
-### 🛡️ Certificate Verification
-- OCR-based text extraction
-- Authenticity scoring
-- Issuer validation
-- Tamper detection
-
-### 📊 Analytics Dashboard
-- Career readiness score
-- Skill strength analysis
-- Progress tracking
-- Personalized recommendations
+- **🎤 AI Voice Interview Coach** - Real-time voice-based technical interviews with AI feedback
+- **📄 Smart Resume Analysis** - PDF text extraction with ML-powered skill analysis
+- **🎓 Certificate Validation** - OCR-based certificate authenticity verification
+- **📊 Career Analytics** - Personalized readiness scoring and career insights
+- **💼 Job Recommendations** - AI-matched job suggestions based on skills and experience
+- **🎯 Skill Gap Analysis** - Identify weak areas and get improvement recommendations
 
 ## 🏗️ Architecture
 
-**v2.0-lite** uses a simplified monolith architecture:
-
 ```
-┌─────────────────┐
-│   React Web     │  Port 3000
-│   (Frontend)    │
-└────────┬────────┘
-         │
-         ▼
-┌─────────────────┐
-│  Spring Boot    │  Port 8080
-│   (Backend)     │
-│   - Auth        │
-│   - Resume      │
-│   - Interview   │
-│   - Jobs        │
-│   - Score       │
-│   - Certificate │
-└────────┬────────┘
-         │
-         ├──────────┐
-         ▼          ▼
-┌──────────────┐  ┌──────────────┐
-│  PostgreSQL  │  │  FastAPI ML  │
-│  (Database)  │  │  (AI Engine) │
-└──────────────┘  └──────────────┘
+┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
+│   Frontend      │      │    Backend      │      │   ML Service    │
+│   (Next.js)     │◄────►│  (Spring Boot)  │◄────►│   (FastAPI)     │
+│   Port: 3001    │      │   Port: 8080    │      │   Port: 8000    │
+└─────────────────┘      └─────────────────┘      └─────────────────┘
+                                 │
+                                 ▼
+                         ┌─────────────────┐
+                         │   PostgreSQL    │
+                         │   Port: 5432    │
+                         └─────────────────┘
 ```
 
-### Technology Stack
+## 🛠️ Tech Stack
 
-**Backend:**
-- Spring Boot 3.2.0
-- Java 17
-- PostgreSQL 14
-- JWT Authentication
-- Async Processing (@Async)
+### Frontend (`cip-web`)
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Styling**: TailwindCSS
+- **State Management**: Zustand
+- **PDF Processing**: PDF.js
+- **Voice**: Web Speech API
+- **HTTP Client**: Axios
 
-**Frontend:**
-- React 18
-- Vite
-- TailwindCSS
-- Axios
+### Backend (`cip-backend-lite`)
+- **Framework**: Spring Boot 3.2
+- **Language**: Java 17
+- **Database**: PostgreSQL
+- **ORM**: Hibernate/JPA
+- **Security**: JWT Authentication
+- **Build Tool**: Maven
 
-**ML Service:**
-- FastAPI
-- Python 3.9+
-- Transformers
-- OpenCV
-- Tesseract OCR
+### ML Service (`cip-ml`)
+- **Framework**: FastAPI
+- **Language**: Python 3.10+
+- **AI Model**: Google Gemini AI
+- **OCR**: Tesseract
+- **PDF Processing**: PyPDF2
+- **Image Processing**: OpenCV, Pillow
 
-## 🚀 Quick Start
+## 📦 Installation
 
 ### Prerequisites
+
+- Node.js 18+ and npm
 - Java 17+
-- Node.js 16+
-- Python 3.9+
+- Python 3.10+
 - PostgreSQL 14+
+- Maven 3.8+
 
 ### 1. Clone Repository
+
 ```bash
 git clone https://github.com/abhaysahu-cse/career-intelligence-platform-light.git
 cd career-intelligence-platform-light
 ```
 
-### 2. Setup Database
-```bash
-createdb cip_db
+### 2. Database Setup
+
+```sql
+-- Create database
+CREATE DATABASE career_intelligence;
+
+-- Create user (optional)
+CREATE USER cip_user WITH PASSWORD 'your_password';
+GRANT ALL PRIVILEGES ON DATABASE career_intelligence TO cip_user;
 ```
 
-### 3. Start Backend
+### 3. Backend Setup
+
 ```bash
 cd cip-backend-lite
-mvn clean package -DskipTests
-java -jar target/cip-backend-lite-2.0.0.jar
+
+# Update application.yml with your database credentials
+# src/main/resources/application.yml
+
+# Build and run
+mvn clean install
+mvn spring-boot:run
 ```
 
-### 4. Start ML Service
+Backend will start on `http://localhost:8080`
+
+### 4. ML Service Setup
+
 ```bash
 cd cip-ml
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
 pip install -r requirements.txt
-uvicorn main:app --host 0.0.0.0 --port 8000
+
+# Set environment variables
+export GEMINI_API_KEY="your_gemini_api_key"  # Get from https://makersuite.google.com/app/apikey
+
+# Run service
+python main.py
 ```
 
-### 5. Start Frontend
+ML Service will start on `http://localhost:8000`
+
+### 5. Frontend Setup
+
 ```bash
 cd cip-web
+
+# Install dependencies
 npm install
+
+# Create .env.local file
+echo "NEXT_PUBLIC_API_URL=http://localhost:8080" > .env.local
+echo "NEXT_PUBLIC_ML_URL=http://localhost:8000" >> .env.local
+
+# Run development server
 npm run dev
 ```
 
-### 6. Access Application
-- **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8080
-- **ML Service**: http://localhost:8000
-- **API Docs**: http://localhost:8080/actuator
+Frontend will start on `http://localhost:3001`
 
-## 📚 Documentation
+## 🚀 Quick Start (All Services)
 
-- [Quick Start Guide](./START-GUIDE.md) - Detailed setup instructions
-- [API Documentation](./API-DOCS.md) - Complete API reference
-- [API Endpoints](./API_ENDPOINTS.md) - Endpoint summary
-
-## 🧪 Testing
-
-### Run Backend Tests
+### Windows
 ```bash
-cd cip-backend-lite
-mvn test
+start_all.bat
 ```
 
-### Test APIs
+### Linux/Mac
 ```bash
-# Health check
-curl http://localhost:8080/actuator/health
+# Terminal 1 - Backend
+cd cip-backend-lite && mvn spring-boot:run
 
-# Register user
-curl -X POST http://localhost:8080/auth/signup \
-  -H "Content-Type: application/json" \
-  -d '{"name":"John Doe","email":"john@example.com","password":"Test@123"}'
+# Terminal 2 - ML Service
+cd cip-ml && python main.py
 
-# Login
-curl -X POST http://localhost:8080/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"john@example.com","password":"Test@123"}'
+# Terminal 3 - Frontend
+cd cip-web && npm run dev
 ```
 
-## 📁 Project Structure
+## 📖 API Documentation
 
-```
-career-intelligence-platform-light/
-├── cip-backend-lite/       # Spring Boot backend
-│   ├── src/
-│   │   └── main/
-│   │       ├── java/com/cip/
-│   │       │   ├── auth/
-│   │       │   ├── resume/
-│   │       │   ├── interview/
-│   │       │   ├── job/
-│   │       │   ├── score/
-│   │       │   ├── certificate/
-│   │       │   └── common/
-│   │       └── resources/
-│   └── pom.xml
-│
-├── cip-ml/                 # FastAPI ML service
-│   ├── main.py
-│   ├── models/
-│   ├── services/
-│   └── requirements.txt
-│
-├── cip-web/                # React frontend
-│   ├── src/
-│   │   ├── components/
-│   │   ├── pages/
-│   │   └── services/
-│   └── package.json
-│
-├── README.md
-├── START-GUIDE.md
-└── API-DOCS.md
-```
+### Backend Endpoints
+
+#### Authentication
+- `POST /auth/signup` - Register new user
+- `POST /auth/login` - Login user
+- `GET /auth/me` - Get current user
+
+#### Resume
+- `POST /resume/upload-text` - Upload resume (text)
+- `GET /resume/latest` - Get latest resume
+
+#### Interview
+- `POST /interview/start` - Start interview session
+- `GET /interview/question/{id}` - Get next question
+- `POST /interview/answer` - Submit answer
+- `POST /interview/end` - End interview
+
+#### Certificates
+- `POST /certificates/upload` - Upload certificate
+- `GET /certificates/user/{userId}` - Get user certificates
+- `GET /certificates/{id}/result` - Get validation result
+
+#### Jobs
+- `GET /jobs` - List all jobs
+- `GET /jobs/recommended` - Get personalized recommendations
+
+### ML Service Endpoints
+
+- `POST /ml/resume/analyze` - Analyze resume text
+- `POST /ml/interview/question` - Generate interview question
+- `POST /ml/interview/coach` - Evaluate interview answer
+- `POST /ml/certificate/validate` - Validate certificate
+
+## 🎯 Usage Guide
+
+### 1. Create Account
+1. Navigate to `http://localhost:3001`
+2. Click "Sign Up"
+3. Fill in details and create account
+
+### 2. Complete Profile
+1. Go to Profile page
+2. Fill in personal information
+3. Add technical skills
+4. Upload resume PDF (or use profile data as fallback)
+
+### 3. Start Interview
+1. Navigate to Interview page
+2. Select job role (e.g., "SDE")
+3. Choose persona (Friendly/Strict/FAANG)
+4. Click "Start Interview"
+5. Answer questions using voice or text
+
+### 4. Upload Certificates
+1. Go to Certificates page
+2. Upload certificate image/PDF
+3. View authenticity score and validation results
+
+### 5. View Analytics
+1. Check Dashboard for overview
+2. View Analytics page for detailed insights
+3. Get personalized job recommendations
 
 ## 🔧 Configuration
 
-### Backend Environment Variables
-```bash
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=cip_db
-DB_USER=postgres
-DB_PASSWORD=cip123
-ML_SERVICE_URL=http://localhost:8000
-JWT_SECRET=your-secret-key
-STORAGE_PATH=./uploads
+### Environment Variables
+
+#### Frontend (`.env.local`)
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8080
+NEXT_PUBLIC_ML_URL=http://localhost:8000
 ```
 
-### Frontend Environment Variables
-```bash
-VITE_API_URL=http://localhost:8080
-VITE_ML_URL=http://localhost:8000
+#### Backend (`application.yml`)
+```yaml
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/career_intelligence
+    username: your_username
+    password: your_password
+
+jwt:
+  secret: your_jwt_secret_key_here
+  expiration: 86400000
+
+ml:
+  service:
+    url: http://localhost:8000
 ```
 
-## 🎯 Roadmap
+#### ML Service (`.env`)
+```env
+GEMINI_API_KEY=your_gemini_api_key
+DATABASE_URL=postgresql://user:password@localhost:5432/career_intelligence
+```
 
-### v2.1 (Planned)
-- [ ] Real-time interview with video
-- [ ] Advanced analytics dashboard
-- [ ] Company-specific interview prep
-- [ ] Mobile app (React Native)
+## 📊 Database Schema
 
-### v2.2 (Future)
-- [ ] Peer-to-peer mock interviews
-- [ ] Interview scheduling
-- [ ] Resume builder
-- [ ] Job application tracking
+Key tables:
+- `users` - User authentication
+- `student_profiles` - Student information
+- `resumes` - Resume data and analysis
+- `interviews` - Interview sessions
+- `interview_answers` - Interview responses
+- `certificates` - Certificate uploads
+- `certificate_results` - Validation results
+- `jobs` - Job listings
+- `scores` - Readiness scores
+
+## 🎨 Features in Detail
+
+### Resume Upload System
+- **Primary**: Client-side PDF text extraction using PDF.js
+- **Fallback**: Uses profile data if PDF extraction fails
+- **ML Analysis**: Extracts skills, experience, education
+- **Score Calculation**: Generates resume quality score
+
+### AI Interview System
+- **Voice Recognition**: Real-time speech-to-text
+- **AI Questions**: Personalized based on resume
+- **Real-time Feedback**: Instant evaluation and tips
+- **Adaptive Difficulty**: Adjusts based on performance
+- **Fallback Mode**: Works offline with local question bank
+
+### Certificate Validation
+- **OCR Processing**: Extracts text from images
+- **Issuer Verification**: Checks against trusted issuers
+- **Link Validation**: Verifies certificate URLs
+- **QR Code Scanning**: Validates embedded QR codes
+- **Authenticity Score**: 0-100 confidence rating
+
+## 🐛 Troubleshooting
+
+### Backend won't start
+- Check PostgreSQL is running
+- Verify database credentials in `application.yml`
+- Ensure port 8080 is available
+
+### ML Service errors
+- Verify Gemini API key is set
+- Check Python dependencies are installed
+- Ensure port 8000 is available
+
+### Frontend build errors
+- Clear node_modules: `rm -rf node_modules && npm install`
+- Check Node.js version: `node --version` (should be 18+)
+- Verify environment variables in `.env.local`
+
+### PDF extraction not working
+- Check browser console for errors
+- Verify `/pdf.worker.mjs` is accessible
+- Try the fallback (profile data) option
 
 ## 🤝 Contributing
 
@@ -262,29 +335,20 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Authors
 
-- **Abhay Sahu** - *Initial work* - [@abhaysahu-cse](https://github.com/abhaysahu-cse)
+- **Abhay Sahu** - [@abhaysahu-cse](https://github.com/abhaysahu-cse)
 
 ## 🙏 Acknowledgments
 
-- OpenAI for GPT models
-- Hugging Face for transformer models
+- Google Gemini AI for interview question generation
+- PDF.js for client-side PDF processing
 - Spring Boot community
-- React community
+- Next.js team
+- FastAPI framework
 
 ## 📞 Support
 
-- **Email**: abhaysahu.cse@example.com
-- **GitHub Issues**: [Create an issue](https://github.com/abhaysahu-cse/career-intelligence-platform-light/issues)
-- **Documentation**: [Wiki](https://github.com/abhaysahu-cse/career-intelligence-platform-light/wiki)
-
-## 📊 Project Status
-
-**Current Version**: 2.0.0-lite  
-**Status**: ✅ Production Ready  
-**Last Updated**: May 5, 2026
+For support, email abhaysahucse@gmail.com or open an issue in the repository.
 
 ---
 
-<div align="center">
-  <strong>Built with ❤️ for students preparing for their dream jobs</strong>
-</div>
+**⭐ Star this repository if you find it helpful!**
