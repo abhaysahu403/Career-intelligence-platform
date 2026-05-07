@@ -99,8 +99,8 @@ export default function UploadPage() {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="mb-10">
-        <h1 className="text-3xl font-syne font-black text-white uppercase tracking-widest">Verify Certificate</h1>
-        <p className="mt-2 text-sm font-medium text-slate-400">
+        <h1 className="text-3xl font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest">Verify Certificate</h1>
+        <p className="mt-2 text-sm font-medium text-slate-600 dark:text-slate-400">
           Upload a PDF or image. Our AI will check authenticity in under 8 seconds.
         </p>
       </div>
@@ -131,10 +131,10 @@ export default function UploadPage() {
             <div className={`w-20 h-20 mx-auto mb-6 rounded-3xl flex items-center justify-center transition-all ${dragOver ? 'bg-sky/20 text-sky' : 'bg-white/5 text-slate-500'}`}>
               <Upload size={32} />
             </div>
-            <p className="text-xl font-syne font-black text-white uppercase tracking-widest">
+            <p className="text-xl font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest">
               Drop your certificate here
             </p>
-            <p className="text-sm mt-2 text-slate-500 font-medium tracking-wide">or click to browse your files</p>
+            <p className="text-sm mt-2 text-slate-500 dark:text-slate-500 font-medium tracking-wide">or click to browse your files</p>
             <p className="text-[10px] mt-4 text-slate-600 font-black uppercase tracking-widest">PDF, JPG, PNG · Max 10MB</p>
           </div>
         ) : (
@@ -146,8 +146,8 @@ export default function UploadPage() {
                 <FileText size={32} className="text-mint" />
               </div>
             )}
-            <p className="font-black text-white uppercase tracking-widest">{file.name}</p>
-            <p className="text-xs text-slate-500 font-black uppercase tracking-widest mt-1">{(file.size / 1024).toFixed(1)} KB</p>
+            <p className="font-black text-slate-900 dark:text-white uppercase tracking-widest">{file.name}</p>
+            <p className="text-xs text-slate-500 dark:text-slate-500 font-black uppercase tracking-widest mt-1">{(file.size / 1024).toFixed(1)} KB</p>
           </div>
         )}
       </div>
@@ -178,7 +178,7 @@ export default function UploadPage() {
         {file && !isLoading && (
           <button
             onClick={reset}
-            className="flex-1 py-4 px-6 font-black uppercase tracking-widest rounded-2xl border backdrop-blur-[20px] text-white transition-all hover:bg-white/5"
+            className="flex-1 py-4 px-6 font-black uppercase tracking-widest rounded-2xl border backdrop-blur-[20px] text-slate-900 dark:text-white transition-all hover:bg-white/5"
             style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.05)' }}
           >
             Clear
@@ -208,7 +208,7 @@ export default function UploadPage() {
             <div className={`w-10 h-10 mx-auto mb-3 rounded-xl flex items-center justify-center`} style={{ background: item.bg }}>
               <item.icon size={20} className={item.color} />
             </div>
-            <span className="font-black text-slate-400 uppercase tracking-widest">{item.label}</span>
+            <span className="font-black text-slate-600 dark:text-slate-400 uppercase tracking-widest">{item.label}</span>
           </div>
         ))}
       </div>

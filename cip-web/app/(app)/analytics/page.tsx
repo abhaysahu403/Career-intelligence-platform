@@ -51,8 +51,8 @@ export default function AnalyticsPage() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="mx-auto mb-6 h-12 w-12 animate-spin rounded-full border-2 border-t-transparent" style={{ borderColor: '#38BDF8' }} />
-          <p className="text-slate-500 font-black uppercase tracking-widest text-[10px]">Decoding intelligence metrics...</p>
+          <div className="mx-auto mb-6 h-12 w-12 animate-spin rounded-full border-2 border-t-transparent border-sky-500" />
+          <p className="text-slate-500 dark:text-slate-500 font-black uppercase tracking-widest text-[10px]">Decoding intelligence metrics...</p>
         </div>
       </div>
     );
@@ -64,14 +64,14 @@ export default function AnalyticsPage() {
     <div className="space-y-6 pb-12 max-w-7xl">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-sky/10 border border-sky/20 shadow-[0_0_15px_rgba(56,189,248,0.2)]">
-          <LineChartIcon size={24} className="text-sky" />
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-sky-100 dark:bg-sky/10 border border-sky-300 dark:border-sky/20 shadow-sm dark:shadow-[0_0_15px_rgba(56,189,248,0.2)]">
+          <LineChartIcon size={24} className="text-sky-600 dark:text-sky" />
         </div>
         <div>
-          <h2 className="text-3xl font-syne font-black text-white uppercase tracking-widest">
+          <h2 className="text-3xl font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest">
             Intelligence Matrix
           </h2>
-          <p className="text-sm font-medium uppercase tracking-wide text-slate-500 mt-1">
+          <p className="text-sm font-medium uppercase tracking-wide text-slate-600 dark:text-slate-500 mt-1">
             Deep forensic analysis of your career readiness
           </p>
         </div>
@@ -83,19 +83,18 @@ export default function AnalyticsPage() {
           { title: 'Avg Interview', value: a.averageInterviewScore.toFixed(0), icon: LineChartIcon, color: '#0EA5E9' },
           { title: 'Attempts', value: a.totalAttempts, icon: Brain, color: '#F59E0B' },
         ].map((card) => (
-          <div key={card.title} className="rounded-2xl border backdrop-blur-[20px] p-5 transition-all hover:-translate-y-1 hover:shadow-lg"
-            style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
+          <div key={card.title} className="rounded-2xl border backdrop-blur-[20px] p-5 transition-all hover:-translate-y-1 hover:shadow-lg bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
             <card.icon size={18} style={{ color: card.color }} />
             <p className="mb-1 mt-3 text-[10px] font-black text-slate-500 uppercase tracking-widest">{card.title}</p>
-            <p className="text-2xl font-black text-white" style={{ fontFamily: 'Plus Jakarta Sans,sans-serif' }}>{card.value}</p>
+            <p className="text-2xl font-black text-slate-900 dark:text-white" style={{ fontFamily: 'Plus Jakarta Sans,sans-serif' }}>{card.value}</p>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border backdrop-blur-[20px] p-5" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
-          <h3 className="mb-1 font-syne font-black text-white uppercase tracking-widest text-sm">Readiness Progress</h3>
-          <p className="mb-4 text-xs font-medium text-slate-400">Based on real completed interview attempts</p>
+        <div className="rounded-2xl border backdrop-blur-[20px] p-5 bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
+          <h3 className="mb-1 font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest text-sm">Readiness Progress</h3>
+          <p className="mb-4 text-xs font-medium text-slate-600 dark:text-slate-400">Based on real completed interview attempts</p>
           <ResponsiveContainer width="100%" height={220}>
             <AreaChart data={a.progressHistory}>
               <defs>
@@ -116,9 +115,9 @@ export default function AnalyticsPage() {
           </ResponsiveContainer>
         </div>
 
-        <div className="rounded-2xl border backdrop-blur-[20px] p-5" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
-          <h3 className="mb-1 font-syne font-black text-white uppercase tracking-widest text-sm">Interview Trend</h3>
-          <p className="mb-4 text-xs font-medium text-slate-400">How your interview scores are changing over time</p>
+        <div className="rounded-2xl border backdrop-blur-[20px] p-5 bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
+          <h3 className="mb-1 font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest text-sm">Interview Trend</h3>
+          <p className="mb-4 text-xs font-medium text-slate-600 dark:text-slate-400">How your interview scores are changing over time</p>
           <ResponsiveContainer width="100%" height={220}>
             <LineChart data={a.interviewHistory}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
@@ -135,25 +134,24 @@ export default function AnalyticsPage() {
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <div className="rounded-2xl border backdrop-blur-[20px] p-5" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
-          <h3 className="mb-3 font-syne font-black text-white uppercase tracking-widest text-sm">Weak Skills</h3>
+        <div className="rounded-2xl border backdrop-blur-[20px] p-5 bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
+          <h3 className="mb-3 font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest text-sm">Weak Skills</h3>
           {a.weakSkills.length ? (
             <div className="flex flex-wrap gap-2">
               {a.weakSkills.map((skill) => (
-                <span key={skill} className="rounded-full border px-3 py-1.5 text-xs font-black uppercase tracking-widest"
-                  style={{ background: 'rgba(245,158,11,0.1)', color: '#F59E0B', borderColor: 'rgba(245,158,11,0.2)' }}>
+                <span key={skill} className="rounded-full border px-3 py-1.5 text-xs font-black uppercase tracking-widest bg-amber-50 dark:bg-[rgba(245,158,11,0.1)] text-amber-600 dark:text-[#F59E0B] border-amber-200 dark:border-[rgba(245,158,11,0.2)]">
                   {skill}
                 </span>
               ))}
             </div>
           ) : (
-            <p className="text-sm font-medium text-slate-400">No repeated weak topic has shown up yet. Keep answering and the system will surface patterns.</p>
+            <p className="text-sm font-medium text-slate-600 dark:text-slate-400">No repeated weak topic has shown up yet. Keep answering and the system will surface patterns.</p>
           )}
         </div>
 
-        <div className="rounded-2xl border backdrop-blur-[20px] p-5" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
-          <h3 className="mb-3 font-syne font-black text-white uppercase tracking-widest text-sm">Recommendation</h3>
-          <p className="text-sm leading-relaxed font-medium text-slate-300">
+        <div className="rounded-2xl border backdrop-blur-[20px] p-5 bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
+          <h3 className="mb-3 font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest text-sm">Recommendation</h3>
+          <p className="text-sm leading-relaxed font-medium text-slate-700 dark:text-slate-300">
             {a.latestRecommendation || 'Complete a few interview attempts and upload your resume to unlock more targeted coaching.'}
           </p>
         </div>

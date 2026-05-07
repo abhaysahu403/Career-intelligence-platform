@@ -185,7 +185,7 @@ export default function Demo() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="font-syne text-4xl md:text-5xl font-black text-white mb-4 leading-tight tracking-tight"
+              className="font-syne text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-4 leading-tight tracking-tight"
             >
               AI Certificate{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky to-mint">
@@ -198,7 +198,7 @@ export default function Demo() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="text-slate-400 text-lg leading-relaxed mb-8 font-medium"
+              className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed mb-8 font-medium"
             >
               ML-powered OCR validates certificates from any institution in seconds.
               IIT, NIT, NPTEL — verified instantly. Fake or unaccredited certificates are flagged with evidence.
@@ -219,7 +219,7 @@ export default function Demo() {
                     <feat.icon className="w-5 h-5 text-mint" />
                   </div>
                   <div>
-                    <p className="text-sm font-black text-white mb-0.5">{feat.label}</p>
+                    <p className="text-sm font-black text-slate-900 dark:text-white mb-0.5">{feat.label}</p>
                     <p className="text-xs text-slate-500 font-medium leading-relaxed">{feat.desc}</p>
                   </div>
                 </motion.div>
@@ -227,8 +227,7 @@ export default function Demo() {
             </div>
 
             {/* Legend */}
-            <div className="p-5 rounded-2xl border mb-8"
-              style={{ background: 'rgba(8,12,20,0.6)', borderColor: 'rgba(255,255,255,0.06)' }}>
+            <div className="p-5 rounded-2xl border mb-8 bg-white/70 dark:bg-[rgba(8,12,20,0.6)]" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
               <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-3">Result Legend</p>
               <div className="grid grid-cols-2 gap-2.5">
                 {[
@@ -239,7 +238,7 @@ export default function Demo() {
                 ].map(item => (
                   <div key={item.label} className="flex items-center gap-2">
                     <span className="font-black text-base w-4 text-center" style={{ color: item.color }}>{item.icon}</span>
-                    <span className="text-[10px] font-bold text-slate-400">{item.label}</span>
+                    <span className="text-[10px] font-bold text-slate-600 dark:text-slate-400">{item.label}</span>
                   </div>
                 ))}
               </div>
@@ -269,8 +268,7 @@ export default function Demo() {
               style={{ background: 'radial-gradient(ellipse, rgba(74,222,128,0.08) 0%, rgba(239,68,68,0.04) 70%, transparent 100%)' }} />
 
             {/* ML Engine header */}
-            <div className="relative flex items-center justify-between px-5 py-3 rounded-2xl border mb-4"
-              style={{ background: 'rgba(8,12,20,0.85)', borderColor: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(20px)' }}>
+            <div className="relative flex items-center justify-between px-5 py-3 rounded-2xl border mb-4 bg-white/90 dark:bg-[rgba(8,12,20,0.85)]" style={{ borderColor: 'rgba(255,255,255,0.07)', backdropFilter: 'blur(20px)' }}>
               <div className="flex items-center gap-2">
                 <motion.div className="w-2 h-2 rounded-full bg-mint"
                   animate={{ opacity: [1, 0.3, 1] }} transition={{ duration: 1.5, repeat: Infinity }}
@@ -311,7 +309,7 @@ export default function Demo() {
                     {/* Info */}
                     <div className="mt-3">
                       <div className="flex items-center justify-between mb-1">
-                        <p className="text-[11px] font-black text-white leading-tight truncate pr-2">{cert.title}</p>
+                        <p className="text-[11px] font-black text-slate-900 dark:text-white leading-tight truncate pr-2">{cert.title}</p>
                         <span className="text-[9px] font-black px-1.5 py-0.5 rounded flex-shrink-0"
                           style={{ background: `${cert.color}15`, color: cert.color, border: `1px solid ${cert.color}30` }}>
                           {cert.badgeLabel}

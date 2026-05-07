@@ -155,8 +155,8 @@ export default function ProfilePage() {
           {user?.name?.charAt(0).toUpperCase()}
         </div>
         <div className="flex-1">
-          <h2 className="text-3xl font-syne font-black text-white">{user?.name}</h2>
-          <p className="text-sm text-slate-400 font-medium mt-1">{user?.branch} - {user?.college}</p>
+          <h2 className="text-3xl font-syne font-black text-slate-900 dark:text-white">{user?.name}</h2>
+          <p className="text-sm text-slate-600 dark:text-slate-400 font-medium mt-1">{user?.branch} - {user?.college}</p>
         </div>
         <button
           type="submit"
@@ -168,7 +168,7 @@ export default function ProfilePage() {
         </button>
       </div>
 
-      <div className="flex gap-2 rounded-2xl p-1.5 backdrop-blur-[20px] border" style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.05)' }}>
+      <div className="flex gap-2 rounded-2xl p-1.5 backdrop-blur-[20px] border bg-white/50 dark:bg-[rgba(255,255,255,0.02)] border-slate-200 dark:border-[rgba(255,255,255,0.05)]">
         {tabs.map((tab) => (
           <button
             key={tab.id}
@@ -176,8 +176,8 @@ export default function ProfilePage() {
             onClick={() => setActiveTab(tab.id)}
             className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-2.5 text-xs font-black uppercase tracking-widest transition-all ${
               activeTab === tab.id
-                ? 'bg-sky/10 text-sky border border-sky/20 shadow-[0_0_15px_rgba(56,189,248,0.15)]'
-                : 'text-slate-500 hover:text-slate-300 hover:bg-white/5'
+                ? 'bg-sky-100 dark:bg-sky/10 text-sky-600 dark:text-sky border border-sky-300 dark:border-sky/20 shadow-sm dark:shadow-[0_0_15px_rgba(56,189,248,0.15)]'
+                : 'text-slate-500 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/5'
             }`}
           >
             <tab.icon size={14} />
@@ -187,8 +187,8 @@ export default function ProfilePage() {
       </div>
 
       {activeTab === 'personal' && (
-        <div className="space-y-6 rounded-[32px] border backdrop-blur-[20px] p-8 shadow-xl" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
-          <h3 className="font-syne font-black text-white uppercase tracking-widest text-lg">Personal Information</h3>
+        <div className="space-y-6 rounded-[32px] border backdrop-blur-[20px] p-8 shadow-xl bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
+          <h3 className="font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest text-lg">Personal Information</h3>
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             {[
               { name: 'name', label: 'Full Name', type: 'text', placeholder: 'Aryan Sharma' },
@@ -265,8 +265,8 @@ export default function ProfilePage() {
       )}
 
       {activeTab === 'skills' && (
-        <div className="space-y-6 rounded-[32px] border backdrop-blur-[20px] p-8 shadow-xl" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
-          <h3 className="font-syne font-black text-white uppercase tracking-widest text-lg">Technical Skills</h3>
+        <div className="space-y-6 rounded-[32px] border backdrop-blur-[20px] p-8 shadow-xl bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
+          <h3 className="font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest text-lg">Technical Skills</h3>
           <div className="flex flex-wrap gap-3">
             {skills.map((skill) => (
               <span
@@ -308,8 +308,8 @@ export default function ProfilePage() {
       {activeTab === 'academics' && (
         <div className="space-y-6">
           {/* Resume Upload Section */}
-          <div className="rounded-[32px] border backdrop-blur-[20px] p-8 shadow-xl" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
-            <h3 className="font-syne font-black text-white uppercase tracking-widest text-lg mb-6">Upload Resume</h3>
+          <div className="rounded-[32px] border backdrop-blur-[20px] p-8 shadow-xl bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
+            <h3 className="font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest text-lg mb-6">Upload Resume</h3>
             
             <div
               {...getRootProps()}
@@ -326,14 +326,14 @@ export default function ProfilePage() {
                 </div>
                 {resumeFile ? (
                   <div className="space-y-2">
-                    <p className="text-lg font-black text-white">{resumeFile.name}</p>
+                    <p className="text-lg font-black text-slate-900 dark:text-white">{resumeFile.name}</p>
                     <p className="text-sm text-slate-400">
                       {(resumeFile.size / 1024).toFixed(2)} KB • Click Save to upload
                     </p>
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    <p className="text-lg font-black text-white">
+                    <p className="text-lg font-black text-slate-900 dark:text-white">
                       {isDragActive ? 'Drop your resume here' : 'Drag & drop your resume'}
                     </p>
                     <p className="text-sm text-slate-400">or click to browse • PDF only • Max 10MB</p>
@@ -350,9 +350,9 @@ export default function ProfilePage() {
           </div>
 
           {/* Academic Snapshot */}
-          <div className="rounded-[32px] border backdrop-blur-[20px] p-8 shadow-xl" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
+          <div className="rounded-[32px] border backdrop-blur-[20px] p-8 shadow-xl bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
             <div className="mb-6 flex items-center justify-between">
-              <h3 className="font-syne font-black text-white uppercase tracking-widest text-lg">Academic Snapshot</h3>
+              <h3 className="font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest text-lg">Academic Snapshot</h3>
               <span className="rounded-xl px-4 py-1.5 text-xs font-black uppercase tracking-widest" style={{ background: 'rgba(74,222,128,0.1)', color: '#4ADE80', border: '1px solid rgba(74,222,128,0.2)' }}>
                 CGPA: {user?.cgpa ?? 'Not added'}
               </span>

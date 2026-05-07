@@ -66,11 +66,11 @@ export default function LoginPage() {
           <div className="mb-4 inline-flex items-center gap-2">
             <div className="flex h-10 w-10 items-center justify-center rounded-xl shadow-lg"
               style={{ background: 'linear-gradient(135deg, #38BDF8, #4ADE80)' }}>
-              <Zap size={20} className="text-white" />
+              <Zap size={20} className="text-slate-900 dark:text-white" />
             </div>
-            <span className="text-xl font-bold font-syne text-white">CIP</span>
+            <span className="text-xl font-bold font-syne text-slate-900 dark:text-white">CIP</span>
           </div>
-          <h1 className="mb-1 text-2xl font-bold text-white font-syne">Welcome back</h1>
+          <h1 className="mb-1 text-2xl font-bold text-slate-900 dark:text-white font-syne">Welcome back</h1>
           <p className="text-sm font-medium text-[#94A3B8]">Sign in to your Career Intelligence Platform</p>
         </div>
 
@@ -112,7 +112,7 @@ export default function LoginPage() {
                 {...register('email')}
                 type="email"
                 placeholder="you@college.edu"
-                className="w-full rounded-xl border px-4 py-3 text-sm font-bold text-white placeholder-[#64748B] transition-all focus:outline-none"
+                className="w-full rounded-xl border px-4 py-3 text-sm font-bold text-slate-900 dark:text-white placeholder-[#64748B] transition-all focus:outline-none"
                 style={{
                   background: 'rgba(255,255,255,0.03)',
                   borderColor: 'rgba(255,255,255,0.06)',
@@ -136,7 +136,7 @@ export default function LoginPage() {
                   {...register('password')}
                   type={showPw ? 'text' : 'password'}
                   placeholder="••••••••"
-                  className="w-full rounded-xl border px-4 py-3 pr-11 text-sm font-bold text-white placeholder-[#64748B] transition-all focus:outline-none"
+                  className="w-full rounded-xl border px-4 py-3 pr-11 text-sm font-bold text-slate-900 dark:text-white placeholder-[#64748B] transition-all focus:outline-none"
                   style={{
                     background: 'rgba(255,255,255,0.03)',
                     borderColor: 'rgba(255,255,255,0.06)',
@@ -170,7 +170,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all duration-300 hover:shadow-lg disabled:opacity-60 text-white"
+              className="flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all duration-300 hover:shadow-lg disabled:opacity-60 text-slate-900 dark:text-white"
               style={{
                 background: 'linear-gradient(135deg, #38BDF8, #4ADE80)',
                 boxShadow: '0 8px 20px -5px rgba(56,189,248,0.4)'

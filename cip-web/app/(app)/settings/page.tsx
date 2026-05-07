@@ -29,12 +29,12 @@ export default function SettingsPage() {
           ],
         },
       ].map(section => (
-        <div key={section.title} className="rounded-[32px] border overflow-hidden backdrop-blur-[20px]" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
-          <div className="flex items-center gap-2 px-6 py-5 border-b" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+        <div key={section.title} className="rounded-[32px] border overflow-hidden backdrop-blur-[20px] bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
+          <div className="flex items-center gap-2 px-6 py-5 border-b border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
             <section.icon size={16} className="text-sky" />
             <h3 className="font-syne font-black text-white uppercase tracking-widest text-sm">{section.title}</h3>
           </div>
-          <div className="divide-y" style={{ borderColor: 'rgba(255,255,255,0.06)' }}>
+          <div className="divide-y border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
             {section.items.map(item => (
               <div key={item.key} className="flex items-center justify-between px-6 py-5 transition-colors hover:bg-white/1">
                 <div>

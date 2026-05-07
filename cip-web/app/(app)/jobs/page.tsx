@@ -100,8 +100,8 @@ export default function JobsPage() {
   });
 
   // Merge jobs: prioritize recommended, then add non-recommended
-  const recommendedIds = new Set((recommendedJobs || []).map(j => j.id));
-  const nonRecommendedJobs = (allJobs || []).filter(j => !recommendedIds.has(j.id));
+  const recommendedIds = new Set((recommendedJobs || []).map((j: Job) => j.id));
+  const nonRecommendedJobs = (allJobs || []).filter((j: Job) => !recommendedIds.has(j.id));
   const mergedJobs = [...(recommendedJobs || []), ...nonRecommendedJobs];
 
   console.log('📊 [Jobs] Merged:', mergedJobs.length, 'total (', recommendedJobs?.length, 'recommended +', nonRecommendedJobs.length, 'others)');
@@ -212,7 +212,7 @@ export default function JobsPage() {
           </p>
         </div>
         {score && (
-          <div className="flex items-center gap-3 px-4 py-2 rounded-2xl border flex-shrink-0 backdrop-blur-[20px] transition-all hover:border-sky/40" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)', boxShadow: '0 4px 15px -5px rgba(0,0,0,0.3)' }}>
+          <div className="flex items-center gap-3 px-4 py-2 rounded-2xl border flex-shrink-0 backdrop-blur-[20px] transition-all hover:border-sky/40 bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
             <ScoreCircle score={score.readiness} size={52} strokeWidth={6} showLevel={false} />
             <div>
               <p className="text-xs font-black uppercase tracking-widest text-slate-500">Your Score</p>
@@ -222,7 +222,7 @@ export default function JobsPage() {
         )}
       </div>
 
-      <div className="relative rounded-2xl p-4 border backdrop-blur-[20px] space-y-3 shadow-[0_8px_30px_rgb(0,0,0,0.12)]" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
+      <div className="relative rounded-2xl p-4 border backdrop-blur-[20px] space-y-3 shadow-[0_8px_30px_rgb(0,0,0,0.12)] bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
         {/* Search + recommended toggle */}
         <div className="flex flex-col sm:flex-row gap-3">
           <div className="relative flex-1">
@@ -286,8 +286,7 @@ export default function JobsPage() {
           { label: 'Filtered',       value: filtered.length,                           color: '#4ADE80' },
           { label: 'Recommended',    value: filtered.filter(j=>j.isRecommended).length, color: '#F59E0B' },
         ].map(s => (
-          <div key={s.label} className="relative rounded-2xl p-4 border backdrop-blur-[20px] text-center transition-all hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(56,189,248,0.15)]"
-            style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
+          <div key={s.label} className="relative rounded-2xl p-4 border backdrop-blur-[20px] text-center transition-all hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(56,189,248,0.15)] bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
             <p className="text-3xl font-black font-syne" style={{ color: s.color }}>{s.value}</p>
             <p className="text-[10px] font-black mt-1 text-slate-400 uppercase tracking-widest">{s.label}</p>
           </div>
@@ -295,12 +294,12 @@ export default function JobsPage() {
       </div>
 
       {isLoading ? (
-        <div className="text-center py-16 rounded-2xl border backdrop-blur-[20px]" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
+        <div className="text-center py-16 rounded-2xl border backdrop-blur-[20px] bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky mx-auto mb-3"></div>
           <p className="font-syne font-black text-white text-lg">Loading jobs...</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="text-center py-16 rounded-2xl border backdrop-blur-[20px]" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
+        <div className="text-center py-16 rounded-2xl border backdrop-blur-[20px] bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
           <Filter size={32} className="mx-auto mb-3 text-sky" />
           <p className="font-syne font-black text-white text-lg">No jobs match your filters</p>
           <p className="text-sm mt-1 font-medium text-slate-400">Try adjusting your filters</p>

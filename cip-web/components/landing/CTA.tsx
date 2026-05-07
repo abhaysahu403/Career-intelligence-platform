@@ -116,7 +116,7 @@ export default function CTA() {
               className="font-syne font-black tracking-tight mb-4"
               style={{ fontSize: 'clamp(2.2rem, 7vw, 5rem)', lineHeight: 1.05 }}
             >
-              <span className="text-white">Your AI Career Coach</span>
+              <span className="text-slate-900 dark:text-white">Your AI Career Coach</span>
               <br />
               <span
                 style={{
@@ -136,7 +136,7 @@ export default function CTA() {
               whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
               transition={{ delay: 0.35 }}
-              className="text-slate-400 text-lg max-w-xl mx-auto mb-10 font-medium leading-relaxed"
+              className="text-slate-600 dark:text-slate-400 text-lg max-w-xl mx-auto mb-10 font-medium leading-relaxed"
             >
               Join thousands of candidates who stopped guessing and started landing offers
               with AI-powered precision. Practice. Verify. Match. Get hired.
@@ -151,7 +151,7 @@ export default function CTA() {
               className="flex flex-wrap justify-center gap-5 mb-12"
             >
               {perks.map((perk) => (
-                <div key={perk} className="flex items-center gap-2 text-sm text-slate-400 font-medium">
+                <div key={perk} className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400 font-medium">
                   <CheckCircle2 className="w-4 h-4 text-mint flex-shrink-0"
                     style={{ filter: 'drop-shadow(0 0 5px rgba(74,222,128,0.5))' }} />
                   {perk}
@@ -183,7 +183,7 @@ export default function CTA() {
               <motion.a
                 href="/dashboard"
                 whileHover={{ scale: 1.04 }}
-                className="flex items-center gap-2 px-8 py-5 rounded-full font-black text-sm uppercase tracking-widest text-white border transition-all"
+                className="flex items-center gap-2 px-8 py-5 rounded-full font-black text-sm uppercase tracking-widest text-slate-900 dark:text-white border transition-all"
                 style={{
                   background: 'rgba(15,23,42,0.5)',
                   backdropFilter: 'blur(20px)',

@@ -82,8 +82,8 @@ export default function CertificatesPage() {
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-3xl font-syne font-black text-white uppercase tracking-widest">My Certificates</h1>
-          <p className="text-sm mt-2 text-slate-400 font-medium">{total} certificate{total !== 1 ? 's' : ''} verified</p>
+          <h1 className="text-3xl font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest">My Certificates</h1>
+          <p className="text-sm mt-2 text-slate-600 dark:text-slate-400 font-medium">{total} certificate{total !== 1 ? 's' : ''} verified</p>
         </div>
         <button
           onClick={() => router.push('/dashboard/certificates/upload')}
@@ -107,15 +107,15 @@ export default function CertificatesPage() {
           ))}
         </div>
       ) : certificates.length === 0 ? (
-        <div className="text-center py-24 rounded-[40px] border backdrop-blur-[30px]" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
+        <div className="text-center py-24 rounded-[40px] border backdrop-blur-[30px] bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
           <div className="w-20 h-20 mx-auto mb-6 rounded-[28px] flex items-center justify-center bg-sky/5 border border-sky/10 shadow-[0_0_20px_rgba(56,189,248,0.1)]">
             <ShieldCheck size={36} className="text-sky" />
           </div>
-          <h3 className="text-xl font-syne font-black text-white uppercase tracking-widest">No certificates yet</h3>
-          <p className="text-sm mt-2 text-slate-400 font-medium">Upload your first certificate to get started</p>
+          <h3 className="text-xl font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest">No certificates yet</h3>
+          <p className="text-sm mt-2 text-slate-600 dark:text-slate-400 font-medium">Upload your first certificate to get started</p>
           <button
             onClick={() => router.push('/dashboard/certificates/upload')}
-            className="mt-8 px-8 py-3.5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all hover:shadow-[0_0_20px_rgba(56,189,248,0.4)] bg-gradient-to-r from-sky to-blue-600 text-white"
+            className="mt-8 px-8 py-3.5 rounded-2xl font-black text-sm uppercase tracking-widest transition-all hover:shadow-[0_0_20px_rgba(56,189,248,0.4)] bg-gradient-to-r from-sky to-blue-600 text-slate-900 dark:text-white"
           >
             Verify a Certificate
           </button>
@@ -128,8 +128,7 @@ export default function CertificatesPage() {
               <div
                 key={cert.id}
                 onClick={() => router.push(`/dashboard/certificates/${cert.id}`)}
-                className="rounded-[32px] border backdrop-blur-[20px] p-5 flex items-center gap-5 cursor-pointer transition-all hover:shadow-2xl hover:border-sky/40 hover:-translate-y-1"
-                style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}
+                className="rounded-[32px] border backdrop-blur-[20px] p-5 flex items-center gap-5 cursor-pointer transition-all hover:shadow-2xl hover:border-sky/40 hover:-translate-y-1 bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]"
               >
                 {/* Score circle */}
                 <div className="w-14 h-14 flex-shrink-0 flex items-center justify-center">
@@ -148,7 +147,7 @@ export default function CertificatesPage() {
                           style={{ filter: `drop-shadow(0 0 5px ${getScoreColor(cert.authenticityScore)}66)` }}
                         />
                       </svg>
-                      <span className="absolute inset-0 flex items-center justify-center text-xs font-black font-mono text-white">
+                      <span className="absolute inset-0 flex items-center justify-center text-xs font-black font-mono text-slate-900 dark:text-white">
                         {cert.authenticityScore}
                       </span>
                     </div>
@@ -156,15 +155,15 @@ export default function CertificatesPage() {
                     <div className="w-14 h-14 rounded-full flex items-center justify-center border transition-all" style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.05)' }}>
                       {cert.status === 'PROCESSING' ? <Clock size={20} className="text-sky animate-pulse" /> :
                        cert.status === 'FAILED' ? <XCircle size={20} className="text-red-400" /> :
-                       <FileText size={20} className="text-slate-500" />}
+                       <FileText size={20} className="text-slate-500 dark:text-slate-500" />}
                     </div>
                   )}
                 </div>
 
                 {/* Info */}
                 <div className="flex-1 min-w-0">
-                  <p className="font-bold truncate text-sm text-white">{cert.fileName}</p>
-                  <p className="text-xs mt-0.5 text-slate-500 font-medium tracking-wide uppercase">{formatDate(cert.createdAt)}</p>
+                  <p className="font-bold truncate text-sm text-slate-900 dark:text-white">{cert.fileName}</p>
+                  <p className="text-xs mt-0.5 text-slate-500 dark:text-slate-500 font-medium tracking-wide uppercase">{formatDate(cert.createdAt)}</p>
                 </div>
 
                 {/* Badges */}
@@ -217,18 +216,18 @@ export default function CertificatesPage() {
           <button
             onClick={() => setPage(p => Math.max(0, p - 1))}
             disabled={page === 0}
-            className="px-6 py-2.5 rounded-xl border backdrop-blur-[20px] text-sm font-black uppercase tracking-widest text-white disabled:opacity-20 transition-all hover:bg-white/5"
+            className="px-6 py-2.5 rounded-xl border backdrop-blur-[20px] text-sm font-black uppercase tracking-widest text-slate-900 dark:text-white disabled:opacity-20 transition-all hover:bg-white/5"
             style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.05)' }}
           >
             Previous
           </button>
-          <span className="text-xs font-black uppercase tracking-widest text-slate-500">
-            Page <span className="text-white">{page + 1}</span> / {Math.ceil(total / PAGE_SIZE)}
+          <span className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-500">
+            Page <span className="text-slate-900 dark:text-white">{page + 1}</span> / {Math.ceil(total / PAGE_SIZE)}
           </span>
           <button
             onClick={() => setPage(p => p + 1)}
             disabled={(page + 1) * PAGE_SIZE >= total}
-            className="px-6 py-2.5 rounded-xl border backdrop-blur-[20px] text-sm font-black uppercase tracking-widest text-white disabled:opacity-20 transition-all hover:bg-white/5"
+            className="px-6 py-2.5 rounded-xl border backdrop-blur-[20px] text-sm font-black uppercase tracking-widest text-slate-900 dark:text-white disabled:opacity-20 transition-all hover:bg-white/5"
             style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.05)' }}
           >
             Next

@@ -2,6 +2,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Toaster } from 'react-hot-toast';
 import { useState } from 'react';
+import { ThemeProvider } from './providers/ThemeProvider';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = useState(
@@ -18,22 +19,24 @@ export function Providers({ children }: { children: React.ReactNode }) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {children}
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          style: {
-            background: '#FFFFFF',
-            color: '#0F172A',
-            border: '1px solid #E2E8F0',
-            borderRadius: '12px',
-            fontSize: '14px',
-            boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
-          },
-          success: { iconTheme: { primary: '#22C55E', secondary: '#FFFFFF' } },
-          error:   { iconTheme: { primary: '#EF4444', secondary: '#FFFFFF' } },
-        }}
-      />
+      <ThemeProvider>
+        {children}
+        <Toaster
+          position="top-right"
+          toastOptions={{
+            style: {
+              background: '#FFFFFF',
+              color: '#0F172A',
+              border: '1px solid #E2E8F0',
+              borderRadius: '12px',
+              fontSize: '14px',
+              boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+            },
+            success: { iconTheme: { primary: '#22C55E', secondary: '#FFFFFF' } },
+            error:   { iconTheme: { primary: '#EF4444', secondary: '#FFFFFF' } },
+          }}
+        />
+      </ThemeProvider>
     </QueryClientProvider>
   );
 }

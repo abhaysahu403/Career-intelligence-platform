@@ -55,17 +55,17 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   if (checking || !isAuthenticated) {
     return (
-      <div className="flex min-h-screen items-center justify-center" style={{ background: '#080C14' }}>
+      <div className="flex min-h-screen items-center justify-center bg-slate-50 dark:bg-[#080C14] transition-colors duration-300">
         <div className="text-center">
-          <div className="mx-auto mb-6 h-12 w-12 animate-spin rounded-full border-2 border-t-transparent" style={{ borderColor: '#38BDF8' }} />
-          <p className="text-slate-500 font-black uppercase tracking-widest text-[10px]">Validating session...</p>
+          <div className="mx-auto mb-6 h-12 w-12 animate-spin rounded-full border-2 border-t-transparent border-sky-500 dark:border-sky-400" />
+          <p className="text-slate-600 dark:text-slate-500 font-black uppercase tracking-widest text-[10px]">Validating session...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-screen text-slate-300 relative overflow-hidden" style={{ background: '#080C14' }}>
+    <div className="flex min-h-screen relative overflow-hidden bg-slate-50 dark:bg-[#080C14] text-slate-900 dark:text-slate-300 transition-colors duration-300">
       <Sidebar />
 
       {/* Main content */}
@@ -75,8 +75,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           sidebarOpen ? "md:ml-[240px]" : "md:ml-[72px]"
         )}
       >
-        {/* Animated Deep Space Background */}
-        <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden">
+        {/* Animated Deep Space Background - Only in Dark Mode */}
+        <div className="fixed inset-0 pointer-events-none z-[-1] overflow-hidden dark:opacity-100 opacity-0 transition-opacity duration-300">
           <div className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] rounded-full opacity-30 blur-[150px]" style={{ background: 'radial-gradient(circle, #38BDF822, transparent)' }} />
           <div className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] rounded-full opacity-20 blur-[150px]" style={{ background: 'radial-gradient(circle, #818CF811, transparent)' }} />
           <div className="absolute top-[20%] right-[10%] w-[30%] h-[30%] rounded-full opacity-10 blur-[120px]" style={{ background: 'radial-gradient(circle, #4ADE8005, transparent)' }} />

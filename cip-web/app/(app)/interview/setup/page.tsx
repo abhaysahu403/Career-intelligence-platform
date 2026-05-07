@@ -156,7 +156,7 @@ export default function InterviewSetupPage() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-12"
         >
-          <h1 className="text-5xl font-bold text-white mb-4 flex items-center justify-center gap-3">
+          <h1 className="text-5xl font-bold text-slate-900 dark:text-white mb-4 flex items-center justify-center gap-3">
             <Sparkles className="w-12 h-12 text-[#38BDF8]" />
             AI Interview Intelligence
           </h1>
@@ -172,7 +172,7 @@ export default function InterviewSetupPage() {
               animate={{ opacity: 1, y: 0 }}
               className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6"
             >
-              <h3 className="text-2xl font-bold text-white mb-2">Step 1: Choose Interview Round Type</h3>
+              <h3 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">Step 1: Choose Interview Round Type</h3>
               <p className="text-gray-400 text-sm mb-4">This is the most important choice - it determines what type of questions you'll get</p>
               <div className="grid grid-cols-3 gap-4">
                 {(['TECHNICAL', 'HR', 'BEHAVIORAL'] as RoundType[]).map((type) => (
@@ -213,7 +213,7 @@ export default function InterviewSetupPage() {
                 animate={{ opacity: 1, x: 0 }}
                 className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-4"
               >
-                <h2 className="text-xl font-bold text-white mb-2 flex items-center gap-2">
+                <h2 className="text-xl font-bold text-slate-900 dark:text-white mb-2 flex items-center gap-2">
                   <Target className="w-5 h-5 text-[#38BDF8]" />
                   Step 2: How do you want the {roundType.toLowerCase()} questions?
                 </h2>
@@ -237,7 +237,7 @@ export default function InterviewSetupPage() {
                       >
                         <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${mode.color} rounded-t-xl`}></div>
                         <Icon className={`w-8 h-8 mb-2 mx-auto ${interviewMode === mode.id ? 'text-[#38BDF8]' : 'text-gray-400'}`} />
-                        <h3 className="text-sm font-semibold text-white mb-1">{mode.title}</h3>
+                        <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-1">{mode.title}</h3>
                         <p className="text-xs text-gray-400">{mode.description}</p>
                       </motion.button>
                     );
@@ -255,7 +255,7 @@ export default function InterviewSetupPage() {
               >
                 <div className="flex items-center gap-3 mb-2">
                   <Sparkles className="w-6 h-6 text-[#38BDF8]" />
-                  <h3 className="text-xl font-bold text-white">
+                  <h3 className="text-xl font-bold text-slate-900 dark:text-white">
                     {roundType === 'HR' ? 'General HR Interview' : 'General Behavioral Interview'}
                   </h3>
                 </div>
@@ -274,11 +274,11 @@ export default function InterviewSetupPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-4"
               >
-                <h3 className="text-lg font-bold text-white mb-3">Select Company</h3>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3">Select Company</h3>
                 <select
                   value={company}
                   onChange={(e) => setCompany(e.target.value)}
-                  className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#38BDF8]"
+                  className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-[#38BDF8]"
                 >
                   <option value="">Choose a company...</option>
                   {config?.companies.map((c) => (
@@ -294,11 +294,11 @@ export default function InterviewSetupPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-4"
               >
-                <h3 className="text-lg font-bold text-white mb-3">Select Role</h3>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3">Select Role</h3>
                 <select
                   value={role}
                   onChange={(e) => setRole(e.target.value)}
-                  className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#38BDF8]"
+                  className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-[#38BDF8]"
                 >
                   <option value="">Choose a role...</option>
                   {config?.roles.map((r) => (
@@ -314,11 +314,11 @@ export default function InterviewSetupPage() {
                 animate={{ opacity: 1, y: 0 }}
                 className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-4"
               >
-                <h3 className="text-lg font-bold text-white mb-3">Select Branch</h3>
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3">Select Branch</h3>
                 <select
                   value={branch}
                   onChange={(e) => setBranch(e.target.value)}
-                  className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-[#38BDF8]"
+                  className="w-full bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-[#38BDF8]"
                 >
                   <option value="">Choose a branch...</option>
                   {config?.branches.map((b) => (
@@ -334,7 +334,7 @@ export default function InterviewSetupPage() {
               animate={{ opacity: 1, y: 0 }}
               className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-4"
             >
-              <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
                 <Clock className="w-5 h-5 text-[#38BDF8]" />
                 {roundType === 'TECHNICAL' ? 'Step 3:' : 'Step 2:'} Interview Duration
               </h3>
@@ -364,7 +364,7 @@ export default function InterviewSetupPage() {
               animate={{ opacity: 1, y: 0 }}
               className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-4"
             >
-              <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
                 <TrendingUp className="w-5 h-5 text-[#38BDF8]" />
                 {roundType === 'TECHNICAL' ? 'Step 4:' : 'Step 3:'} Difficulty Level
               </h3>
@@ -393,7 +393,7 @@ export default function InterviewSetupPage() {
               animate={{ opacity: 1, x: 0 }}
               className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6 sticky top-8"
             >
-              <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6 flex items-center gap-2">
                 <Brain className="w-6 h-6 text-[#38BDF8]" />
                 Interview Preview
               </h3>
@@ -401,7 +401,7 @@ export default function InterviewSetupPage() {
               {/* Animated AI Avatar */}
               <div className="relative mb-6">
                 <div className="w-32 h-32 mx-auto rounded-full bg-gradient-to-br from-[#38BDF8] to-[#0EA5E9] flex items-center justify-center animate-pulse">
-                  <Sparkles className="w-16 h-16 text-white" />
+                  <Sparkles className="w-16 h-16 text-slate-900 dark:text-white" />
                 </div>
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="w-40 h-40 rounded-full border-4 border-[#38BDF8]/30 animate-ping"></div>
@@ -412,31 +412,31 @@ export default function InterviewSetupPage() {
               <div className="space-y-4 mb-6">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-400">Round Type:</span>
-                  <span className="text-white font-semibold">{roundType}</span>
+                  <span className="text-slate-900 dark:text-white font-semibold">{roundType}</span>
                 </div>
                 {roundType === 'TECHNICAL' && (
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-400">Question Source:</span>
-                    <span className="text-white font-semibold text-xs">{interviewMode.replace('_', ' ')}</span>
+                    <span className="text-slate-900 dark:text-white font-semibold text-xs">{interviewMode.replace('_', ' ')}</span>
                   </div>
                 )}
                 {(roundType === 'HR' || roundType === 'BEHAVIORAL') && (
                   <div className="flex items-center justify-between text-sm">
                     <span className="text-gray-400">Question Type:</span>
-                    <span className="text-white font-semibold text-xs">General (Same for Everyone)</span>
+                    <span className="text-slate-900 dark:text-white font-semibold text-xs">General (Same for Everyone)</span>
                   </div>
                 )}
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-400">Duration:</span>
-                  <span className="text-white font-semibold">{duration} minutes</span>
+                  <span className="text-slate-900 dark:text-white font-semibold">{duration} minutes</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-400">Questions:</span>
-                  <span className="text-white font-semibold">{Math.floor(duration / 2)} questions</span>
+                  <span className="text-slate-900 dark:text-white font-semibold">{Math.floor(duration / 2)} questions</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-gray-400">Difficulty:</span>
-                  <span className="text-white font-semibold">{difficulty}</span>
+                  <span className="text-slate-900 dark:text-white font-semibold">{difficulty}</span>
                 </div>
               </div>
 
@@ -455,7 +455,7 @@ export default function InterviewSetupPage() {
                 whileTap={{ scale: 0.98 }}
                 onClick={handleStartInterview}
                 disabled={starting}
-                className="w-full bg-gradient-to-r from-[#38BDF8] to-[#0EA5E9] text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-[#38BDF8]/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-gradient-to-r from-[#38BDF8] to-[#0EA5E9] text-slate-900 dark:text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 hover:shadow-lg hover:shadow-[#38BDF8]/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {starting ? (
                   <>
@@ -475,12 +475,12 @@ export default function InterviewSetupPage() {
                 <div className="bg-white/5 rounded-lg p-3 text-center">
                   <TrendingUp className="w-5 h-5 text-[#4ADE80] mx-auto mb-1" />
                   <p className="text-xs text-gray-400">Success Rate</p>
-                  <p className="text-lg font-bold text-white">94%</p>
+                  <p className="text-lg font-bold text-slate-900 dark:text-white">94%</p>
                 </div>
                 <div className="bg-white/5 rounded-lg p-3 text-center">
                   <Zap className="w-5 h-5 text-[#F59E0B] mx-auto mb-1" />
                   <p className="text-xs text-gray-400">Avg Score</p>
-                  <p className="text-lg font-bold text-white">87/100</p>
+                  <p className="text-lg font-bold text-slate-900 dark:text-white">87/100</p>
                 </div>
               </div>
             </motion.div>
