@@ -82,26 +82,20 @@ export default function SignupPage() {
         </div>
 
         {/* Card */}
-        <div className="relative rounded-2xl p-6 border backdrop-blur-[20px] transition-all duration-300"
-          style={{
-            background: 'rgba(8,12,20,0.7)',
-            borderColor: 'rgba(255,255,255,0.06)',
-            boxShadow: '0 8px 30px -10px rgba(56,189,248,0.2)'
-          }}>
+        <div className="relative rounded-2xl p-6 border backdrop-blur-[20px] transition-all duration-300 bg-white/90 dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-white/5 shadow-xl dark:shadow-[0_8px_30px_-10px_rgba(56,189,248,0.2)]">
           
           {/* Top shimmer line */}
           <div className="absolute top-0 left-0 right-0 h-[2px] opacity-70"
             style={{ background: 'linear-gradient(90deg, transparent, #38BDF8, transparent)', boxShadow: '0 0 15px #38BDF8' }} />
 
           {/* Role Toggle */}
-          <div className="flex rounded-xl p-1 mb-5 backdrop-blur-xl"
-            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="flex rounded-xl p-1 mb-5 backdrop-blur-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5">
             {(['student', 'faculty'] as const).map(r => (
               <button key={r} onClick={() => setRole(r)}
                 className="flex-1 flex items-center justify-center gap-2 py-2 rounded-lg text-sm font-bold transition-all duration-200"
                 style={role === r
                   ? { background: 'linear-gradient(135deg, #38BDF8, #4ADE80)', color: '#fff', boxShadow: '0 4px 15px rgba(56,189,248,0.3)' }
-                  : { color: '#94A3B8' }}>
+                  : { color: '#64748B' }}>
                 {r === 'student' ? <GraduationCap size={14} /> : <BookOpen size={14} />}
                 {r === 'student' ? 'Student' : 'Faculty'}
               </button>
@@ -115,19 +109,15 @@ export default function SignupPage() {
               { name: 'college' as const, label: 'College/University', type: 'text', placeholder: 'RGPV University' },
             ].map(f => (
               <div key={f.name}>
-                <label className="block text-sm font-bold mb-1.5 text-[#94A3B8]">{f.label}</label>
+                <label className="block text-sm font-bold mb-1.5 text-slate-600 dark:text-[#94A3B8]">{f.label}</label>
                 <input {...register(f.name)} type={f.type} placeholder={f.placeholder}
-                  className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-slate-900 dark:text-white placeholder-[#64748B] transition-all focus:outline-none"
-                  style={{
-                    background: 'rgba(255,255,255,0.03)',
-                    borderColor: 'rgba(255,255,255,0.06)',
-                  }}
+                  className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-[#64748B] transition-all focus:outline-none bg-slate-50 dark:bg-white/5 border-slate-300 dark:border-white/10"
                   onFocus={(e) => {
                     e.target.style.borderColor = '#38BDF8';
                     e.target.style.boxShadow = '0 0 0 3px rgba(56,189,248,0.15)';
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = 'rgba(255,255,255,0.06)';
+                    e.target.style.borderColor = '';
                     e.target.style.boxShadow = 'none';
                   }}
                 />
@@ -136,47 +126,39 @@ export default function SignupPage() {
             ))}
 
             <div>
-              <label className="block text-sm font-bold mb-1.5 text-[#94A3B8]">Branch</label>
+              <label className="block text-sm font-bold mb-1.5 text-slate-600 dark:text-[#94A3B8]">Branch</label>
               <select {...register('branch')}
-                className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-slate-900 dark:text-white transition-all appearance-none focus:outline-none"
-                style={{
-                  background: 'rgba(255,255,255,0.03)',
-                  borderColor: 'rgba(255,255,255,0.06)',
-                }}
+                className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-slate-900 dark:text-white transition-all appearance-none focus:outline-none bg-slate-50 dark:bg-white/5 border-slate-300 dark:border-white/10"
                 onFocus={(e) => {
                   e.target.style.borderColor = '#38BDF8';
                   e.target.style.boxShadow = '0 0 0 3px rgba(56,189,248,0.15)';
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderColor = 'rgba(255,255,255,0.06)';
+                  e.target.style.borderColor = '';
                   e.target.style.boxShadow = 'none';
                 }}>
-                <option value="" style={{ background: '#0F172A', color: '#94A3B8' }}>Select branch</option>
-                {branches.map(b => <option key={b} value={b} style={{ background: '#0F172A', color: '#fff' }}>{b}</option>)}
+                <option value="" className="bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400">Select branch</option>
+                {branches.map(b => <option key={b} value={b} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-white">{b}</option>)}
               </select>
               {errors.branch && <p className="text-xs mt-1 font-bold text-[#EF4444]">{errors.branch.message}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-bold mb-1.5 text-[#94A3B8]">Password</label>
+              <label className="block text-sm font-bold mb-1.5 text-slate-600 dark:text-[#94A3B8]">Password</label>
               <div className="relative">
                 <input {...register('password')} type={showPw ? 'text' : 'password'} placeholder="Min. 8 characters"
-                  className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-slate-900 dark:text-white placeholder-[#64748B] transition-all pr-11 focus:outline-none"
-                  style={{
-                    background: 'rgba(255,255,255,0.03)',
-                    borderColor: 'rgba(255,255,255,0.06)',
-                  }}
+                  className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-[#64748B] transition-all pr-11 focus:outline-none bg-slate-50 dark:bg-white/5 border-slate-300 dark:border-white/10"
                   onFocus={(e) => {
                     e.target.style.borderColor = '#38BDF8';
                     e.target.style.boxShadow = '0 0 0 3px rgba(56,189,248,0.15)';
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = 'rgba(255,255,255,0.06)';
+                    e.target.style.borderColor = '';
                     e.target.style.boxShadow = 'none';
                   }}
                 />
                 <button type="button" onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100 text-[#94A3B8]">
+                  className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 hover:opacity-100 text-slate-600 dark:text-[#94A3B8]">
                   {showPw ? <EyeOff size={15} /> : <Eye size={15} />}
                 </button>
               </div>
@@ -184,19 +166,15 @@ export default function SignupPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-bold mb-1.5 text-[#94A3B8]">Confirm Password</label>
+              <label className="block text-sm font-bold mb-1.5 text-slate-600 dark:text-[#94A3B8]">Confirm Password</label>
               <input {...register('confirm')} type="password" placeholder="Re-enter password"
-                className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-slate-900 dark:text-white placeholder-[#64748B] transition-all focus:outline-none"
-                style={{
-                  background: 'rgba(255,255,255,0.03)',
-                  borderColor: 'rgba(255,255,255,0.06)',
-                }}
+                className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-[#64748B] transition-all focus:outline-none bg-slate-50 dark:bg-white/5 border-slate-300 dark:border-white/10"
                 onFocus={(e) => {
                   e.target.style.borderColor = '#38BDF8';
                   e.target.style.boxShadow = '0 0 0 3px rgba(56,189,248,0.15)';
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderColor = 'rgba(255,255,255,0.06)';
+                  e.target.style.borderColor = '';
                   e.target.style.boxShadow = 'none';
                 }}
               />
@@ -223,7 +201,7 @@ export default function SignupPage() {
             </button>
           </form>
 
-          <p className="mt-4 text-center text-sm font-medium text-[#94A3B8]">
+          <p className="mt-4 text-center text-sm font-medium text-slate-600 dark:text-[#94A3B8]">
             Already have an account?{' '}
             <Link href="/auth/login" className="font-bold text-[#38BDF8] hover:underline">Sign in</Link>
           </p>

@@ -75,11 +75,9 @@ export default function LoginPage() {
         </div>
 
         {/* Card */}
-        <div className="relative rounded-2xl border backdrop-blur-[20px] p-6 transition-all duration-300"
+        <div className="relative rounded-2xl border backdrop-blur-[20px] p-6 transition-all duration-300 bg-white/90 dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-white/5 shadow-xl dark:shadow-[0_8px_30px_-10px_rgba(56,189,248,0.2)]"
           style={{
-            background: 'rgba(8,12,20,0.7)',
-            borderColor: 'rgba(255,255,255,0.06)',
-            boxShadow: '0 8px 30px -10px rgba(56,189,248,0.2)'
+            boxShadow: 'var(--card-shadow, 0 8px 30px -10px rgba(56,189,248,0.15))'
           }}>
           
           {/* Top shimmer line */}
@@ -87,8 +85,7 @@ export default function LoginPage() {
             style={{ background: 'linear-gradient(90deg, transparent, #38BDF8, transparent)', boxShadow: '0 0 15px #38BDF8' }} />
 
           {/* Role Toggle */}
-          <div className="mb-6 flex rounded-xl p-1 backdrop-blur-xl"
-            style={{ background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.06)' }}>
+          <div className="mb-6 flex rounded-xl p-1 backdrop-blur-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5">
             {(['student', 'faculty'] as const).map((currentRole) => (
               <button
                 key={currentRole}
@@ -97,7 +94,7 @@ export default function LoginPage() {
                 className="flex flex-1 items-center justify-center gap-2 rounded-lg py-2 text-sm font-bold transition-all duration-200"
                 style={role === currentRole
                   ? { background: 'linear-gradient(135deg, #38BDF8, #4ADE80)', color: '#fff', boxShadow: '0 4px 15px rgba(56,189,248,0.3)' }
-                  : { color: '#94A3B8' }}
+                  : { color: '#64748B' }}
               >
                 {currentRole === 'student' ? <GraduationCap size={15} /> : <BookOpen size={15} />}
                 {currentRole === 'student' ? 'Student' : 'Faculty'}
@@ -107,22 +104,18 @@ export default function LoginPage() {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <label className="mb-1.5 block text-sm font-bold text-[#94A3B8]">Email</label>
+              <label className="mb-1.5 block text-sm font-bold text-slate-600 dark:text-[#94A3B8]">Email</label>
               <input
                 {...register('email')}
                 type="email"
                 placeholder="you@college.edu"
-                className="w-full rounded-xl border px-4 py-3 text-sm font-bold text-slate-900 dark:text-white placeholder-[#64748B] transition-all focus:outline-none"
-                style={{
-                  background: 'rgba(255,255,255,0.03)',
-                  borderColor: 'rgba(255,255,255,0.06)',
-                }}
+                className="w-full rounded-xl border px-4 py-3 text-sm font-bold text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-[#64748B] transition-all focus:outline-none bg-slate-50 dark:bg-white/5 border-slate-300 dark:border-white/10"
                 onFocus={(e) => {
                   e.target.style.borderColor = '#38BDF8';
                   e.target.style.boxShadow = '0 0 0 3px rgba(56,189,248,0.15)';
                 }}
                 onBlur={(e) => {
-                  e.target.style.borderColor = 'rgba(255,255,255,0.06)';
+                  e.target.style.borderColor = '';
                   e.target.style.boxShadow = 'none';
                 }}
               />
@@ -130,30 +123,26 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <label className="mb-1.5 block text-sm font-bold text-[#94A3B8]">Password</label>
+              <label className="mb-1.5 block text-sm font-bold text-slate-600 dark:text-[#94A3B8]">Password</label>
               <div className="relative">
                 <input
                   {...register('password')}
                   type={showPw ? 'text' : 'password'}
                   placeholder="••••••••"
-                  className="w-full rounded-xl border px-4 py-3 pr-11 text-sm font-bold text-slate-900 dark:text-white placeholder-[#64748B] transition-all focus:outline-none"
-                  style={{
-                    background: 'rgba(255,255,255,0.03)',
-                    borderColor: 'rgba(255,255,255,0.06)',
-                  }}
+                  className="w-full rounded-xl border px-4 py-3 pr-11 text-sm font-bold text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-[#64748B] transition-all focus:outline-none bg-slate-50 dark:bg-white/5 border-slate-300 dark:border-white/10"
                   onFocus={(e) => {
                     e.target.style.borderColor = '#38BDF8';
                     e.target.style.boxShadow = '0 0 0 3px rgba(56,189,248,0.15)';
                   }}
                   onBlur={(e) => {
-                    e.target.style.borderColor = 'rgba(255,255,255,0.06)';
+                    e.target.style.borderColor = '';
                     e.target.style.boxShadow = 'none';
                   }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 transition-opacity hover:opacity-100 text-[#94A3B8]"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 opacity-50 transition-opacity hover:opacity-100 text-slate-600 dark:text-[#94A3B8]"
                 >
                   {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -193,7 +182,7 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-4 text-center">
-            <span className="text-sm font-medium text-[#94A3B8]">Don&apos;t have an account? </span>
+            <span className="text-sm font-medium text-slate-600 dark:text-[#94A3B8]">Don&apos;t have an account? </span>
             <Link href="/auth/signup" className="text-sm font-bold text-[#38BDF8] hover:underline">
               Sign up
             </Link>
