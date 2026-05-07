@@ -1,10 +1,17 @@
 'use client';
 import { useEffect, useRef } from 'react';
+import { useAppStore } from '@/store';
 
-// Theme Colors
-const COLORS = [
+// Dark Theme Colors (Original - keeping as is)
+const DARK_COLORS = [
   { r: 56, g: 189, b: 248 }, // Sky Blue
   { r: 74, g: 222, b: 128 }, // Mint Green
+];
+
+// Light Theme Colors (Darker, more saturated for visibility on light background)
+const LIGHT_COLORS = [
+  { r: 14, g: 165, b: 233 }, // Deeper Sky Blue
+  { r: 34, g: 197, b: 94 }, // Deeper Green
 ];
 
 class Particle {
@@ -16,14 +23,15 @@ class Particle {
   pulse: number;
   color: { r: number, g: number, b: number };
 
-  constructor(canvasWidth: number, canvasHeight: number) {
+  constructor(canvasWidth: number, canvasHeight: number, isDark: boolean) {
     this.x = Math.random() * canvasWidth;
     this.y = Math.random() * canvasHeight;
     this.size = Math.random() * 4 + 1; // Larger nodes
     this.vx = (Math.random() - 0.5) * 0.4; // Controlled drift
     this.vy = (Math.random() - 0.5) * 0.4;
     this.pulse = Math.random() * Math.PI * 2;
-    this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+    const colorSet = isDark ? DARK_COLORS : LIGHT_COLORS;
+    this.color = colorSet[Math.floor(Math.random() * colorSet.length)];
   }
 
   update(canvasWidth: number, canvasHeight: number) {
@@ -37,23 +45,28 @@ class Particle {
     if (this.y > canvasHeight) this.y = 0;
   }
 
-  draw(ctx: CanvasRenderingContext2D, shadowBlurBase: number) {
+  draw(ctx: CanvasRenderingContext2D, shadowBlurBase: number, isDark: boolean) {
     this.pulse += 0.03;
     const blur = shadowBlurBase + Math.sin(this.pulse) * 12;
 
     const rgb = `${this.color.r}, ${this.color.g}, ${this.color.b}`;
 
-    // Deep Saturated Crystal Color (Reduced intensity for background)
+    // Adjust opacity based on theme
+    const particleOpacity = isDark ? 0.25 : 0.35;
+    const shadowOpacity = isDark ? 0.4 : 0.5;
+    const coreOpacity = isDark ? 0.3 : 0.4;
+
+    // Deep Saturated Crystal Color
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-    ctx.fillStyle = `rgba(${rgb}, 0.25)`;
+    ctx.fillStyle = `rgba(${rgb}, ${particleOpacity})`;
     ctx.shadowBlur = blur / 1.5;
-    ctx.shadowColor = `rgba(${rgb}, 0.4)`;
+    ctx.shadowColor = `rgba(${rgb}, ${shadowOpacity})`;
     ctx.fill();
 
-    // White Brilliant Core (Reduced opacity)
+    // White Brilliant Core
     ctx.shadowBlur = 0;
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+    ctx.fillStyle = `rgba(255, 255, 255, ${coreOpacity})`;
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.size / 2.2, 0, Math.PI * 2);
     ctx.fill();
@@ -62,6 +75,8 @@ class Particle {
 
 export default function NeuralCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const theme = useAppStore((state) => state.theme);
+  const isDark = theme === 'dark';
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -84,7 +99,7 @@ export default function NeuralCanvas() {
       H = canvas.height = window.innerHeight;
       particles = [];
       for (let i = 0; i < particleCount; i++) {
-        particles.push(new Particle(W, H));
+        particles.push(new Particle(W, H, isDark));
       }
     };
 
@@ -104,9 +119,10 @@ export default function NeuralCanvas() {
             ctx.moveTo(particles[i].x, particles[i].y);
             ctx.lineTo(particles[j].x, particles[j].y);
 
-            // Subdued Neural Connections
+            // Adjust line opacity based on theme
+            const baseAlpha = isDark ? 0.15 : 0.2;
             ctx.lineWidth = lineWidth * 0.6;
-            const alpha = 0.15 * (1 - dist / connectionDistance);
+            const alpha = baseAlpha * (1 - dist / connectionDistance);
             
             // Mix colors or just use the first particle's color for the line
             const p = particles[i];
@@ -115,7 +131,7 @@ export default function NeuralCanvas() {
           }
         }
         
-        particles[i].draw(ctx, shadowBlurBase);
+        particles[i].draw(ctx, shadowBlurBase, isDark);
       }
       animId = requestAnimationFrame(animate);
     };
@@ -128,14 +144,19 @@ export default function NeuralCanvas() {
       window.removeEventListener('resize', init);
       cancelAnimationFrame(animId);
     };
-  }, []);
+  }, [isDark]); // Re-initialize when theme changes
+
+  // Dynamic background based on theme
+  const backgroundStyle = isDark
+    ? 'radial-gradient(circle at center, #0A0F1E 0%, #000000 100%)' // Original dark gradient
+    : 'radial-gradient(circle at center, #F1F5F9 0%, #E2E8F0 100%)'; // Light gradient
 
   return (
     <canvas
       ref={canvasRef}
-      className="fixed top-0 left-0 w-full h-full z-0 pointer-events-none"
+      className="fixed top-0 left-0 w-full h-full z-0 pointer-events-none transition-colors duration-500"
       style={{
-        background: 'radial-gradient(circle at center, #0A0F1E 0%, #000000 100%)',
+        background: backgroundStyle,
       }}
     />
   );
