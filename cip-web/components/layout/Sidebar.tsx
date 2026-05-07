@@ -15,11 +15,11 @@ import toast from 'react-hot-toast';
 const studentNav = [
   { href: '/dashboard', icon: LayoutDashboard, label: 'Dashboard'  },
   { href: '/profile',   icon: User,            label: 'Profile'    },
-  { href: '/analytics', icon: LineChart,       label: 'Progress'   },
-  { href: '/interview', icon: Video,            label: 'Interview'  },
-  { href: '/jobs',      icon: Briefcase,        label: 'Jobs'       },
+  { href: '/interview', icon: Video,           label: 'Interview'  },
   { href: '/dashboard/certificates', icon: ShieldCheck, label: 'Certificates' },
-  { href: '/roadmap',   icon: Map,              label: 'Roadmap'    },
+  { href: '/jobs',      icon: Briefcase,       label: 'Jobs'       },
+  { href: '/analytics', icon: LineChart,       label: 'Progress'   },
+  { href: '/roadmap',   icon: Map,             label: 'Roadmap'    },
 ];
 
 const navItems = studentNav;
