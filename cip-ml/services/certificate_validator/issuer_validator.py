@@ -26,7 +26,31 @@ def load_issuer_registry() -> dict:
 
     if REGISTRY_PATH.exists():
         with open(REGISTRY_PATH) as f:
-            _registry_cache = json.load(f)
+            raw_data = json.load(f)
+            
+            # Convert to expected format (combine universities and certification_bodies)
+            institutions = []
+            if "universities" in raw_data:
+                for uni in raw_data["universities"]:
+                    institutions.append({
+                        "name": uni["name"],
+                        "aliases": [uni.get("short", "")],
+                        "type": uni.get("type", "university"),
+                        "domain": uni.get("domain", ""),
+                        "accredited": uni.get("accredited", False)
+                    })
+            
+            if "certification_bodies" in raw_data:
+                for cert in raw_data["certification_bodies"]:
+                    institutions.append({
+                        "name": cert["name"],
+                        "aliases": [cert.get("short", "")],
+                        "type": cert.get("type", "certification"),
+                        "domain": cert.get("domain", ""),
+                        "accredited": cert.get("accredited", False)
+                    })
+            
+            _registry_cache = {"institutions": institutions}
     else:
         logger.warning(f"Registry not found at {REGISTRY_PATH}, using built-in defaults")
         _registry_cache = _get_default_registry()

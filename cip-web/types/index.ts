@@ -90,13 +90,119 @@ export interface InterviewResult {
   duration: number;
 }
 
+// ─── Interview V3 Types ──────────────────────────────────────────────────────
+export type InterviewMode = 'RESUME_BASED' | 'COMPANY_SPECIFIC' | 'ROLE_BASED' | 'BRANCH_BASED' | 'TIME_BASED';
+export type InterviewDifficulty = 'EASY' | 'MEDIUM' | 'HARD' | 'FAANG';
+export type InterviewPersona = 'FRIENDLY_HR' | 'STRICT_TECHNICAL' | 'STARTUP_FOUNDER' | 'FAANG_INTERVIEWER' | 'SENIOR_ARCHITECT';
+export type RoundType = 'TECHNICAL' | 'HR' | 'BEHAVIORAL';
+export type EyeContact = 'GOOD' | 'AVERAGE' | 'POOR';
+export type Posture = 'STABLE' | 'UNSTABLE';
+export type HiringVerdict = 'STRONG_HIRE' | 'CONSIDER' | 'REJECT';
+
+export interface InterviewV3Config {
+  companies: string[];
+  roles: string[];
+  branches: string[];
+  difficulties: InterviewDifficulty[];
+  personas: InterviewPersona[];
+  durations: number[];
+}
+
+export interface InterviewV3Question {
+  question: string;
+  topic: string;
+  difficulty: string;
+  ideal?: string;
+  source: string;
+  company?: string;
+  branch?: string;
+}
+
+export interface InterviewV3Session {
+  id: number;
+  userId: number;
+  interviewMode: InterviewMode;
+  company?: string;
+  role?: string;
+  branch?: string;
+  duration?: number;
+  difficulty: InterviewDifficulty;
+  persona: InterviewPersona;
+  roundType?: RoundType;
+  status: string;
+  questions: InterviewV3Question[];
+  answers: Array<{
+    questionIndex: number;
+    question: string;
+    answer: string;
+    timeTakenSeconds: number;
+    score: number;
+    topic: string;
+    difficulty: string;
+    feedback: {
+      good: string;
+      missing: string;
+      ideal: string;
+      tip: string;
+    };
+  }>;
+  totalScore: number;
+  totalQuestions: number;
+  answeredQuestions: number;
+  startedAt: string;
+  completedAt?: string;
+}
+
+export interface FacialAnalytics {
+  confidenceScore: number;
+  eyeContact: EyeContact;
+  emotion: string;
+  posture: Posture;
+  voiceClarity: number;
+  timestamp: string;
+}
+
+export interface InterviewV3Report {
+  interview: InterviewV3Session;
+  finalScore: number;
+  finalVerdict: HiringVerdict;
+  performanceBreakdown: {
+    communication: number;
+    technical: number;
+    confidence: number;
+    eyeContact: number;
+    problemSolving: number;
+    clarity: number;
+  };
+  companyReadiness: {
+    [company: string]: number;
+  };
+  weakAreas: string[];
+  strongAreas: string[];
+  recommendations: string[];
+  facialAnalytics?: FacialAnalytics[];
+  speechAnalytics?: {
+    wordsPerMinute: number;
+    fillerWords: number;
+    pauseDuration: number;
+    clarity: number;
+  };
+  starCompliance?: {
+    situation: boolean;
+    task: boolean;
+    action: boolean;
+    result: boolean;
+    score: number;
+  };
+}
+
 // ─── Jobs ────────────────────────────────────────────────────────────────────
 export interface Job {
   id: number;
   company: string;
   role: string;
   location: string;
-  type: 'Full-time' | 'Internship' | 'Part-time';
+  type: 'Full-time' | 'Internship' | 'Part-time' | 'Contract';
   match: number;
   minScore: number;
   salary?: string;
@@ -104,10 +210,16 @@ export interface Job {
   matchedSkills?: string[];
   missingSkills?: string[];
   matchReason?: string;
+  nextStep?: string;
+  readinessLevel?: string;
   logo?: string;
   url: string;
+  applyLink?: string;
   deadline?: string;
   isRecommended: boolean;
+  experienceLevel?: string;
+  description?: string;
+  mode?: string;
 }
 
 // ─── Roadmap ─────────────────────────────────────────────────────────────────

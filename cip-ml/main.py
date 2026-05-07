@@ -498,16 +498,50 @@ async def evaluate_interview_endpoint(request: InterviewEvaluateRequest, backgro
 
 @app.post("/ml/interview/coach", tags=["Interview"])
 async def coach_interview_answer(payload: dict):
+    """
+    AI Interview Coach - provides feedback and answers questions
+    Supports two modes:
+    1. Answer evaluation mode: provide 'answer' to get feedback
+    2. Chat mode: provide 'user_query' to ask questions
+    """
     answer = str(payload.get("answer", "")).strip()
     question = str(payload.get("question", "")).strip()
+    user_query = str(payload.get("user_query", "")).strip()
     job_role = str(payload.get("job_role", "SDE")).strip() or "SDE"
     persona_mode = str(payload.get("persona_mode", "friendly")).strip() or "friendly"
     resume_skills = [str(skill).strip() for skill in payload.get("resume_skills", []) if str(skill).strip()]
     expected_answer = str(payload.get("expected_answer", "")).strip() or f"A strong answer should connect the idea to {job_role}, mention tradeoffs, and give one example."
     topic = str(payload.get("topic", "DSA")).strip() or "DSA"
 
+    # Mode 1: Chat mode - user asking a question
+    if user_query:
+        model = _get_gemini_model()
+        if not model:
+            return JSONResponse(content={"reply": "AI is currently offline. Please try again later."})
+            
+        prompt = f"""
+        You are an expert, encouraging AI Interview Mentor.
+        The user is practicing for a technical interview.
+        
+        Interview Question: "{question}"
+        The user's original answer: "{answer if answer else 'Not provided yet'}"
+        
+        The user is asking you a follow-up question:
+        "{user_query}"
+        
+        Provide a helpful, direct, and constructive response. Keep it conversational but concise (2-3 sentences max).
+        """
+        
+        try:
+            response = model.generate_content(prompt)
+            reply = response.text.strip()
+            return JSONResponse(content={"reply": reply})
+        except Exception as e:
+            return JSONResponse(content={"reply": "Sorry, I'm having trouble analyzing that right now. Could you rephrase your question?"})
+    
+    # Mode 2: Answer evaluation mode - evaluate user's answer
     if not answer or not question:
-        raise HTTPException(status_code=400, detail="Both question and answer are required")
+        raise HTTPException(status_code=400, detail="Both question and answer are required for evaluation mode, or provide user_query for chat mode")
 
     ai_feedback = _evaluate_with_gemini(question, answer, resume_skills, persona_mode)
     feedback = ai_feedback or _heuristic_feedback(question, answer, expected_answer, topic)
@@ -530,40 +564,6 @@ async def coach_interview_answer(payload: dict):
         "provider": audio["provider"] if audio else "browser",
     }
     return JSONResponse(content=response)
-
-@app.post("/ml/interview/coach", tags=["Interview"])
-async def interview_coach(payload: dict):
-    question = str(payload.get("question", "")).strip()
-    answer = str(payload.get("answer", "")).strip()
-    user_query = str(payload.get("user_query", "")).strip()
-    
-    if not user_query:
-        raise HTTPException(status_code=400, detail="User query is required")
-        
-    model = _get_gemini_model()
-    if not model:
-        return JSONResponse(content={"reply": "AI is currently offline. Please try again later."})
-        
-    prompt = f"""
-    You are an expert, encouraging AI Interview Mentor.
-    The user is practicing for a technical interview.
-    
-    Interview Question: "{question}"
-    The user's original answer: "{answer}"
-    
-    The user is asking you a follow-up question regarding their answer or the topic:
-    "{user_query}"
-    
-    Provide a helpful, direct, and constructive response. Keep it conversational but concise.
-    """
-    
-    try:
-        response = model.generate_content(prompt)
-        reply = response.text
-    except Exception as e:
-        reply = "Sorry, I'm having trouble analyzing that right now. Could you rephrase your question?"
-        
-    return JSONResponse(content={"reply": reply})
 
 @app.post("/ml/readiness", response_model=CareerReadinessResponse, tags=["Career"])
 async def career_readiness_endpoint(request: CareerReadinessRequest, background_tasks: BackgroundTasks):

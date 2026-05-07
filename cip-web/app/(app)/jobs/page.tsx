@@ -9,51 +9,10 @@ import ScoreCircle from '@/components/ui/ScoreCircle';
 import { useAppStore } from '@/store';
 import type { Job } from '@/types';
 
-const ROLES     = ['All Roles', 'SWE Intern', 'Backend Intern', 'Frontend Dev', 'Data Analyst', 'SDE-1', 'Systems Engineer'];
-const LOCATIONS = ['All Locations', 'Bangalore', 'Hyderabad', 'Delhi', 'Pune', 'Remote'];
-const TYPES     = ['All Types', 'Internship', 'Full-time', 'Part-time'];
-
-const unwrapPayload = <T,>(response: { data: T } | { data: { data: T } }) =>
-  'data' in (response.data as Record<string, unknown>)
-    ? (response.data as { data: T }).data
-    : (response.data as T);
-
-const normalizeJobs = (payload: { content?: Array<{
-  id: number;
-  company: string;
-  role: string;
-  location?: string;
-  employmentType?: string;
-  minimumReadinessScore?: number;
-  salaryRange?: string;
-  requiredSkills?: string[];
-  sourceUrl?: string;
-}> } | Array<{
-  id: number;
-  company: string;
-  role: string;
-  location?: string;
-  employmentType?: string;
-  minimumReadinessScore?: number;
-  salaryRange?: string;
-  requiredSkills?: string[];
-  sourceUrl?: string;
-}>): Job[] => {
-  const items = Array.isArray(payload) ? payload : payload.content ?? [];
-  return items.map((item) => ({
-    id: item.id,
-    company: item.company,
-    role: item.role,
-    location: item.location ?? 'Unknown',
-    type: item.employmentType === 'PART_TIME' ? 'Part-time' : item.employmentType === 'INTERNSHIP' ? 'Internship' : 'Full-time',
-    match: 100,
-    minScore: item.minimumReadinessScore ?? 0,
-    salary: item.salaryRange,
-    skills: item.requiredSkills ?? [],
-    url: item.sourceUrl ?? '#',
-    isRecommended: false,
-  }));
-};
+const ROLES     = ['All Roles', 'Software', 'Engineer', 'Developer', 'Backend', 'Frontend', 'Full Stack', 'Data', 'DevOps', 'QA', 'Intern', 'Analyst'];
+const LOCATIONS = ['All Locations', 'Bangalore', 'Bengaluru', 'Hyderabad', 'Delhi', 'Pune', 'Mumbai', 'Chennai', 'Noida', 'Gurgaon', 'Remote', 'India'];
+const TYPES     = ['All Types', 'Internship', 'Full-time', 'Part-time', 'Contract'];
+const EXPERIENCE = ['All Levels', 'Fresher', 'Junior', 'Mid', 'Senior'];
 
 export default function JobsPage() {
   const user = useAppStore(s => s.user);
@@ -62,96 +21,183 @@ export default function JobsPage() {
   const [roleFilter, setRoleFilter]       = useState('All Roles');
   const [locationFilter, setLocationFilter] = useState('All Locations');
   const [typeFilter, setTypeFilter]       = useState('All Types');
+  const [experienceFilter, setExperienceFilter] = useState('All Levels');
   const [onlyRecommended, setOnlyRecommended] = useState(false);
   const [minMatch, setMinMatch]           = useState(0);
 
-  const { data: jobs } = useQuery({
-    queryKey: ['jobs'],
+  // Fetch recommended jobs (with full intelligence)
+  const { data: recommendedJobs, isLoading: loadingRecommended } = useQuery({
+    queryKey: ['jobs-recommended', user?.id],
+    enabled: Boolean(user?.id),
     queryFn: async () => {
       try {
-        const response = await jobsApi.list();
-        return normalizeJobs(unwrapPayload(response) as { content?: Array<{
-          id: number;
-          company: string;
-          role: string;
-          location?: string;
-          employmentType?: string;
-          minimumReadinessScore?: number;
-          salaryRange?: string;
-          requiredSkills?: string[];
-          sourceUrl?: string;
-        }> });
-      }
-      catch (error) { 
-        console.error('Failed to fetch jobs:', error);
-        return []; 
-      }
-    },
-  });
-
-  const { data: recommendedJobs } = useQuery({
-    queryKey: ['jobs-recommended', score?.readiness, user?.skills],
-    enabled: Boolean(score?.readiness),
-    queryFn: async () => {
-      try {
-        const response = await jobsApi.recommended({ readiness: score?.readiness, skills: user?.skills });
-        const payload = unwrapPayload(response) as Array<{
-          job: {
-            id: number;
-            company: string;
-            role: string;
-            location?: string;
-            employmentType?: string;
-            minimumReadinessScore?: number;
-            salaryRange?: string;
-            requiredSkills?: string[];
-            sourceUrl?: string;
-          };
-          matchPercentage: number;
-        }>;
-
-        return payload.map((item) => ({
-          id: item.job.id,
-          company: item.job.company,
-          role: item.job.role,
-          location: item.job.location ?? 'Unknown',
-          type: item.job.employmentType === 'PART_TIME' ? 'Part-time' : item.job.employmentType === 'INTERNSHIP' ? 'Internship' : 'Full-time',
-          match: item.matchPercentage,
-          minScore: item.job.minimumReadinessScore ?? 0,
-          salary: item.job.salaryRange,
-          skills: item.job.requiredSkills ?? [],
-          url: item.job.sourceUrl ?? '#',
+        const response = await jobsApi.recommended();
+        const data = response.data?.data || response.data || [];
+        
+        console.log('📊 [Jobs] Recommended response:', data);
+        
+        return data.map((item: any) => ({
+          id: item.jobId,
+          company: item.company,
+          role: item.jobTitle || item.role,
+          location: item.location || 'Unknown',
+          type: normalizeEmploymentType(item.employmentType),
+          match: item.matchScore || 0,
+          minScore: 0,
+          salary: item.salaryRange,
+          skills: item.matchedSkills || [],
+          matchedSkills: item.matchedSkills || [],
+          missingSkills: item.missingSkills || [],
+          matchReason: item.reason,
+          nextStep: item.nextStep,
+          readinessLevel: item.readinessLevel,
+          url: item.applyLink || item.sourceUrl || '#',
+          applyLink: item.applyLink,
           isRecommended: true,
+          experienceLevel: item.experienceLevel,
+          description: item.description,
+          mode: item.mode,
         } satisfies Job));
       } catch (error) {
-        console.error('Failed to fetch recommended jobs:', error);
+        console.error('❌ [Jobs] Failed to fetch recommended:', error);
         return [] as Job[];
       }
     },
   });
 
-  const recommendedMap = new Map((recommendedJobs ?? []).map((job) => [job.id, job]));
-  const allJobs = (jobs ?? []).map((job) => recommendedMap.get(job.id) ?? job);
+  // Fetch all jobs (fallback for non-recommended)
+  const { data: allJobs, isLoading: loadingAll } = useQuery({
+    queryKey: ['jobs-all'],
+    queryFn: async () => {
+      try {
+        const response = await jobsApi.list({ page: 0, size: 100 });
+        const payload = response.data?.data || response.data || {};
+        const items = payload.content || [];
+        
+        console.log('📊 [Jobs] All jobs response:', items.length, 'jobs');
+        
+        return items.map((item: any) => ({
+          id: item.id,
+          company: item.company,
+          role: item.role,
+          location: item.location || 'Unknown',
+          type: normalizeEmploymentType(item.employmentType),
+          match: 50, // Default match for non-recommended
+          minScore: item.minimumReadinessScore || 0,
+          salary: item.salaryRange,
+          skills: item.requiredSkills || [],
+          url: item.applyLink || item.sourceUrl || '#',
+          applyLink: item.applyLink,
+          isRecommended: false,
+          experienceLevel: item.experienceLevel,
+          description: item.description,
+        } satisfies Job));
+      } catch (error) {
+        console.error('❌ [Jobs] Failed to fetch all jobs:', error);
+        return [] as Job[];
+      }
+    },
+  });
 
-  const filtered = allJobs.filter(j => {
+  // Merge jobs: prioritize recommended, then add non-recommended
+  const recommendedIds = new Set((recommendedJobs || []).map(j => j.id));
+  const nonRecommendedJobs = (allJobs || []).filter(j => !recommendedIds.has(j.id));
+  const mergedJobs = [...(recommendedJobs || []), ...nonRecommendedJobs];
+
+  console.log('📊 [Jobs] Merged:', mergedJobs.length, 'total (', recommendedJobs?.length, 'recommended +', nonRecommendedJobs.length, 'others)');
+
+  // Apply filters with flexible matching
+  const filtered = mergedJobs.filter(j => {
+    // Only recommended filter
     if (onlyRecommended && !j.isRecommended) return false;
-    if (roleFilter     !== 'All Roles'      && !j.role.toLowerCase().includes(roleFilter.toLowerCase().replace('all roles',''))) return false;
-    if (locationFilter !== 'All Locations'  && j.location !== locationFilter) return false;
-    if (typeFilter     !== 'All Types'      && j.type !== typeFilter) return false;
-    if (minMatch > 0   && j.match < minMatch) return false;
-    if (search && !j.company.toLowerCase().includes(search.toLowerCase()) &&
-        !j.role.toLowerCase().includes(search.toLowerCase())) return false;
+    
+    // Role filter - flexible matching
+    if (roleFilter !== 'All Roles') {
+      const roleLower = j.role.toLowerCase();
+      const filterLower = roleFilter.toLowerCase();
+      
+      // Check if role contains any part of the filter
+      const roleWords = filterLower.split(' ');
+      const roleMatch = roleWords.some(word => roleLower.includes(word));
+      
+      if (!roleMatch) return false;
+    }
+    
+    // Location filter - flexible matching
+    if (locationFilter !== 'All Locations') {
+      const locationLower = j.location.toLowerCase();
+      const filterLower = locationFilter.toLowerCase();
+      
+      // Match if location contains filter OR if it's remote
+      const locationMatch = locationLower.includes(filterLower) || 
+                           (filterLower === 'remote' && locationLower.includes('remote'));
+      
+      if (!locationMatch) return false;
+    }
+    
+    // Type filter - exact match on normalized type
+    if (typeFilter !== 'All Types') {
+      if (j.type !== typeFilter) return false;
+    }
+    
+    // Experience filter - flexible matching
+    if (experienceFilter !== 'All Levels') {
+      const expLower = (j.experienceLevel || '').toLowerCase();
+      const filterLower = experienceFilter.toLowerCase();
+      
+      // Match if experience level contains filter
+      const expMatch = expLower.includes(filterLower);
+      
+      if (!expMatch) return false;
+    }
+    
+    // Match percentage filter
+    if (minMatch > 0 && j.match < minMatch) return false;
+    
+    // Search filter - flexible matching
+    if (search) {
+      const searchLower = search.toLowerCase();
+      const companyMatch = j.company.toLowerCase().includes(searchLower);
+      const roleMatch = j.role.toLowerCase().includes(searchLower);
+      const locationMatch = j.location.toLowerCase().includes(searchLower);
+      
+      if (!companyMatch && !roleMatch && !locationMatch) return false;
+    }
+    
     return true;
   });
 
-
-
   const clearFilters = () => {
-    setSearch(''); setRoleFilter('All Roles'); setLocationFilter('All Locations');
-    setTypeFilter('All Types'); setMinMatch(0); setOnlyRecommended(false);
+    setSearch(''); 
+    setRoleFilter('All Roles'); 
+    setLocationFilter('All Locations');
+    setTypeFilter('All Types'); 
+    setExperienceFilter('All Levels');
+    setMinMatch(0); 
+    setOnlyRecommended(false);
   };
+  
   const hasFilters = search || roleFilter !== 'All Roles' || locationFilter !== 'All Locations' ||
-                     typeFilter !== 'All Types' || minMatch > 0 || onlyRecommended;
+                     typeFilter !== 'All Types' || experienceFilter !== 'All Levels' || minMatch > 0 || onlyRecommended;
+
+  const isLoading = loadingRecommended || loadingAll;
+
+  // Debug info
+  console.log('🔍 [Jobs Debug]', {
+    total: mergedJobs.length,
+    recommended: recommendedJobs?.length || 0,
+    nonRecommended: nonRecommendedJobs.length,
+    filtered: filtered.length,
+    filters: {
+      role: roleFilter,
+      location: locationFilter,
+      type: typeFilter,
+      experience: experienceFilter,
+      minMatch,
+      onlyRecommended,
+      search
+    }
+  });
 
   return (
     <div className="space-y-6 pb-12 max-w-7xl">
@@ -159,10 +205,10 @@ export default function JobsPage() {
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
         <div className="flex-1">
           <h2 className="text-3xl font-syne font-black text-white uppercase tracking-widest">
-            Hiring Signal & Matches
+            Job Magic Engine
           </h2>
           <p className="text-sm font-medium uppercase tracking-wide text-slate-500 mt-1">
-            {filtered.length} opportunities matched • Optimized for your career score
+            {isLoading ? 'Loading...' : `${filtered.length} opportunities matched • AI-powered recommendations`}
           </p>
         </div>
         {score && (
@@ -211,6 +257,11 @@ export default function JobsPage() {
             style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.1)', color: '#F8FAFC' }}>
             {TYPES.map(t => <option key={t} value={t} style={{ background: '#0F172A', color: '#F8FAFC' }}>{t}</option>)}
           </select>
+          <select value={experienceFilter} onChange={e => setExperienceFilter(e.target.value)}
+            className="px-3 py-2 rounded-xl text-sm font-bold border appearance-none transition-all outline-none"
+            style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.1)', color: '#F8FAFC' }}>
+            {EXPERIENCE.map(e => <option key={e} value={e} style={{ background: '#0F172A', color: '#F8FAFC' }}>{e}</option>)}
+          </select>
           <select value={minMatch} onChange={e => setMinMatch(Number(e.target.value))}
             className="px-3 py-2 rounded-xl text-sm font-bold border appearance-none transition-all outline-none"
             style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.1)', color: '#F8FAFC' }}>
@@ -231,9 +282,9 @@ export default function JobsPage() {
 
       <div className="grid grid-cols-3 gap-3">
         {[
-          { label: 'Total Matched',  value: filtered.length,                           color: '#38BDF8' },
-          { label: 'Recommended',    value: filtered.filter(j=>j.isRecommended).length, color: '#4ADE80' },
-          { label: 'High Match 80%+',value: filtered.filter(j=>j.match>=80).length,    color: '#F59E0B' },
+          { label: 'Total Jobs',     value: mergedJobs.length,                         color: '#38BDF8' },
+          { label: 'Filtered',       value: filtered.length,                           color: '#4ADE80' },
+          { label: 'Recommended',    value: filtered.filter(j=>j.isRecommended).length, color: '#F59E0B' },
         ].map(s => (
           <div key={s.label} className="relative rounded-2xl p-4 border backdrop-blur-[20px] text-center transition-all hover:-translate-y-1 hover:shadow-[0_8px_30px_rgba(56,189,248,0.15)]"
             style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
@@ -243,7 +294,12 @@ export default function JobsPage() {
         ))}
       </div>
 
-      {filtered.length === 0 ? (
+      {isLoading ? (
+        <div className="text-center py-16 rounded-2xl border backdrop-blur-[20px]" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky mx-auto mb-3"></div>
+          <p className="font-syne font-black text-white text-lg">Loading jobs...</p>
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="text-center py-16 rounded-2xl border backdrop-blur-[20px]" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
           <Filter size={32} className="mx-auto mb-3 text-sky" />
           <p className="font-syne font-black text-white text-lg">No jobs match your filters</p>
@@ -256,7 +312,7 @@ export default function JobsPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
           {filtered.map(job => (
-            <div key={job.id} className="relative">
+            <div key={`${job.id}-${job.isRecommended ? 'rec' : 'all'}`} className="relative">
               <JobCard job={job} />
             </div>
           ))}
@@ -264,4 +320,13 @@ export default function JobsPage() {
       )}
     </div>
   );
+}
+
+function normalizeEmploymentType(type?: string): 'Full-time' | 'Internship' | 'Part-time' | 'Contract' {
+  if (!type) return 'Full-time';
+  const lower = type.toLowerCase();
+  if (lower.includes('intern')) return 'Internship';
+  if (lower.includes('part')) return 'Part-time';
+  if (lower.includes('contract') || lower.includes('freelance')) return 'Contract';
+  return 'Full-time';
 }

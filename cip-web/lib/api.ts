@@ -118,14 +118,50 @@ export const interviewApi = {
   getNextQuestion: (interviewId: number) => api.get(`/interview/question/${interviewId}`),
   evaluateAnswer: (data: { question: string; answer: string; topic: string; ideal: string }) =>
     api.post('/interview/evaluate', data),
+  
+  // ─── V3 Interview System ────────────────────────────────────────────────────
+  v3: {
+    getConfig: () => api.get('/interview/v3/config'),
+    getTips: (params?: { roundType?: string; difficulty?: string; duration?: number }) =>
+      api.get('/interview/v3/tips', { params }),
+    start: (data: {
+      interviewMode: 'RESUME_BASED' | 'COMPANY_SPECIFIC' | 'ROLE_BASED' | 'BRANCH_BASED' | 'TIME_BASED';
+      company?: string;
+      role?: string;
+      branch?: string;
+      duration?: number;
+      difficulty?: 'EASY' | 'MEDIUM' | 'HARD' | 'FAANG';
+      persona?: 'FRIENDLY_HR' | 'STRICT_TECHNICAL' | 'STARTUP_FOUNDER' | 'FAANG_INTERVIEWER' | 'SENIOR_ARCHITECT';
+      roundType?: 'TECHNICAL' | 'HR' | 'BEHAVIORAL';
+    }) => api.post('/interview/v3/start', data),
+    getSession: (id: number) => api.get(`/interview/v3/session/${id}`),
+    submitAnswer: (data: {
+      interviewId: number;
+      questionIndex: number;
+      answer: string;
+      timeTaken: number;
+    }) => api.post('/interview/v3/answer', data),
+    saveFacialAnalytics: (data: {
+      interviewId: number;
+      confidenceScore: number;
+      eyeContact: 'GOOD' | 'AVERAGE' | 'POOR';
+      emotion: string;
+      posture: 'STABLE' | 'UNSTABLE';
+      voiceClarity: number;
+    }) => api.post('/interview/v3/analytics/facial', data),
+    getReport: (id: string) => api.get(`/interview/v3/report/${id}`),
+  },
 };
 
 // ─── Jobs ─────────────────────────────────────────────────────────────────────
 // Gateway routes: /jobs/** → job-service:8087
 export const jobsApi = {
-  list:        (params?: { role?: string; location?: string; minScore?: number }) =>
+  list:        (params?: { page?: number; size?: number }) =>
     api.get('/jobs', { params }),
+  filter:      (params?: { type?: string; location?: string; experience?: string; domain?: string; limit?: number }) =>
+    api.get('/jobs/filter', { params }),
   recommended: (params?: { readiness?: number; skills?: string[] }) => api.get('/jobs/recommended', { params }),
+  getById:     (id: number) => api.get(`/jobs/${id}`),
 };
 
 // ─── Roadmap / Recommendations ────────────────────────────────────────────────
@@ -182,13 +218,14 @@ export const mlServiceApi = {
   }) =>
     mlApi.post('/ml/interview/question', data),
   coachInterviewAnswer: (data: {
-    answer: string;
+    answer?: string;
     job_role: string;
     resume_skills: string[];
     question: string;
     expected_answer?: string;
     topic?: string;
     persona_mode?: string;
+    user_query?: string;  // For chat mode
   }) =>
     mlApi.post('/ml/interview/coach', data),
   computeReadiness: (data: unknown) =>

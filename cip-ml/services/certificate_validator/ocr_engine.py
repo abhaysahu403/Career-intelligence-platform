@@ -12,12 +12,14 @@ from loguru import logger
 # Optional imports with graceful fallback
 try:
     from paddleocr import PaddleOCR
-    _paddle_ocr = PaddleOCR(use_angle_cls=True, lang='en', show_log=False)
+    # Initialize PaddleOCR without show_log parameter (not supported in all versions)
+    _paddle_ocr = PaddleOCR(use_angle_cls=True, lang='en')
     USE_PADDLE = True
     logger.info("PaddleOCR initialized successfully")
 except Exception as e:
     logger.warning(f"PaddleOCR not available: {e}. Falling back to Tesseract.")
     USE_PADDLE = False
+    _paddle_ocr = None
 
 try:
     import pytesseract
@@ -50,12 +52,47 @@ def extract_data_from_image(file_path: str) -> dict:
     """
     Main extraction function. Handles PDF and images.
     Returns structured certificate data dict.
+    
+    STRATEGY:
+    1. For PDFs: Use PyMuPDF to extract embedded text (no OCR needed!)
+    2. For images: Try PaddleOCR, fallback to Tesseract
     """
     file_path = str(file_path)
     ext = Path(file_path).suffix.lower()
 
     logger.info(f"[OCR] Processing file: {file_path} ({ext})")
 
+    # ── PDF: Use PyMuPDF for text extraction (FAST & RELIABLE) ──
+    if ext == ".pdf":
+        try:
+            from .simple_pdf_extractor import extract_text_from_pdf
+            full_text = extract_text_from_pdf(file_path)
+            
+            if full_text and len(full_text) > 50:
+                logger.info(f"[OCR] PDF text extracted successfully: {len(full_text)} chars")
+                
+                # Parse the extracted text
+                result = {
+                    "name": extract_name(full_text),
+                    "issuer": extract_issuer(full_text),
+                    "certificate_title": extract_title(full_text),
+                    "issue_date": extract_date(full_text),
+                    "certificate_id": extract_certificate_id(full_text),
+                    "registration_number": extract_registration(full_text),
+                    "signatories": extract_signatories(full_text),
+                    "qr_code_data": _extract_qr_from_pdf(file_path),  # Extract QR from PDF
+                    "ocr_confidence": 0.95,  # High confidence for embedded text
+                    "raw_text": full_text[:2000]
+                }
+                
+                logger.info(f"[OCR] Extracted: name='{result['name']}', issuer='{result['issuer']}', date='{result['issue_date']}'")
+                return result
+            else:
+                logger.warning(f"[OCR] PDF text extraction returned empty, falling back to OCR")
+        except Exception as e:
+            logger.error(f"[OCR] PDF extraction failed: {e}, falling back to OCR")
+    
+    # ── IMAGE or PDF fallback: Use OCR ──
     # PDF → image conversion
     if ext == ".pdf":
         img = _pdf_to_image(file_path)
@@ -257,6 +294,48 @@ def _run_tesseract(img: np.ndarray) -> tuple[list, float]:
 
 # ── QR/Barcode Detection ────────────────────────────────────────────────────
 
+def _extract_qr_from_pdf(pdf_path: str) -> str:
+    """
+    Extract QR code from PDF by rendering page as image.
+    Uses PyMuPDF to render the first page at high resolution.
+    """
+    if not USE_PYMUPDF:
+        logger.debug("[QR] PyMuPDF not available, cannot extract QR from PDF")
+        return ""
+    
+    try:
+        doc = fitz.open(pdf_path)
+        if len(doc) == 0:
+            return ""
+        
+        # Render first page at 2x resolution for better QR detection
+        page = doc.load_page(0)
+        pix = page.get_pixmap(matrix=fitz.Matrix(2.0, 2.0))
+        
+        # Convert to numpy array
+        img = np.frombuffer(pix.samples, dtype=np.uint8).reshape(pix.height, pix.width, pix.n)
+        
+        # Convert to BGR for OpenCV
+        if pix.n == 4:  # RGBA
+            img = cv2.cvtColor(img, cv2.COLOR_RGBA2BGR)
+        elif pix.n == 3:  # RGB
+            img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+        elif pix.n == 1:  # Grayscale
+            img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
+        
+        doc.close()
+        
+        # Now detect QR from the rendered image
+        qr_data = _extract_qr_data(img)
+        if qr_data:
+            logger.info(f"[QR] Extracted QR from PDF: {qr_data[:50]}...")
+        return qr_data
+        
+    except Exception as e:
+        logger.error(f"[QR] Failed to extract QR from PDF: {e}")
+        return ""
+
+
 def _extract_qr_data(img: np.ndarray) -> str:
     """Extract QR code or barcode data from image"""
     if USE_PYZBAR:
@@ -283,16 +362,31 @@ def _extract_qr_data(img: np.ndarray) -> str:
 
 def extract_name(text: str) -> str:
     """Extract recipient name from certificate text"""
+    # Exclude common false positives
+    EXCLUDED_PHRASES = [
+        "to verify", "this is to certify", "certificate of", "completion",
+        "achievement", "excellence", "hereby certify", "awarded to",
+        "presented to", "certify that", "this certifies", "has successfully",
+        "machine learning", "engineering", "science", "applications"
+    ]
+    
     patterns = [
+        # NPTEL style: Name appears after course title, before scores
+        r"(?:applications|course|program)\s+([A-Z][A-Z\s]{5,40})\s+\d+",
+        # Traditional patterns
         r"(?:This is to certify|hereby certify|awarded to|presented to|certify that)\s+([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+){1,4})",
         r"(?:Name|Student|Candidate|Recipient)\s*[:\-–]\s*([A-Z][a-zA-Z]+(?:\s+[A-Z][a-zA-Z]+){1,4})",
         r"^([A-Z][A-Z\s]{5,40})$",  # All-caps name on its own line
     ]
+    
     for pattern in patterns:
         match = re.search(pattern, text, re.MULTILINE | re.IGNORECASE)
         if match:
             name = match.group(1).strip()
-            if 3 < len(name) < 60:
+            # Check if it's a false positive
+            if any(excluded in name.lower() for excluded in EXCLUDED_PHRASES):
+                continue
+            if 3 < len(name) < 60 and len(name.split()) >= 2:
                 return name
     return ""
 
@@ -303,9 +397,23 @@ def extract_issuer(text: str) -> str:
         r"(?:Issued by|Issued By|Issuer|Institute|University|College|School|Academy|Organisation)\s*[:\-–]?\s*([A-Z][A-Za-z\s&,\.]{5,80})",
         r"((?:University|Institute|College|Academy|School|Board|Council|IIT|IIM|NIT|AIIMS)\s+of\s+[A-Z][A-Za-z\s]{3,50})",
         r"((?:IIT|IIM|NIT|BITS|AIIMS|VIT|MIT|Harvard|Stanford|Oxford|Cambridge|IGNOU)\s*[A-Za-z\s,\.]{0,40})",
+        # Tech companies - add these patterns
+        r"(Oracle(?:\s+Cloud)?(?:\s+Infrastructure)?)",
+        r"(Amazon\s+Web\s+Services|AWS)",
+        r"(Microsoft(?:\s+Azure)?)",
+        r"(Google(?:\s+Cloud)?)",
+        r"(IBM(?:\s+Cloud)?)",
+        r"(Cisco)",
+        r"(Red\s+Hat)",
+        # NPTEL and Indian platforms
+        r"(NPTEL)",
+        r"(SWAYAM)",
+        r"(Coursera)",
+        r"(edX)",
+        r"(Udemy)",
     ]
     for pattern in patterns:
-        match = re.search(pattern, text, re.MULTILINE)
+        match = re.search(pattern, text, re.MULTILINE | re.IGNORECASE)
         if match:
             issuer = match.group(1).strip()
             # Clean trailing punctuation
@@ -318,6 +426,15 @@ def extract_issuer(text: str) -> str:
 def extract_title(text: str) -> str:
     """Extract certificate/degree title"""
     patterns = [
+        # NPTEL style: Course title before name (multi-line)
+        r"(Machine\s+Learning\s+for\s+[A-Za-z\s]+applications)",
+        r"(Programming\s+in\s+[A-Za-z\s]+)",
+        r"(Introduction\s+to\s+[A-Za-z\s]+)",
+        r"(Data\s+Structures\s+and\s+Algorithms)",
+        r"([A-Z][A-Za-z\s]+(?:for|in|and|of)\s+[A-Z][A-Za-z\s]+(?:applications|engineering|science))",
+        # Tech certifications - specific patterns first
+        r"((?:Oracle|AWS|Google|Microsoft|Azure|Cisco|Red Hat|IBM|SAP|Salesforce|Meta)\s+(?:Cloud|Certified|Professional|Associate|Developer|Administrator|Architect|Engineer|Specialist)[^\n]{0,80})",
+        # Traditional patterns
         r"(?:Certificate of|Certificate in|Degree of|Diploma in|Award of)\s+([A-Za-z\s&,\.]{5,80})",
         r"(?:Bachelor|Master|Doctor|PhD|B\.Tech|M\.Tech|MBA|BCA|MCA|B\.Sc|M\.Sc)\s+(?:of\s+)?(?:in\s+)?([A-Za-z\s&,\.]{3,60})",
         r"((?:Course|Program|Programme)\s+(?:Completion|Certificate|Award)\s+in\s+[A-Za-z\s&,\.]{5,60})",
@@ -325,7 +442,7 @@ def extract_title(text: str) -> str:
     for pattern in patterns:
         match = re.search(pattern, text, re.IGNORECASE)
         if match:
-            title = match.group(0).strip()
+            title = match.group(1).strip() if match.lastindex else match.group(0).strip()
             if len(title) > 5:
                 return title
     return ""
@@ -334,9 +451,18 @@ def extract_title(text: str) -> str:
 def extract_date(text: str) -> str:
     """Extract issue/completion date"""
     patterns = [
+        # "Jan-Apr 2025" format (NPTEL style)
+        r"((?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[-\s](?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s+\d{4})",
+        # "November 28, 2025" format
+        r"((?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{1,2},?\s+\d{4})",
+        # "28 November 2025" format
+        r"(\d{1,2}\s+(?:January|February|March|April|May|June|July|August|September|October|November|December),?\s+\d{4})",
+        # With labels
         r"(?:Date|Dated|Issued on|Date of Issue|Completion Date|Valid from)\s*[:\-–]?\s*(\d{1,2}[\/\-\.]\d{1,2}[\/\-\.]\d{2,4})",
-        r"(\d{1,2}(?:st|nd|rd|th)?\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4})",
+        r"(?:Date|Dated|Issued on|Date of Issue|Completion Date|Valid from)\s*[:\-–]?\s*(\d{1,2}(?:st|nd|rd|th)?\s+(?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4})",
+        # Month Year only
         r"((?:January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4})",
+        # ISO format
         r"(\d{4}-\d{2}-\d{2})",
     ]
     for pattern in patterns:
@@ -349,14 +475,25 @@ def extract_date(text: str) -> str:
 def extract_certificate_id(text: str) -> str:
     """Extract certificate ID/number"""
     patterns = [
+        # NPTEL pattern first (highest priority): NPTEL25CS49S542800054
+        r"\b(NPTEL\d{2}[A-Z]{2}\d{2}[A-Z]\d+)\b",
+        # Oracle pattern: 102725261OCID25CP
+        r"\b(\d{9,15}[A-Z]{2,10}\d{2,4}[A-Z]{2,4})\b",
+        # With labels
         r"(?:Certificate\s+(?:No|Number|ID)|Cert\.?\s*(?:No|ID))\s*[:\-–#]?\s*([A-Z0-9\-\/]{4,30})",
-        r"(?:Serial|Reg\.?\s*No|Roll\s*No)\s*[:\-–#]?\s*([A-Z0-9\-\/]{4,30})",
-        r"\b([A-Z]{2,6}[-\/]?\d{4}[-\/]?\d{4,8})\b",  # Pattern like CERT-2024-12345
+        r"(?:Serial|Reg\.?\s*No)\s*[:\-–#]?\s*([A-Z0-9\-\/]{4,30})",
+        # Pattern like CERT-2024-12345
+        r"\b([A-Z]{2,6}[-\/]?\d{4}[-\/]?\d{4,8})\b",
+        # Generic alphanumeric (but not Roll No which is just numbers)
+        r"\b([A-Z]{2,4}\d{8,15})\b",
     ]
     for pattern in patterns:
         match = re.search(pattern, text, re.IGNORECASE)
         if match:
-            return match.group(1).strip()
+            cert_id = match.group(1).strip()
+            # Exclude "Roll No" matches
+            if cert_id.lower() not in ['roll no', 'jan-apr', 'jan', 'apr']:
+                return cert_id
     return ""
 
 
