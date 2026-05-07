@@ -313,7 +313,7 @@ export default function DashboardPage() {
               >
                 <action.icon className="w-7 h-7" style={{ color: action.color }} />
               </div>
-              <span className="text-sm font-bold text-white text-center">{action.label}</span>
+              <span className="text-sm font-bold text-slate-900 dark:text-white text-center">{action.label}</span>
             </div>
           </motion.button>
         ))}
@@ -395,7 +395,7 @@ export default function DashboardPage() {
             
             <h3 className="text-sm font-semibold text-slate-400 mb-2">{card.title}</h3>
             <div className="flex items-baseline gap-2 mb-4">
-              <span className="text-4xl font-bold text-white">{card.value}</span>
+              <span className="text-4xl font-bold text-slate-900 dark:text-white">{card.value}</span>
               <span className="text-lg text-slate-500">/100</span>
             </div>
 
@@ -433,7 +433,7 @@ export default function DashboardPage() {
           borderColor: 'rgba(255,255,255,0.06)'
         }}
       >
-        <h3 className="text-xl font-bold text-white mb-6">Your Career Journey</h3>
+        <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Your Career Journey</h3>
         
         <div className="flex items-center justify-between relative">
           {/* Progress Line */}
@@ -468,7 +468,7 @@ export default function DashboardPage() {
                 <step.icon className={`w-6 h-6 ${step.completed ? 'text-white' : 'text-slate-500'}`} />
               </motion.div>
               <span className={`text-xs font-semibold text-center max-w-[80px] ${
-                step.completed ? 'text-white' : 'text-slate-500'
+                step.completed ? 'text-slate-900 dark:text-white' : 'text-slate-500'
               }`}>
                 {step.label}
               </span>
@@ -497,7 +497,7 @@ export default function DashboardPage() {
             borderColor: 'rgba(255,255,255,0.06)'
           }}
         >
-          <h3 className="text-xl font-bold text-white mb-6">What to Do Next</h3>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">What to Do Next</h3>
           
           <div className="space-y-4">
             {[
@@ -548,7 +548,7 @@ export default function DashboardPage() {
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
                     <item.icon className="w-4 h-4" style={{ color: item.color }} />
-                    <h4 className="font-bold text-white">{item.title}</h4>
+                    <h4 className="font-bold text-slate-900 dark:text-white">{item.title}</h4>
                   </div>
                   <p className="text-sm text-slate-400 mb-2">{item.description}</p>
                   <div className="flex items-center gap-2 text-xs text-slate-500">
@@ -573,7 +573,7 @@ export default function DashboardPage() {
             borderColor: 'rgba(255,255,255,0.06)'
           }}
         >
-          <h3 className="text-xl font-bold text-white mb-6">Your Achievements</h3>
+          <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-6">Your Achievements</h3>
           
           <div className="grid grid-cols-3 gap-4 mb-6">
             {[
@@ -610,7 +610,7 @@ export default function DashboardPage() {
                   )}
                 </div>
                 <span className={`text-xs font-semibold text-center ${
-                  badge.unlocked ? 'text-white' : 'text-slate-600'
+                  badge.unlocked ? 'text-slate-900 dark:text-white' : 'text-slate-600'
                 }`}>
                   {badge.label}
                 </span>
@@ -618,9 +618,9 @@ export default function DashboardPage() {
             ))}
           </div>
 
-          <div className="pt-4 border-t border-white/10">
+          <div className="pt-4 border-t border-slate-200 dark:border-white/10">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-semibold text-white">Milestones Complete</span>
+              <span className="text-sm font-semibold text-slate-900 dark:text-white">Milestones Complete</span>
               <span className="text-sm font-bold text-[#38BDF8]">
                 {[true, hasResume, hasInterview, isJobReady, false, false].filter(Boolean).length}/6
               </span>
@@ -645,13 +645,12 @@ export default function DashboardPage() {
       >
         <div className="mb-6 flex items-center justify-between">
           <div>
-            <h3 className="text-2xl font-bold text-white">Jobs Matched for You</h3>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Jobs Matched for You</h3>
             <p className="text-sm text-slate-400 mt-1">Based on your skills and interview performance</p>
           </div>
           <button
             onClick={() => router.push('/jobs')}
-            className="flex items-center gap-2 rounded-2xl border px-6 py-3 text-sm font-bold text-white transition-all hover:bg-white/5 hover:border-[#38BDF8]/50"
-            style={{ borderColor: 'rgba(255,255,255,0.06)', background: 'rgba(255,255,255,0.01)' }}
+            className="flex items-center gap-2 rounded-2xl border px-6 py-3 text-sm font-bold text-slate-900 dark:text-white transition-all hover:bg-slate-100 dark:hover:bg-white/5 hover:border-[#38BDF8]/50 border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-white/5"
           >
             See All Jobs <ArrowRight size={16} />
           </button>
@@ -687,7 +686,7 @@ export default function DashboardPage() {
                   </span>
                 </div>
 
-                <h4 className="text-lg font-bold text-white mb-1 group-hover:text-[#38BDF8] transition-colors">
+                <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-1 group-hover:text-[#38BDF8] transition-colors">
                   {job.role}
                 </h4>
                 <p className="text-sm text-slate-400 mb-4">{job.company}</p>
@@ -728,7 +727,7 @@ export default function DashboardPage() {
                 )}
 
                 <button 
-                  className="w-full py-2 rounded-xl text-sm font-bold transition-all group-hover:bg-[#38BDF8] group-hover:text-white"
+                  className="w-full py-2 rounded-xl text-sm font-bold transition-all group-hover:bg-[#38BDF8] group-hover:text-white text-slate-900 dark:text-white"
                   style={{ 
                     background: 'rgba(56,189,248,0.1)',
                     color: '#38BDF8'
@@ -743,7 +742,7 @@ export default function DashboardPage() {
               <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center bg-[#38BDF8]/5 border border-[#38BDF8]/10">
                 <Rocket size={32} className="text-[#38BDF8]" />
               </div>
-              <h3 className="text-xl font-bold text-white mb-2">Ready to Find Jobs?</h3>
+              <h3 className="text-xl font-bold text-slate-900 dark:text-white mb-2">Ready to Find Jobs?</h3>
               <p className="text-sm text-slate-400 max-w-sm mx-auto mb-6">
                 Complete your first AI interview to unlock personalized job matches
               </p>
@@ -768,12 +767,12 @@ export default function DashboardPage() {
       >
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <h3 className="text-2xl font-bold text-white">Skills to Improve</h3>
+            <h3 className="text-2xl font-bold text-slate-900 dark:text-white">Skills to Improve</h3>
             <p className="text-sm text-slate-400 mt-1">Focus on these areas to boost your interview score</p>
           </div>
           <button 
             onClick={() => router.push('/analytics')} 
-            className="flex items-center gap-2 text-sm font-bold text-[#38BDF8] hover:text-white transition-all px-4 py-2 rounded-xl bg-white/5 border border-white/5"
+            className="flex items-center gap-2 text-sm font-bold text-[#38BDF8] hover:text-slate-900 dark:hover:text-white transition-all px-4 py-2 rounded-xl bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-white/5"
           >
             View Analytics <ArrowRight size={16} />
           </button>
@@ -807,7 +806,7 @@ export default function DashboardPage() {
                     </span>
                   </div>
 
-                  <h4 className="text-lg font-bold capitalize text-white">{skill}</h4>
+                  <h4 className="text-lg font-bold capitalize text-slate-900 dark:text-white">{skill}</h4>
 
                   <div className="space-y-2">
                     <div className="flex items-center justify-between text-sm">
@@ -843,7 +842,7 @@ export default function DashboardPage() {
             <div className="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center bg-[#4ADE80]/10 border border-[#4ADE80]/20">
               <CheckCircle size={32} className="text-[#4ADE80]" />
             </div>
-            <h4 className="text-lg font-bold text-white mb-2">Great Job!</h4>
+            <h4 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Great Job!</h4>
             <p className="text-sm text-slate-400">
               No weak skills detected. Keep practicing to maintain your performance.
             </p>
