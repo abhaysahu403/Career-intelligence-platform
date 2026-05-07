@@ -34,8 +34,8 @@ export default function Hero() {
               transition={{ duration: 0.6 }}
               className="inline-flex items-center gap-3 mb-10"
             >
-              <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full border"
-                style={{ background: 'rgba(74,222,128,0.08)', borderColor: 'rgba(74,222,128,0.2)', boxShadow: '0 0 20px rgba(74,222,128,0.1)' }}>
+              <div className="flex items-center gap-2.5 px-5 py-2.5 rounded-full border bg-mint/10 dark:bg-mint/5 border-mint/30 dark:border-mint/20"
+                style={{ boxShadow: '0 0 20px rgba(74,222,128,0.1)' }}>
                 <motion.span
                   className="w-2 h-2 rounded-full"
                   style={{ background: '#4ADE80', boxShadow: '0 0 8px rgba(74,222,128,0.8)' }}
@@ -87,7 +87,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.4 }}
-              className="text-sm text-slate-500 font-bold uppercase tracking-[0.4em] mb-10"
+              className="text-sm text-slate-500 dark:text-slate-500 font-bold uppercase tracking-[0.4em] mb-10"
             >
               AI-powered candidate intelligence engine // AV-9942
             </motion.p>
@@ -116,12 +116,7 @@ export default function Hero() {
                 href="#demo"
                 whileHover={{ scale: 1.05, y: -3 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex items-center justify-center gap-2.5 px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest text-slate-900 dark:text-white border transition-all"
-                style={{
-                  background: 'rgba(15,23,42,0.6)',
-                  backdropFilter: 'blur(20px)',
-                  borderColor: 'rgba(255,255,255,0.1)',
-                }}
+                className="flex items-center justify-center gap-2.5 px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest text-slate-900 dark:text-white border border-slate-300 dark:border-white/10 bg-white/80 dark:bg-slate-900/60 backdrop-blur-xl transition-all hover:bg-white dark:hover:bg-slate-900/80"
               >
                 <Play className="w-4 h-4 text-sky" />
                 Watch Demo
@@ -142,7 +137,7 @@ export default function Hero() {
               ].map((item) => (
                 <div key={item.label} className="flex items-center gap-2">
                   <item.icon className="w-4 h-4" style={{ color: item.color }} />
-                  <span className="text-[11px] font-black text-slate-500 uppercase tracking-widest">{item.label}</span>
+                  <span className="text-[11px] font-black text-slate-600 dark:text-slate-500 uppercase tracking-widest">{item.label}</span>
                 </div>
               ))}
             </motion.div>
@@ -171,11 +166,7 @@ export default function Hero() {
             ))}
 
             {/* Main image card */}
-            <div className="relative rounded-[32px] overflow-hidden border"
-              style={{
-                borderColor: 'rgba(255,255,255,0.08)',
-                boxShadow: '0 40px 80px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.04)',
-              }}>
+            <div className="relative rounded-[32px] overflow-hidden border border-slate-300 dark:border-white/10 shadow-2xl dark:shadow-[0_40px_80px_-20px_rgba(0,0,0,0.6)]">
               {/* Real interview image from Unsplash */}
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
@@ -199,8 +190,7 @@ export default function Hero() {
               />
 
               {/* Recording badge */}
-              <div className="absolute top-5 right-5 flex items-center gap-2 px-3 py-1.5 rounded-full"
-                style={{ background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)', border: '1px solid rgba(74,222,128,0.3)' }}>
+              <div className="absolute top-5 right-5 flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/80 dark:bg-black/70 backdrop-blur-md border border-mint/40 dark:border-mint/30">
                 <motion.span
                   className="w-2 h-2 rounded-full bg-mint"
                   animate={{ opacity: [1, 0, 1] }}
@@ -212,16 +202,15 @@ export default function Hero() {
               </div>
 
               {/* Bottom glass info strip */}
-              <div className="absolute bottom-0 left-0 right-0 p-5"
-                style={{ background: 'linear-gradient(to top, rgba(2,6,23,0.95), transparent)', backdropFilter: 'blur(4px)' }}>
+              <div className="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-slate-900/95 dark:from-slate-950/95 to-transparent backdrop-blur-sm">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-slate-900 dark:text-white font-black text-base">AI Interview Analysis</p>
-                    <p className="text-slate-600 dark:text-slate-400 text-[11px] font-bold uppercase tracking-widest mt-0.5">Software Engineer Role // Session Active</p>
+                    <p className="text-white font-black text-base">AI Interview Analysis</p>
+                    <p className="text-slate-300 dark:text-slate-400 text-[11px] font-bold uppercase tracking-widest mt-0.5">Software Engineer Role // Session Active</p>
                   </div>
                   <div className="text-right">
                     <p className="text-mint font-black text-xl" style={{ textShadow: '0 0 10px rgba(74,222,128,0.5)' }}>94%</p>
-                    <p className="text-slate-500 text-[10px] uppercase tracking-widest font-bold">Readiness</p>
+                    <p className="text-slate-400 dark:text-slate-500 text-[10px] uppercase tracking-widest font-bold">Readiness</p>
                   </div>
                 </div>
               </div>
@@ -231,10 +220,8 @@ export default function Hero() {
             {floatingStats.map((stat, i) => (
               <motion.div
                 key={stat.label}
-                className="absolute px-4 py-2.5 rounded-2xl border"
+                className="absolute px-4 py-2.5 rounded-2xl border bg-slate-900/90 dark:bg-slate-950/85 backdrop-blur-xl"
                 style={{
-                  background: 'rgba(2,6,23,0.85)',
-                  backdropFilter: 'blur(20px)',
                   borderColor: `${stat.glow.replace('rgba', 'rgba').replace(/[\d.]+\)$/, '0.3)')}`,
                   boxShadow: `0 0 20px ${stat.glow}`,
                   top: `${20 + i * 30}%`,
@@ -245,7 +232,7 @@ export default function Hero() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.8 + i * 0.2 }}
               >
-                <p className="text-[9px] font-black text-slate-500 uppercase tracking-widest mb-1">{stat.label}</p>
+                <p className="text-[9px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1">{stat.label}</p>
                 <p className="font-black text-lg leading-none" style={{ color: stat.color, textShadow: `0 0 10px ${stat.color}60` }}>
                   {stat.value}
                 </p>
