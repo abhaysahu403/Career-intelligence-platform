@@ -118,22 +118,21 @@ export default function RoadmapPage() {
   return (
     <div className="space-y-6 pb-12 max-w-3xl">
       {/* Progress overview */}
-      <div className="rounded-[32px] p-6 border relative overflow-hidden backdrop-blur-[30px] shadow-[0_8px_30px_rgb(0,0,0,0.2)]"
-        style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
+      <div className="rounded-[32px] p-6 border relative overflow-hidden backdrop-blur-[30px] shadow-[0_8px_30px_rgb(0,0,0,0.2)] bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
         <div className="absolute top-0 right-0 w-48 h-48 opacity-20 pointer-events-none rounded-full"
           style={{ background:'radial-gradient(circle,#38BDF8,transparent 70%)', transform:'translate(30%,-30%)' }} />
         <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-2">
               <Trophy size={24} className="text-amber-400" />
-              <h2 className="text-3xl font-syne font-black text-white uppercase tracking-widest">
-                AI-Generated Roadmap
+              <h2 className="text-3xl font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest">
+                Mission Roadmap
               </h2>
             </div>
             <p className="text-sm font-medium uppercase tracking-wide text-slate-500 mt-1">
-              Personalized learning path based on your interview performance
+              Personalized trajectory from preparation to placement
             </p>
-            <div className="flex items-center gap-3 mt-4">
+            <div className="flex items-center gap-3">
               <div className="flex-1 h-3 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
                 <div className="h-full rounded-full progress-animate"
                   style={{ width:`${pct}%`, background: 'linear-gradient(90deg, #38BDF8, #4ADE80)', boxShadow: '0 0 10px rgba(56,189,248,0.5)' }} />
@@ -143,54 +142,9 @@ export default function RoadmapPage() {
               </span>
             </div>
           </div>
-          <div className="flex flex-col gap-3">
-            <div className="text-center flex-shrink-0">
-              <p className="text-4xl font-black text-sky drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]" style={{ fontFamily:'Plus Jakarta Sans,sans-serif' }}>{pct}%</p>
-              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Complete</p>
-            </div>
-            
-            {/* Download Roadmap Button */}
-            <button
-              onClick={async () => {
-                try {
-                  const toast = (await import('react-hot-toast')).default;
-                  toast.loading('Generating AI roadmap PDF...');
-                  
-                  // Call backend API to generate PDF
-                  const response = await roadmapApi.downloadRoadmap({ tasks: allTasks });
-                  
-                  // Create blob and download
-                  const blob = new Blob([response.data], { type: 'text/html' });
-                  const url = URL.createObjectURL(blob);
-                  const link = document.createElement('a');
-                  link.href = url;
-                  link.download = `ai-roadmap-${new Date().toISOString().split('T')[0]}.html`;
-                  document.body.appendChild(link);
-                  link.click();
-                  document.body.removeChild(link);
-                  URL.revokeObjectURL(url);
-                  
-                  toast.dismiss();
-                  toast.success('AI Roadmap downloaded! Open in browser and print to PDF.');
-                } catch (error) {
-                  const toast = (await import('react-hot-toast')).default;
-                  toast.dismiss();
-                  toast.error('Failed to generate roadmap. Please try again.');
-                  console.error('Download error:', error);
-                }
-              }}
-              className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider transition-all hover:scale-105"
-              style={{
-                background: 'linear-gradient(135deg, #38BDF8, #0EA5E9)',
-                color: '#fff',
-                boxShadow: '0 0 15px rgba(56,189,248,0.3)',
-              }}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              Download PDF
-            </button>
+          <div className="text-center flex-shrink-0">
+            <p className="text-4xl font-black text-sky drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]" style={{ fontFamily:'Plus Jakarta Sans,sans-serif' }}>{pct}%</p>
+            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Complete</p>
           </div>
         </div>
 
@@ -203,7 +157,7 @@ export default function RoadmapPage() {
               <div key={cat} className="text-center p-2 rounded-xl border backdrop-blur-[10px] transition-all hover:-translate-y-1"
                 style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.05)' }}>
                 <cfg.icon size={16} className="mx-auto mb-1" style={{ color: cfg.color }} />
-                <p className="text-sm font-black text-white">{done}/{catTasks.length}</p>
+                <p className="text-sm font-black text-slate-900 dark:text-white">{done}/{catTasks.length}</p>
                 <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{cfg.label}</p>
               </div>
             );
@@ -213,12 +167,12 @@ export default function RoadmapPage() {
 
       {/* AI-Detected Gaps → Dynamic Study Plan */}
       {analytics && analytics.weakSkills.length > 0 && (
-        <div className="rounded-2xl border p-5 backdrop-blur-[20px]" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
+        <div className="rounded-2xl border p-5 backdrop-blur-[20px] bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-amber-500/10 border border-amber-500/20">
               <AlertTriangle size={20} className="text-amber-400" />
             </div>
-            <h3 className="font-syne font-black text-white uppercase tracking-widest">
+            <h3 className="font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest">
               Dynamic Gap Study Plan
             </h3>
           </div>
@@ -238,7 +192,7 @@ export default function RoadmapPage() {
                       style={{ background: 'rgba(255,255,255,0.05)', color: prColor, border: `1px solid ${prColor}40` }}>
                       {priority}
                     </span>
-                    <span className="text-sm font-black capitalize text-white">{skill}</span>
+                    <span className="text-sm font-black capitalize text-slate-900 dark:text-white">{skill}</span>
                   </div>
                   <div className="space-y-2 ml-1">
                     {plan.tasks.map(task => (
@@ -252,7 +206,7 @@ export default function RoadmapPage() {
                     <div className="flex flex-wrap gap-2 mt-4">
                       {plan.resources.map(res => (
                         <a key={res.url} href={res.url} target="_blank" rel="noreferrer"
-                          className="flex items-center gap-1 text-xs font-black uppercase tracking-widest transition-all hover:text-sky text-slate-400">
+                          className="flex items-center gap-1 text-xs font-black uppercase tracking-widest transition-all hover:text-sky text-slate-600 dark:text-slate-400">
                           <ExternalLink size={12} />{res.title}
                         </a>
                       ))}
@@ -288,8 +242,8 @@ export default function RoadmapPage() {
                     {allDone ? <CheckCircle2 size={20} /> : week}
                   </div>
                   <div>
-                    <p className="font-syne font-black text-white text-base">Week {week}</p>
-                    <p className="text-xs font-medium text-slate-400">{weekDone}/{weekTasks.length} tasks done</p>
+                    <p className="font-syne font-black text-slate-900 dark:text-white text-base">Week {week}</p>
+                    <p className="text-xs font-medium text-slate-600 dark:text-slate-400">{weekDone}/{weekTasks.length} tasks done</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
@@ -334,14 +288,14 @@ export default function RoadmapPage() {
                             </span>
                           </div>
                           {task.description && (
-                            <p className="text-xs mt-2 font-medium text-slate-400 leading-relaxed">{task.description}</p>
+                            <p className="text-xs mt-2 font-medium text-slate-600 dark:text-slate-400 leading-relaxed">{task.description}</p>
                           )}
                           {task.resources && task.resources.length > 0 && (
                             <div className="flex flex-wrap gap-3 mt-3">
                               {task.resources.map(res => (
                                 <a key={res.url} href={res.url} target="_blank" rel="noreferrer"
                                   onClick={e => e.stopPropagation()}
-                                  className="flex items-center gap-1 text-xs font-black uppercase tracking-widest text-slate-400 hover:text-sky transition-colors">
+                                  className="flex items-center gap-1 text-xs font-black uppercase tracking-widest text-slate-600 dark:text-slate-400 hover:text-sky transition-colors">
                                   <ExternalLink size={12} />{res.title}
                                 </a>
                               ))}
@@ -360,13 +314,13 @@ export default function RoadmapPage() {
 
       {/* Completion nudge */}
       {pct < 100 && (
-        <div className="rounded-2xl p-5 border backdrop-blur-[20px] flex items-start gap-4 transition-all hover:border-sky/40" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
+        <div className="rounded-2xl p-5 border backdrop-blur-[20px] flex items-start gap-4 transition-all hover:border-sky/40 bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
           <Zap size={20} className="flex-shrink-0 mt-0.5 text-sky" style={{ filter: 'drop-shadow(0 0 5px rgba(56,189,248,0.5))' }} />
           <div>
-            <p className="text-sm font-syne font-black text-white uppercase tracking-widest">
+            <p className="text-sm font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest">
               {total - completed} tasks remaining
             </p>
-            <p className="text-xs font-medium text-slate-400 mt-1 leading-relaxed">
+            <p className="text-xs font-medium text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
               Completing your roadmap can boost your readiness score by up to 25 points.
             </p>
           </div>

@@ -102,7 +102,7 @@ export default function HowItWorks() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
-              className="font-syne text-4xl md:text-5xl font-black text-white mb-4 leading-tight tracking-tight"
+              className="font-syne text-4xl md:text-5xl font-black text-slate-900 dark:text-white mb-4 leading-tight tracking-tight"
             >
               Smart Job & Internship{" "}
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky to-mint">
@@ -115,7 +115,7 @@ export default function HowItWorks() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
-              className="text-slate-400 text-lg leading-relaxed mb-10 font-medium"
+              className="text-slate-600 dark:text-slate-400 text-lg leading-relaxed mb-10 font-medium"
             >
               Our AI cross-references your skill DNA, interview performance, and verified certificates 
               against 400+ live job postings — surfacing only roles where your readiness score exceeds 80%.
@@ -131,15 +131,14 @@ export default function HowItWorks() {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: 0.1 + i * 0.07 }}
-                  className="flex gap-3 p-4 rounded-2xl border transition-all duration-300 hover:-translate-y-0.5 group"
-                  style={{ background: 'rgba(8,12,20,0.6)', borderColor: `${feat.color}18` }}
+                  className="flex gap-3 p-4 rounded-2xl border transition-all duration-300 hover:-translate-y-0.5 group bg-white/70 dark:bg-[rgba(8,12,20,0.6)]" style={{ borderColor: `${feat.color}18` }}
                 >
                   <div className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                     style={{ background: `${feat.color}15`, border: `1px solid ${feat.color}25` }}>
                     <feat.icon className="w-4 h-4" style={{ color: feat.color }} />
                   </div>
                   <div>
-                    <p className="text-sm font-black text-white mb-0.5 tracking-tight">{feat.label}</p>
+                    <p className="text-sm font-black text-slate-900 dark:text-white mb-0.5 tracking-tight">{feat.label}</p>
                     <p className="text-[11px] text-slate-500 font-medium leading-relaxed">{feat.desc}</p>
                   </div>
                 </motion.div>
@@ -177,8 +176,7 @@ export default function HowItWorks() {
               style={{ background: 'radial-gradient(ellipse, rgba(74,222,128,0.1) 0%, rgba(56,189,248,0.06) 60%, transparent 100%)' }} />
 
             {/* Header bar */}
-            <div className="relative rounded-[32px] overflow-hidden border mb-4 transition-all duration-500 hover:shadow-[0_0_30px_rgba(56,189,248,0.2)]"
-              style={{ background: 'rgba(8,12,20,0.85)', backdropFilter: 'blur(40px)', borderColor: 'rgba(56,189,248,0.3)', boxShadow: '0 8px 30px -10px rgba(56,189,248,0.1), inset 0 0 20px rgba(56,189,248,0.05)' }}>
+            <div className="relative rounded-[32px] overflow-hidden border mb-4 transition-all duration-500 hover:shadow-[0_0_30px_rgba(56,189,248,0.2)] bg-white/90 dark:bg-[rgba(8,12,20,0.85)]" style={{ backdropFilter: 'blur(40px)', borderColor: 'rgba(56,189,248,0.3)', boxShadow: '0 8px 30px -10px rgba(56,189,248,0.1), inset 0 0 20px rgba(56,189,248,0.05)' }}>
               <div className="flex items-center justify-between px-6 py-4 border-b"
                 style={{ borderColor: 'rgba(56,189,248,0.15)', background: 'rgba(0,0,0,0.3)' }}>
                 <div className="flex items-center gap-2">
@@ -233,7 +231,7 @@ export default function HowItWorks() {
                     {/* Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 mb-0.5">
-                        <p className="text-sm font-black text-white truncate">{job.role}</p>
+                        <p className="text-sm font-black text-slate-900 dark:text-white truncate">{job.role}</p>
                         {job.verified && (
                           <CheckCircle2 className="w-3.5 h-3.5 text-mint flex-shrink-0" style={{ filter: 'drop-shadow(0 0 4px rgba(74,222,128,0.5))' }} />
                         )}
@@ -256,7 +254,7 @@ export default function HowItWorks() {
                         {job.match}%
                       </div>
                       <div className="text-[9px] font-black text-slate-600 uppercase tracking-widest mb-1">match</div>
-                      <div className="text-[10px] font-black text-slate-400">{job.salary}</div>
+                      <div className="text-[10px] font-black text-slate-600 dark:text-slate-400">{job.salary}</div>
                       <span className="text-[9px] font-black px-2 py-0.5 rounded-full mt-1 inline-block"
                         style={{
                           background: job.type === 'Internship' ? 'rgba(56,189,248,0.12)' : 'rgba(74,222,128,0.12)',
@@ -266,7 +264,7 @@ export default function HowItWorks() {
                       </span>
                     </div>
 
-                    <ChevronRight className="w-4 h-4 text-slate-700 group-hover:text-white transition-colors flex-shrink-0" />
+                    <ChevronRight className="w-4 h-4 text-slate-700 group-hover:text-slate-900 dark:text-white transition-colors flex-shrink-0" />
                   </motion.div>
                 ))}
               </div>
@@ -275,7 +273,7 @@ export default function HowItWorks() {
               <div className="px-6 py-3 border-t flex items-center justify-between"
                 style={{ borderColor: 'rgba(255,255,255,0.05)', background: 'rgba(0,0,0,0.2)' }}>
                 <span className="text-[10px] font-black text-slate-600 uppercase tracking-widest">Showing 4 of 427 AI-matched opportunities</span>
-                <span className="text-[10px] font-black text-sky uppercase tracking-widest cursor-pointer hover:text-white transition-colors">View All →</span>
+                <span className="text-[10px] font-black text-sky uppercase tracking-widest cursor-pointer hover:text-slate-900 dark:text-white transition-colors">View All →</span>
               </div>
             </div>
 

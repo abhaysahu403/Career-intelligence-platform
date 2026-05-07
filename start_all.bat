@@ -1,27 +1,34 @@
 @echo off
-echo ===================================================
-echo   Starting CIP Platform (Hackathon Demo Mode)
-echo ===================================================
+echo ========================================
+echo  Starting Career Intelligence Platform
+echo ========================================
+echo.
+
+REM Set Maven path
+set PATH=C:\maven\apache-maven-3.9.6\bin;%PATH%
+
+echo [1/3] Starting Backend (Spring Boot)...
+start "CIP Backend" cmd /k "cd cip-backend-lite && mvn spring-boot:run"
+timeout /t 5 /nobreak >nul
+
+echo [2/3] Starting ML Service (Python FastAPI)...
+start "CIP ML" cmd /k "cd cip-ml && python main.py"
+timeout /t 5 /nobreak >nul
+
+echo [3/3] Starting Frontend (Next.js)...
+start "CIP Frontend" cmd /k "cd cip-web && npm run dev"
+timeout /t 3 /nobreak >nul
 
 echo.
-echo [1/3] Starting ML API Server (Python/FastAPI)...
-start "ML Service (Port 8000)" cmd /k "cd cip-ml && echo Starting ML Service... && python -m uvicorn main:app --host 0.0.0.0 --port 8000"
-
+echo ========================================
+echo  All services are starting!
+echo ========================================
 echo.
-echo [2/3] Starting Backend API (Java/Spring Boot)...
-start "Backend Service (Port 8080)" cmd /k "cd cip-backend-lite && echo Starting Backend... && mvn spring-boot:run"
-
+echo  Backend:  http://localhost:8080
+echo  ML API:   http://localhost:8000
+echo  Frontend: http://localhost:3000
 echo.
-echo [3/3] Starting Web Interface (Next.js)...
-start "Web Service (Port 3000)" cmd /k "cd cip-web && echo Starting Frontend... && npm run dev"
-
-echo.
-echo ===================================================
-echo All services have been launched in separate windows!
-echo.
-echo   - ML Service:  http://localhost:8000
-echo   - Backend:     http://localhost:8080
-echo   - Web App:     http://localhost:3000
-echo ===================================================
-echo You can close this window now. The services will keep running in the newly opened windows.
-pause
+echo  Press any key to close this window...
+echo  (Services will continue running)
+echo ========================================
+pause >nul

@@ -134,8 +134,8 @@ export default function DashboardPage() {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="text-center">
-          <div className="mx-auto mb-6 h-12 w-12 animate-spin rounded-full border-2 border-t-transparent" style={{ borderColor: '#38BDF8' }} />
-          <p className="text-slate-500 font-bold uppercase tracking-widest text-xs">Loading your dashboard...</p>
+          <div className="mx-auto mb-6 h-12 w-12 animate-spin rounded-full border-2 border-t-transparent border-sky-500" />
+          <p className="text-slate-500 dark:text-slate-500 font-bold uppercase tracking-widest text-xs">Loading your dashboard...</p>
         </div>
       </div>
     );
@@ -207,10 +207,10 @@ export default function DashboardPage() {
         animate={{ y: 0, opacity: 1 }}
         className="mb-8"
       >
-        <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
+        <h1 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-2">
           👋 Welcome back, {user?.name?.split(' ')[0] || 'there'}!
         </h1>
-        <p className="text-slate-400 text-sm md:text-base">
+        <p className="text-slate-600 dark:text-slate-400 text-sm md:text-base">
           Let's continue your journey to landing your dream job
         </p>
       </motion.div>
@@ -220,30 +220,26 @@ export default function DashboardPage() {
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.1 }}
-        className="relative rounded-3xl p-6 md:p-8 border backdrop-blur-xl overflow-hidden"
-        style={{ 
-          background: 'linear-gradient(135deg, rgba(56,189,248,0.1) 0%, rgba(129,140,248,0.1) 100%)',
-          borderColor: 'rgba(56,189,248,0.2)'
-        }}
+        className="relative rounded-3xl p-6 md:p-8 border backdrop-blur-xl overflow-hidden bg-gradient-to-br from-sky-50 to-indigo-50 dark:from-sky-950/20 dark:to-indigo-950/20 border-sky-200 dark:border-sky-500/20"
       >
         {/* Animated Background */}
-        <div className="absolute inset-0 opacity-30">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#38BDF8] rounded-full blur-[100px]"></div>
-          <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#818CF8] rounded-full blur-[100px]"></div>
+        <div className="absolute inset-0 opacity-30 dark:opacity-30 opacity-10">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-sky-400 dark:bg-[#38BDF8] rounded-full blur-[100px]"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-400 dark:bg-[#818CF8] rounded-full blur-[100px]"></div>
         </div>
 
         <div className="relative z-10">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#38BDF8] to-[#0EA5E9] flex items-center justify-center">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-sky-500 to-sky-600 dark:from-[#38BDF8] dark:to-[#0EA5E9] flex items-center justify-center">
               <nextAction.icon className="w-6 h-6 text-white" />
             </div>
             <div>
-              <p className="text-xs font-bold text-[#38BDF8] uppercase tracking-wider">Your Next Mission</p>
-              <h2 className="text-2xl md:text-3xl font-bold text-white">{nextAction.title}</h2>
+              <p className="text-xs font-bold text-sky-600 dark:text-[#38BDF8] uppercase tracking-wider">Your Next Mission</p>
+              <h2 className="text-2xl md:text-3xl font-bold text-slate-900 dark:text-white">{nextAction.title}</h2>
             </div>
           </div>
           
-          <p className="text-slate-300 text-base md:text-lg mb-6 max-w-2xl">
+          <p className="text-slate-700 dark:text-slate-300 text-base md:text-lg mb-6 max-w-2xl">
             {nextAction.description}
           </p>
 

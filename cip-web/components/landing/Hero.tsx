@@ -43,7 +43,7 @@ export default function Hero() {
                   transition={{ duration: 2, repeat: Infinity }}
                 />
                 <span className="text-mint font-mono-jetbrains text-[10px] font-black tracking-[0.3em] uppercase">LIVE</span>
-                <span className="text-slate-400 text-xs font-bold border-l border-mint/20 pl-3 uppercase tracking-widest">
+                <span className="text-slate-600 dark:text-slate-400 text-xs font-bold border-l border-mint/20 pl-3 uppercase tracking-widest">
                   AI Hiring Intelligence
                 </span>
               </div>
@@ -56,7 +56,7 @@ export default function Hero() {
               transition={{ duration: 0.9, delay: 0.1 }}
             >
               <h1 className="font-syne leading-[0.9] mb-6 tracking-tighter">
-                <span className="block text-6xl md:text-7xl lg:text-8xl font-black text-white">
+                <span className="block text-6xl md:text-7xl lg:text-8xl font-black text-slate-900 dark:text-white">
                   Recruitment
                 </span>
                 <span
@@ -79,7 +79,7 @@ export default function Hero() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.3 }}
-              className="text-xl text-slate-400 font-medium max-w-lg mb-4 leading-relaxed"
+              className="text-xl text-slate-600 dark:text-slate-400 font-medium max-w-lg mb-4 leading-relaxed"
             >
               Unified AI Decision Engine. Analyze. Verify. Decide.
             </motion.p>
@@ -116,7 +116,7 @@ export default function Hero() {
                 href="#demo"
                 whileHover={{ scale: 1.05, y: -3 }}
                 whileTap={{ scale: 0.95 }}
-                className="flex items-center justify-center gap-2.5 px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest text-white border transition-all"
+                className="flex items-center justify-center gap-2.5 px-8 py-4 rounded-full font-black text-sm uppercase tracking-widest text-slate-900 dark:text-white border transition-all"
                 style={{
                   background: 'rgba(15,23,42,0.6)',
                   backdropFilter: 'blur(20px)',
@@ -216,8 +216,8 @@ export default function Hero() {
                 style={{ background: 'linear-gradient(to top, rgba(2,6,23,0.95), transparent)', backdropFilter: 'blur(4px)' }}>
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-white font-black text-base">AI Interview Analysis</p>
-                    <p className="text-slate-400 text-[11px] font-bold uppercase tracking-widest mt-0.5">Software Engineer Role // Session Active</p>
+                    <p className="text-slate-900 dark:text-white font-black text-base">AI Interview Analysis</p>
+                    <p className="text-slate-600 dark:text-slate-400 text-[11px] font-bold uppercase tracking-widest mt-0.5">Software Engineer Role // Session Active</p>
                   </div>
                   <div className="text-right">
                     <p className="text-mint font-black text-xl" style={{ textShadow: '0 0 10px rgba(74,222,128,0.5)' }}>94%</p>

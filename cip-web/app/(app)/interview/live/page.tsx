@@ -130,9 +130,7 @@ function LiveInterviewContent() {
     await startCamera();
     startListening();
     startAnalyticsTracking();
-    toast('Tips skipped. Interview started!', {
-      icon: 'ℹ️',
-    });
+    toast('Tips skipped. Interview started!');
   };
 
   const startCamera = async () => {
@@ -393,7 +391,7 @@ function LiveInterviewContent() {
         user_query: userMessage,  // User's chat question
         question: questionDisplay.question,  // Current interview question
         answer: transcript || '',  // User's answer so far (if any)
-        job_role: interview?.jobRole || 'Software Engineer',
+        job_role: interview?.role || 'Software Engineer',
         resume_skills: [],
         topic: questionDisplay.topic,
         persona_mode: interview?.persona || 'FRIENDLY_HR',
@@ -480,7 +478,7 @@ function LiveInterviewContent() {
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-                <span className="text-white font-semibold">LIVE INTERVIEW</span>
+                <span className="text-slate-900 dark:text-white font-semibold">LIVE INTERVIEW</span>
               </div>
               <div className="text-gray-400 text-sm">
                 Question {questionDisplay.questionNumber} of {questionDisplay.totalQuestions}
@@ -513,7 +511,7 @@ function LiveInterviewContent() {
               </button>
               <button
                 onClick={handleEndInterview}
-                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition-all"
+                className="px-4 py-2 bg-red-500 hover:bg-red-600 text-slate-900 dark:text-white rounded-lg font-semibold transition-all"
               >
                 End Interview
               </button>
@@ -554,7 +552,7 @@ function LiveInterviewContent() {
               {/* Recording Indicator */}
               <div className="absolute top-3 right-3 flex items-center gap-2 bg-red-500 px-3 py-1.5 rounded-full shadow-lg">
                 <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
-                <span className="text-white text-sm font-semibold">REC</span>
+                <span className="text-slate-900 dark:text-white text-sm font-semibold">REC</span>
               </div>
 
               {/* Overlaid Analytics - Top Left Corner */}
@@ -569,7 +567,7 @@ function LiveInterviewContent() {
                     <span className="text-gray-300 text-xs">Confidence</span>
                     <TrendingUp className="w-3 h-3 text-[#4ADE80]" />
                   </div>
-                  <div className="text-2xl font-bold text-white">{Math.round(confidence)}%</div>
+                  <div className="text-2xl font-bold text-slate-900 dark:text-white">{Math.round(confidence)}%</div>
                 </motion.div>
 
                 {/* Eye Contact */}
@@ -601,7 +599,7 @@ function LiveInterviewContent() {
                     <span className="text-gray-300 text-xs">Voice Clarity</span>
                     <Volume2 className="w-3 h-3 text-[#F59E0B]" />
                   </div>
-                  <div className="text-2xl font-bold text-white">{Math.round(voiceClarity)}%</div>
+                  <div className="text-2xl font-bold text-slate-900 dark:text-white">{Math.round(voiceClarity)}%</div>
                 </motion.div>
 
                 {/* Emotion */}
@@ -615,7 +613,7 @@ function LiveInterviewContent() {
                     <span className="text-gray-300 text-xs">Emotion</span>
                     <Smile className="w-3 h-3 text-[#EC4899]" />
                   </div>
-                  <div className="text-lg font-bold text-white">{emotion}</div>
+                  <div className="text-lg font-bold text-slate-900 dark:text-white">{emotion}</div>
                 </motion.div>
               </div>
             </motion.div>
@@ -628,7 +626,7 @@ function LiveInterviewContent() {
               className="bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 p-4 flex-1 flex flex-col"
             >
               <div className="flex items-center justify-between mb-3">
-                <h3 className="text-white font-semibold flex items-center gap-2">
+                <h3 className="text-slate-900 dark:text-white font-semibold flex items-center gap-2">
                   <Mic className="w-4 h-4 text-[#38BDF8]" />
                   Live Transcript
                 </h3>
@@ -640,7 +638,7 @@ function LiveInterviewContent() {
                 )}
               </div>
               <div className="bg-black/30 rounded-lg p-3 flex-1 overflow-y-auto">
-                <p className="text-white text-sm leading-relaxed">
+                <p className="text-slate-900 dark:text-white text-sm leading-relaxed">
                   {transcript}
                   <span className="text-gray-400 italic">{interimTranscript}</span>
                   {!transcript && !interimTranscript && (
@@ -651,7 +649,7 @@ function LiveInterviewContent() {
               {transcript && (
                 <button
                   onClick={finalizeAnswer}
-                  className="mt-3 w-full bg-[#38BDF8] hover:bg-[#0EA5E9] text-white font-semibold py-2 rounded-lg transition-all"
+                  className="mt-3 w-full bg-[#38BDF8] hover:bg-[#0EA5E9] text-slate-900 dark:text-white font-semibold py-2 rounded-lg transition-all"
                 >
                   Submit Answer
                 </button>
@@ -681,7 +679,7 @@ function LiveInterviewContent() {
                   }}
                   className="w-32 h-32 rounded-full bg-gradient-to-br from-[#38BDF8] to-[#0EA5E9] flex items-center justify-center shadow-2xl"
                 >
-                  <Brain className="w-16 h-16 text-white" />
+                  <Brain className="w-16 h-16 text-slate-900 dark:text-white" />
                 </motion.div>
                 <motion.div
                   animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.8, 0.5] }}
@@ -694,7 +692,7 @@ function LiveInterviewContent() {
                   className="absolute inset-0 rounded-full border-4 border-[#38BDF8]/30"
                 ></motion.div>
               </div>
-              <p className="text-white text-lg font-semibold mt-4">AI Interviewer</p>
+              <p className="text-slate-900 dark:text-white text-lg font-semibold mt-4">AI Interviewer</p>
               <p className="text-gray-400 text-sm">Listening & Analyzing...</p>
             </motion.div>
 
@@ -708,7 +706,7 @@ function LiveInterviewContent() {
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <Target className="w-4 h-4 text-[#38BDF8]" />
-                  <span className="text-white text-sm font-semibold">
+                  <span className="text-slate-900 dark:text-white text-sm font-semibold">
                     Question {questionDisplay.questionNumber}/{questionDisplay.totalQuestions}
                   </span>
                 </div>
@@ -721,7 +719,7 @@ function LiveInterviewContent() {
                   </span>
                 </div>
               </div>
-              <p className="text-white text-sm leading-relaxed">{questionDisplay.question}</p>
+              <p className="text-slate-900 dark:text-white text-sm leading-relaxed">{questionDisplay.question}</p>
             </motion.div>
 
             {/* AI Feedback */}
@@ -733,7 +731,7 @@ function LiveInterviewContent() {
                   exit={{ opacity: 0, y: -20 }}
                   className="bg-white/5 backdrop-blur-xl rounded-xl border border-white/10 p-3 flex-shrink-0"
                 >
-                  <h4 className="text-white text-sm font-semibold mb-2 flex items-center gap-2">
+                  <h4 className="text-slate-900 dark:text-white text-sm font-semibold mb-2 flex items-center gap-2">
                     <Sparkles className="w-3 h-3 text-[#4ADE80]" />
                     Live AI Feedback
                   </h4>
@@ -768,7 +766,7 @@ function LiveInterviewContent() {
               >
                 <div className="flex items-center gap-2">
                   <MessageSquare className="w-4 h-4 text-[#38BDF8]" />
-                  <span className="text-white text-sm font-semibold">AI Chat Assistant</span>
+                  <span className="text-slate-900 dark:text-white text-sm font-semibold">AI Chat Assistant</span>
                 </div>
                 <motion.div
                   animate={{ rotate: chatOpen ? 180 : 0 }}
@@ -810,13 +808,13 @@ function LiveInterviewContent() {
                         onChange={(e) => setChatMessage(e.target.value)}
                         onKeyPress={(e) => e.key === 'Enter' && handleSendChat()}
                         placeholder="Ask a question..."
-                        className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-white text-xs focus:outline-none focus:border-[#38BDF8]"
+                        className="flex-1 bg-white/10 border border-white/20 rounded-lg px-3 py-2 text-slate-900 dark:text-white text-xs focus:outline-none focus:border-[#38BDF8]"
                       />
                       <button
                         onClick={handleSendChat}
                         className="p-2 bg-[#38BDF8] hover:bg-[#0EA5E9] rounded-lg transition-all"
                       >
-                        <Send className="w-3 h-3 text-white" />
+                        <Send className="w-3 h-3 text-slate-900 dark:text-white" />
                       </button>
                     </div>
                   </motion.div>

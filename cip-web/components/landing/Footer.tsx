@@ -31,7 +31,7 @@ export default function Footer() {
                 style={{ background: 'linear-gradient(135deg, #38BDF8, #4ADE80)', boxShadow: '0 0 15px rgba(74,222,128,0.3)' }}>
                 <Brain className="w-5 h-5 text-[#020617]" />
               </div>
-              <span className="font-syne text-xl font-black text-white tracking-tight">CIP</span>
+              <span className="font-syne text-xl font-black text-slate-900 dark:text-white tracking-tight">CIP</span>
               <span className="text-[9px] font-black text-mint border border-mint/30 px-1.5 py-0.5 rounded bg-mint/10 uppercase tracking-widest">
                 BETA
               </span>
@@ -77,13 +77,13 @@ export default function Footer() {
           {/* Link columns */}
           {Object.entries(footerLinks).map(([category, links]) => (
             <div key={category}>
-              <h4 className="text-xs font-black text-white uppercase tracking-[0.2em] mb-5">{category}</h4>
+              <h4 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-[0.2em] mb-5">{category}</h4>
               <ul className="space-y-3">
                 {links.map((link) => (
                   <li key={link}>
                     <a
                       href="#"
-                      className="text-sm text-slate-600 hover:text-slate-300 transition-colors font-medium"
+                      className="text-sm text-slate-600 hover:text-slate-700 dark:text-slate-300 transition-colors font-medium"
                     >
                       {link}
                     </a>

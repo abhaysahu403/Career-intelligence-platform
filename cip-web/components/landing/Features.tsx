@@ -80,7 +80,7 @@ export default function Features() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="font-syne text-4xl md:text-5xl font-extrabold text-white mb-4"
+            className="font-syne text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white mb-4"
           >
             Everything You Need to{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky to-mint">Land Your Dream Job</span>
@@ -151,7 +151,7 @@ export default function Features() {
                 </div>
 
                 {/* Title */}
-                <h3 className="font-syne text-xl font-black text-white mb-2 tracking-tight">
+                <h3 className="font-syne text-xl font-black text-slate-900 dark:text-white mb-2 tracking-tight">
                   {f.title}
                 </h3>
 
@@ -198,7 +198,7 @@ export default function Features() {
           className="mt-12 p-6 rounded-2xl bg-gradient-to-r from-[#4F46E5]/10 via-[#06B6D4]/10 to-[#22C55E]/10 border border-white/[0.06] flex flex-col md:flex-row items-center justify-between gap-4"
         >
           <div>
-            <div className="font-syne text-lg font-bold text-white mb-1">
+            <div className="font-syne text-lg font-bold text-slate-900 dark:text-white mb-1">
               All modules included in every plan
             </div>
             <div className="text-sm text-[#A1A1AA]">

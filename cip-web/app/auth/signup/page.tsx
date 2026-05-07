@@ -73,11 +73,11 @@ export default function SignupPage() {
           <div className="inline-flex items-center gap-2 mb-3">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-lg"
               style={{ background: 'linear-gradient(135deg, #38BDF8, #4ADE80)' }}>
-              <Zap size={18} className="text-white" />
+              <Zap size={18} className="text-slate-900 dark:text-white" />
             </div>
-            <span className="text-lg font-bold font-syne text-white">CIP</span>
+            <span className="text-lg font-bold font-syne text-slate-900 dark:text-white">CIP</span>
           </div>
-          <h1 className="text-2xl font-bold mb-1 text-white font-syne">Create Account</h1>
+          <h1 className="text-2xl font-bold mb-1 text-slate-900 dark:text-white font-syne">Create Account</h1>
           <p className="text-sm font-medium text-[#94A3B8]">Start your career journey today</p>
         </div>
 
@@ -117,7 +117,7 @@ export default function SignupPage() {
               <div key={f.name}>
                 <label className="block text-sm font-bold mb-1.5 text-[#94A3B8]">{f.label}</label>
                 <input {...register(f.name)} type={f.type} placeholder={f.placeholder}
-                  className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-white placeholder-[#64748B] transition-all focus:outline-none"
+                  className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-slate-900 dark:text-white placeholder-[#64748B] transition-all focus:outline-none"
                   style={{
                     background: 'rgba(255,255,255,0.03)',
                     borderColor: 'rgba(255,255,255,0.06)',
@@ -138,7 +138,7 @@ export default function SignupPage() {
             <div>
               <label className="block text-sm font-bold mb-1.5 text-[#94A3B8]">Branch</label>
               <select {...register('branch')}
-                className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-white transition-all appearance-none focus:outline-none"
+                className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-slate-900 dark:text-white transition-all appearance-none focus:outline-none"
                 style={{
                   background: 'rgba(255,255,255,0.03)',
                   borderColor: 'rgba(255,255,255,0.06)',
@@ -161,7 +161,7 @@ export default function SignupPage() {
               <label className="block text-sm font-bold mb-1.5 text-[#94A3B8]">Password</label>
               <div className="relative">
                 <input {...register('password')} type={showPw ? 'text' : 'password'} placeholder="Min. 8 characters"
-                  className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-white placeholder-[#64748B] transition-all pr-11 focus:outline-none"
+                  className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-slate-900 dark:text-white placeholder-[#64748B] transition-all pr-11 focus:outline-none"
                   style={{
                     background: 'rgba(255,255,255,0.03)',
                     borderColor: 'rgba(255,255,255,0.06)',
@@ -186,7 +186,7 @@ export default function SignupPage() {
             <div>
               <label className="block text-sm font-bold mb-1.5 text-[#94A3B8]">Confirm Password</label>
               <input {...register('confirm')} type="password" placeholder="Re-enter password"
-                className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-white placeholder-[#64748B] transition-all focus:outline-none"
+                className="w-full px-4 py-3 rounded-xl text-sm font-bold border text-slate-900 dark:text-white placeholder-[#64748B] transition-all focus:outline-none"
                 style={{
                   background: 'rgba(255,255,255,0.03)',
                   borderColor: 'rgba(255,255,255,0.06)',
@@ -204,7 +204,7 @@ export default function SignupPage() {
             </div>
 
             <button type="submit" disabled={loading}
-              className="w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg disabled:opacity-60 mt-2 text-white"
+              className="w-full py-3 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all duration-300 hover:shadow-lg disabled:opacity-60 mt-2 text-slate-900 dark:text-white"
               style={{
                 background: 'linear-gradient(135deg, #38BDF8, #4ADE80)',
                 boxShadow: '0 8px 20px -5px rgba(56,189,248,0.4)'
