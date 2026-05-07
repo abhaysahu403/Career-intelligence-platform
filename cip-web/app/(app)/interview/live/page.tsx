@@ -93,18 +93,37 @@ function LiveInterviewContent() {
 
   const loadInterviewAndTips = async () => {
     try {
-      // Fetch the interview session
-      const interviewResponse = await interviewApi.v3.getSession(parseInt(interviewId!));
+      // Fetch both interview session and tips in parallel for faster loading
+      const [interviewResponse, tipsResponse] = await Promise.all([
+        interviewApi.v3.getSession(parseInt(interviewId!)),
+        interviewApi.v3.getTips({
+          roundType: 'TECHNICAL', // Default, will be updated after interview loads
+          difficulty: 'MEDIUM',
+          duration: 30,
+        })
+      ]);
+      
       const interviewData = interviewResponse.data.data;
       setInterview(interviewData);
       
-      // Fetch pre-interview tips based on interview configuration
-      const tipsResponse = await interviewApi.v3.getTips({
-        roundType: interviewData.roundType || 'TECHNICAL',
-        difficulty: interviewData.difficulty || 'MEDIUM',
-        duration: interviewData.duration || 30,
-      });
-      setTipsData(tipsResponse.data.data);
+      // If tips need to be refetched with actual interview data, do it in background
+      if (interviewData.roundType !== 'TECHNICAL' || 
+          interviewData.difficulty !== 'MEDIUM' || 
+          interviewData.duration !== 30) {
+        // Fetch updated tips in background without blocking
+        interviewApi.v3.getTips({
+          roundType: interviewData.roundType || 'TECHNICAL',
+          difficulty: interviewData.difficulty || 'MEDIUM',
+          duration: interviewData.duration || 30,
+        }).then(response => {
+          setTipsData(response.data.data);
+        }).catch(err => {
+          console.error('Failed to fetch updated tips:', err);
+          // Keep default tips
+        });
+      } else {
+        setTipsData(tipsResponse.data.data);
+      }
       
       setLoading(false);
       toast.success('Interview loaded successfully!');
@@ -428,7 +447,8 @@ function LiveInterviewContent() {
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 dark:from-[#000814] dark:via-[#01030F] dark:to-[#020617] flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-[#38BDF8] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-slate-600 dark:text-gray-400">Initializing interview environment...</p>
+          <p className="text-slate-600 dark:text-gray-400 text-lg font-semibold mb-2">Initializing interview environment...</p>
+          <p className="text-slate-500 dark:text-gray-500 text-sm">Loading questions and preparing AI interviewer</p>
         </div>
       </div>
     );
