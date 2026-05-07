@@ -278,7 +278,7 @@ export default function RoadmapPage() {
 
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-3 flex-wrap">
-                            <p className={`text-sm font-bold ${task.completed ? 'line-through text-slate-500' : 'text-white'}`}>
+                            <p className={`text-sm font-bold ${task.completed ? 'line-through text-slate-500' : 'text-slate-900 dark:text-white'}`}>
                               {task.task}
                             </p>
                             <span className="flex items-center gap-1 text-[10px] font-black px-2.5 py-1 rounded-lg flex-shrink-0 uppercase border tracking-widest"

@@ -425,10 +425,10 @@ function LiveInterviewContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#000814] via-[#01030F] to-[#020617] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 dark:from-[#000814] dark:via-[#01030F] dark:to-[#020617] flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-[#38BDF8] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-400">Initializing interview environment...</p>
+          <p className="text-slate-600 dark:text-gray-400">Initializing interview environment...</p>
         </div>
       </div>
     );
@@ -437,7 +437,7 @@ function LiveInterviewContent() {
   // Show tips modal before interview starts
   if (showTips && tipsData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-[#000814] via-[#01030F] to-[#020617]">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 dark:from-[#000814] dark:via-[#01030F] dark:to-[#020617]">
         <PreInterviewTips
           tips={tipsData.tips}
           welcomeMessage={tipsData.welcomeMessage}
@@ -464,9 +464,9 @@ function LiveInterviewContent() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#000814] via-[#01030F] to-[#020617] relative overflow-hidden">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 dark:from-[#000814] dark:via-[#01030F] dark:to-[#020617] relative overflow-hidden">
       {/* Animated Background */}
-      <div className="absolute inset-0 opacity-10">
+      <div className="absolute inset-0 opacity-5 dark:opacity-10">
         <div className="absolute top-20 left-20 w-96 h-96 bg-[#38BDF8] rounded-full blur-[120px] animate-pulse"></div>
         <div className="absolute bottom-20 right-20 w-96 h-96 bg-[#4ADE80] rounded-full blur-[120px] animate-pulse delay-1000"></div>
       </div>
@@ -831,10 +831,10 @@ function LiveInterviewContent() {
 export default function LiveInterviewPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-br from-[#000814] via-[#01030F] to-[#020617] flex items-center justify-center">
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 dark:from-[#000814] dark:via-[#01030F] dark:to-[#020617] flex items-center justify-center">
         <div className="text-center">
           <div className="w-16 h-16 border-4 border-[#38BDF8] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-400">Loading interview...</p>
+          <p className="text-slate-600 dark:text-gray-400">Loading interview...</p>
         </div>
       </div>
     }>
