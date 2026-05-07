@@ -220,7 +220,7 @@ export default function InterviewSetupPage() {
                 <p className="text-gray-400 text-sm mb-3">
                   Choose the source of questions based on your interview preparation goal
                 </p>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
                   {interviewModes.map((mode) => {
                     const Icon = mode.icon;
                     return (
@@ -242,6 +242,37 @@ export default function InterviewSetupPage() {
                       </motion.button>
                     );
                   })}
+                  
+                  {/* NEW: Custom Interview Option */}
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => {
+                      const code = prompt('Enter interview code (or leave empty to create new):');
+                      if (code === null) return; // User cancelled
+                      if (code.trim()) {
+                        // Join existing interview
+                        router.push(`/interview/join/${code.trim()}`);
+                      } else {
+                        // Create new custom interview
+                        router.push('/faculty/create-interview');
+                      }
+                    }}
+                    className="relative p-4 rounded-xl border-2 border-[#F59E0B]/30 bg-gradient-to-br from-[#F59E0B]/10 to-[#F59E0B]/5 hover:border-[#F59E0B]/50 transition-all text-center"
+                  >
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-orange-500 rounded-t-xl"></div>
+                    <Users className="w-8 h-8 mb-2 mx-auto text-[#F59E0B]" />
+                    <h3 className="text-sm font-semibold text-white mb-1">Custom Interview</h3>
+                    <p className="text-xs text-gray-400">Your own questions or join by code</p>
+                  </motion.button>
+                </div>
+                
+                {/* Custom Interview Info */}
+                <div className="mt-4 p-4 bg-gradient-to-r from-[#F59E0B]/10 to-[#F59E0B]/5 rounded-lg border border-[#F59E0B]/20">
+                  <p className="text-sm text-gray-300 font-medium flex items-center gap-2">
+                    <Users size={16} className="text-[#F59E0B]" />
+                    <span><strong>Custom Interview:</strong> Create your own questions or join an interview created by your teacher/recruiter using a code</span>
+                  </p>
                 </div>
               </motion.div>
             )}
