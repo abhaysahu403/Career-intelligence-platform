@@ -9,7 +9,7 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6 pb-12 max-w-2xl">
-      <h2 className="text-3xl font-syne font-black text-white uppercase tracking-widest">Settings</h2>
+      <h2 className="text-3xl font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest">Settings</h2>
 
       {[
         {
@@ -32,13 +32,13 @@ export default function SettingsPage() {
         <div key={section.title} className="rounded-[32px] border overflow-hidden backdrop-blur-[20px] bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
           <div className="flex items-center gap-2 px-6 py-5 border-b border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
             <section.icon size={16} className="text-sky" />
-            <h3 className="font-syne font-black text-white uppercase tracking-widest text-sm">{section.title}</h3>
+            <h3 className="font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest text-sm">{section.title}</h3>
           </div>
           <div className="divide-y border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
             {section.items.map(item => (
-              <div key={item.key} className="flex items-center justify-between px-6 py-5 transition-colors hover:bg-white/1">
+              <div key={item.key} className="flex items-center justify-between px-6 py-5 transition-colors hover:bg-slate-50 dark:hover:bg-white/5">
                 <div>
-                  <p className="text-sm font-bold text-white">{item.label}</p>
+                  <p className="text-sm font-bold text-slate-900 dark:text-white">{item.label}</p>
                   <p className="text-xs font-medium text-slate-400">{item.desc}</p>
                 </div>
                 <button onClick={() => item.set(!item.val)}

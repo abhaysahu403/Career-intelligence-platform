@@ -204,7 +204,7 @@ export default function JobsPage() {
       {/* Header + Score mini */}
       <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
         <div className="flex-1">
-          <h2 className="text-3xl font-syne font-black text-white uppercase tracking-widest">
+          <h2 className="text-3xl font-syne font-black text-slate-900 dark:text-white uppercase tracking-widest">
             Job Magic Engine
           </h2>
           <p className="text-sm font-medium uppercase tracking-wide text-slate-500 mt-1">
@@ -216,7 +216,7 @@ export default function JobsPage() {
             <ScoreCircle score={score.readiness} size={52} strokeWidth={6} showLevel={false} />
             <div>
               <p className="text-xs font-black uppercase tracking-widest text-slate-500">Your Score</p>
-              <p className="text-sm font-bold text-white">{score.level}</p>
+              <p className="text-sm font-bold text-slate-900 dark:text-white">{score.level}</p>
             </div>
           </div>
         )}
@@ -229,8 +229,7 @@ export default function JobsPage() {
             <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input value={search} onChange={e => setSearch(e.target.value)}
               placeholder="Search companies or roles…"
-              className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm font-bold border focus:outline-none focus:border-sky focus:ring-2 focus:ring-sky/20 transition-all text-white placeholder-slate-500"
-              style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.1)' }} />
+              className="w-full pl-9 pr-4 py-2.5 rounded-xl text-sm font-bold border focus:outline-none focus:border-sky focus:ring-2 focus:ring-sky/20 transition-all text-slate-900 dark:text-white placeholder-slate-500 bg-white dark:bg-white/5 border-slate-200 dark:border-white/10" />
           </div>
           <button onClick={() => setOnlyRecommended(!onlyRecommended)}
             className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold border transition-all flex-shrink-0 shadow-sm"
@@ -296,12 +295,12 @@ export default function JobsPage() {
       {isLoading ? (
         <div className="text-center py-16 rounded-2xl border backdrop-blur-[20px] bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky mx-auto mb-3"></div>
-          <p className="font-syne font-black text-white text-lg">Loading jobs...</p>
+          <p className="font-syne font-black text-slate-900 dark:text-white text-lg">Loading jobs...</p>
         </div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 rounded-2xl border backdrop-blur-[20px] bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
           <Filter size={32} className="mx-auto mb-3 text-sky" />
-          <p className="font-syne font-black text-white text-lg">No jobs match your filters</p>
+          <p className="font-syne font-black text-slate-900 dark:text-white text-lg">No jobs match your filters</p>
           <p className="text-sm mt-1 font-medium text-slate-400">Try adjusting your filters</p>
           <button onClick={clearFilters} className="mt-4 px-4 py-2 rounded-xl text-sm font-bold transition-all"
             style={{ background: 'rgba(56,189,248,0.1)', color: '#38BDF8', border: '1px solid rgba(56,189,248,0.3)' }}>

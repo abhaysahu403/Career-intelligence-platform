@@ -274,7 +274,7 @@ export default function ProfilePage() {
                 className="flex items-center gap-2 rounded-xl border border-sky/20 bg-sky/5 px-4 py-2 text-sm font-black text-sky shadow-[0_0_15px_rgba(56,189,248,0.05)]"
               >
                 {skill}
-                <button type="button" onClick={() => setSkills(skills.filter((item) => item !== skill))} className="ml-2 text-lg leading-none hover:text-white transition-colors">
+                <button type="button" onClick={() => setSkills(skills.filter((item) => item !== skill))} className="ml-2 text-lg leading-none hover:text-slate-900 dark:hover:text-white transition-colors">
                   &times;
                 </button>
               </span>
