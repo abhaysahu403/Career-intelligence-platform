@@ -130,7 +130,9 @@ function LiveInterviewContent() {
     await startCamera();
     startListening();
     startAnalyticsTracking();
-    toast.info('Tips skipped. Interview started!');
+    toast('Tips skipped. Interview started!', {
+      icon: 'ℹ️',
+    });
   };
 
   const startCamera = async () => {
