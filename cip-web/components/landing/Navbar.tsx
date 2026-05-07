@@ -124,11 +124,29 @@ export default function Navbar() {
                   {link.label}
                 </a>
               ))}
+              
+              {/* Theme Toggle */}
+              <div className="flex items-center justify-between py-2 border-b border-slate-200 dark:border-white/5">
+                <span className="text-sm font-bold text-slate-600 dark:text-gray-300">Theme</span>
+                <ThemeToggle variant="minimal" />
+              </div>
+              
+              {/* Sign In Button */}
               <a
-                href="/auth/signup"
-                className="mt-2 text-center px-5 py-3 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#3B82F6] text-white text-sm font-bold shadow-lg shadow-[#6366F1]/30"
+                href="/auth/login"
+                className="text-center px-5 py-3 rounded-xl bg-slate-100 dark:bg-white/10 text-slate-900 dark:text-white text-sm font-bold border border-slate-200 dark:border-white/10 hover:bg-slate-200 dark:hover:bg-white/20 transition-all"
                 onClick={() => setMobileOpen(false)}
               >
+                Sign In
+              </a>
+              
+              {/* Get Started Button */}
+              <a
+                href="/auth/signup"
+                className="text-center px-5 py-3 rounded-xl bg-gradient-to-r from-sky to-mint text-[#020617] text-sm font-bold shadow-lg shadow-sky/30 hover:shadow-sky/50 transition-all flex items-center justify-center gap-2"
+                onClick={() => setMobileOpen(false)}
+              >
+                <Zap className="w-4 h-4" />
                 Get Started Free
               </a>
             </div>
