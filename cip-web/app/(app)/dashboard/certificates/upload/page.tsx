@@ -178,8 +178,7 @@ export default function UploadPage() {
         {file && !isLoading && (
           <button
             onClick={reset}
-            className="flex-1 py-4 px-6 font-black uppercase tracking-widest rounded-2xl border backdrop-blur-[20px] text-slate-900 dark:text-white transition-all hover:bg-white/5"
-            style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.05)' }}
+            className="flex-1 py-4 px-6 font-black uppercase tracking-widest rounded-2xl border backdrop-blur-[20px] text-slate-900 dark:text-white transition-all hover:bg-slate-100 dark:hover:bg-white/5 bg-slate-50 dark:bg-white/5 border-slate-200 dark:border-white/10"
           >
             Clear
           </button>

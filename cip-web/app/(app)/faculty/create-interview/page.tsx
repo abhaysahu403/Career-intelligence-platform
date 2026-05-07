@@ -89,7 +89,7 @@ export default function CreateInterviewPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#000814] via-[#01030F] to-[#020617] p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 dark:from-[#000814] dark:via-[#01030F] dark:to-[#020617] p-6">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <motion.div
@@ -99,13 +99,13 @@ export default function CreateInterviewPage() {
         >
           <button
             onClick={() => router.back()}
-            className="flex items-center gap-2 text-gray-400 hover:text-white mb-4 transition-colors"
+            className="flex items-center gap-2 text-slate-600 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white mb-4 transition-colors"
           >
             <ArrowLeft size={20} />
             Back to Dashboard
           </button>
-          <h1 className="text-4xl font-bold text-white mb-2">Create Custom Interview</h1>
-          <p className="text-gray-400">Design your own interview with custom questions</p>
+          <h1 className="text-4xl font-bold text-slate-900 dark:text-white mb-2">Create Custom Interview</h1>
+          <p className="text-slate-600 dark:text-gray-400">Design your own interview with custom questions</p>
         </motion.div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
@@ -113,9 +113,9 @@ export default function CreateInterviewPage() {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6"
+            className="bg-white/80 dark:bg-white/5 backdrop-blur-xl rounded-2xl border border-slate-200 dark:border-white/10 p-6"
           >
-            <h2 className="text-2xl font-bold text-white mb-4">Interview Details</h2>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-4">Interview Details</h2>
             
             <div className="space-y-4">
               <div>
@@ -127,7 +127,7 @@ export default function CreateInterviewPage() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g., Java Backend Developer Interview"
-                  className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#38BDF8]"
+                  className="w-full bg-white dark:bg-white/10 border border-slate-300 dark:border-white/20 rounded-lg px-4 py-3 text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-[#38BDF8]"
                   required
                 />
               </div>
@@ -141,7 +141,7 @@ export default function CreateInterviewPage() {
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Brief description of the interview..."
                   rows={3}
-                  className="w-full bg-white/10 border border-white/20 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#38BDF8]"
+                  className="w-full bg-white dark:bg-white/10 border border-slate-300 dark:border-white/20 rounded-lg px-4 py-3 text-slate-900 dark:text-white placeholder-gray-500 focus:outline-none focus:border-[#38BDF8]"
                 />
               </div>
 
