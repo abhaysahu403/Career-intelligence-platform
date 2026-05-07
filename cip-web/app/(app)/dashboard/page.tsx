@@ -259,9 +259,9 @@ export default function DashboardPage() {
           </div>
 
           {/* Progress Bar */}
-          <div className="mt-6 pt-6 border-t border-white/10">
+          <div className="mt-6 pt-6 border-t border-slate-200 dark:border-white/10">
             <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-semibold text-white">Overall Progress</span>
+              <span className="text-sm font-semibold text-slate-900 dark:text-white">Overall Progress</span>
               <span className="text-sm font-bold text-[#38BDF8]">{progressPercentage}% Complete</span>
             </div>
             <div className="h-3 bg-white/10 rounded-full overflow-hidden">
