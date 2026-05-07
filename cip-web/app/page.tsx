@@ -9,7 +9,7 @@ import NeuralCanvas from "@/components/landing/NeuralCanvas";
 
 export default function LandingPage() {
   return (
-    <main className="relative bg-black dark:bg-black bg-slate-50 text-slate-900 dark:text-white min-h-screen overflow-x-hidden selection:bg-mint/30 selection:text-white transition-colors duration-300">
+    <main className="relative bg-slate-50 dark:bg-black text-slate-900 dark:text-white min-h-screen overflow-x-hidden selection:bg-mint/30 selection:text-white transition-colors duration-300">
       <NeuralCanvas />
       <div className="relative z-10">
         <Navbar />
