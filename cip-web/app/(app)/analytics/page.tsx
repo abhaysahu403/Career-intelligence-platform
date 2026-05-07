@@ -63,18 +63,63 @@ export default function AnalyticsPage() {
   return (
     <div className="space-y-6 pb-12 max-w-7xl">
       {/* Header */}
-      <div className="flex items-center gap-3 mb-6">
-        <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-sky/10 border border-sky/20 shadow-[0_0_15px_rgba(56,189,248,0.2)]">
-          <LineChartIcon size={24} className="text-sky" />
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-sky/10 border border-sky/20 shadow-[0_0_15px_rgba(56,189,248,0.2)]">
+            <LineChartIcon size={24} className="text-sky" />
+          </div>
+          <div>
+            <h2 className="text-3xl font-syne font-black text-white uppercase tracking-widest">
+              Intelligence Matrix
+            </h2>
+            <p className="text-sm font-medium uppercase tracking-wide text-slate-500 mt-1">
+              Deep forensic analysis of your career readiness
+            </p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-3xl font-syne font-black text-white uppercase tracking-widest">
-            Intelligence Matrix
-          </h2>
-          <p className="text-sm font-medium uppercase tracking-wide text-slate-500 mt-1">
-            Deep forensic analysis of your career readiness
-          </p>
-        </div>
+        
+        {/* Download Progress Report Button */}
+        <button
+          onClick={async () => {
+            try {
+              const toast = (await import('react-hot-toast')).default;
+              toast.loading('Generating PDF report...');
+              
+              // Call backend API to generate PDF
+              const response = await analyticsApi.downloadProgress();
+              
+              // Create blob and download
+              const blob = new Blob([response.data], { type: 'text/html' });
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = `progress-report-${new Date().toISOString().split('T')[0]}.html`;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+              
+              toast.dismiss();
+              toast.success('Progress report downloaded! Open in browser and print to PDF.');
+            } catch (error) {
+              const toast = (await import('react-hot-toast')).default;
+              toast.dismiss();
+              toast.error('Failed to generate report. Please try again.');
+              console.error('Download error:', error);
+            }
+          }}
+          className="flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm uppercase tracking-wider transition-all hover:scale-105"
+          style={{
+            background: 'linear-gradient(135deg, #38BDF8, #0EA5E9)',
+            color: '#fff',
+            boxShadow: '0 0 20px rgba(56,189,248,0.3)',
+          }}
+        >
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          Download PDF Report
+        </button>
       </div>
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         {[

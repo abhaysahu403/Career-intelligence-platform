@@ -93,6 +93,7 @@ export const analyticsApi = {
   get:        () => api.get('/analytics'),
   getStudent: (studentId: string) => api.get(`/analytics/student/${studentId}`),
   getCareerAnalysis: (userId: number) => api.get(`/analytics/career/${userId}`),
+  downloadProgress: () => api.get('/analytics/download/progress', { responseType: 'blob' }),
 };
 
 // ─── Interview ────────────────────────────────────────────────────────────────
@@ -168,6 +169,7 @@ export const jobsApi = {
 // Gateway routes: /roadmap/**, /recommendations/** → recommendation-service:8088
 export const roadmapApi = {
   get:          () => api.get('/roadmap'),
+  downloadRoadmap: (data: { tasks: unknown[] }) => api.post('/analytics/download/roadmap', data, { responseType: 'blob' }),
 };
 
 // ─── Certificates ─────────────────────────────────────────────────────────────

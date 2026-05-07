@@ -127,13 +127,13 @@ export default function RoadmapPage() {
             <div className="flex items-center gap-3 mb-2">
               <Trophy size={24} className="text-amber-400" />
               <h2 className="text-3xl font-syne font-black text-white uppercase tracking-widest">
-                Mission Roadmap
+                AI-Generated Roadmap
               </h2>
             </div>
             <p className="text-sm font-medium uppercase tracking-wide text-slate-500 mt-1">
-              Personalized trajectory from preparation to placement
+              Personalized learning path based on your interview performance
             </p>
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 mt-4">
               <div className="flex-1 h-3 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
                 <div className="h-full rounded-full progress-animate"
                   style={{ width:`${pct}%`, background: 'linear-gradient(90deg, #38BDF8, #4ADE80)', boxShadow: '0 0 10px rgba(56,189,248,0.5)' }} />
@@ -143,9 +143,54 @@ export default function RoadmapPage() {
               </span>
             </div>
           </div>
-          <div className="text-center flex-shrink-0">
-            <p className="text-4xl font-black text-sky drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]" style={{ fontFamily:'Plus Jakarta Sans,sans-serif' }}>{pct}%</p>
-            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Complete</p>
+          <div className="flex flex-col gap-3">
+            <div className="text-center flex-shrink-0">
+              <p className="text-4xl font-black text-sky drop-shadow-[0_0_10px_rgba(56,189,248,0.5)]" style={{ fontFamily:'Plus Jakarta Sans,sans-serif' }}>{pct}%</p>
+              <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Complete</p>
+            </div>
+            
+            {/* Download Roadmap Button */}
+            <button
+              onClick={async () => {
+                try {
+                  const toast = (await import('react-hot-toast')).default;
+                  toast.loading('Generating AI roadmap PDF...');
+                  
+                  // Call backend API to generate PDF
+                  const response = await roadmapApi.downloadRoadmap({ tasks: allTasks });
+                  
+                  // Create blob and download
+                  const blob = new Blob([response.data], { type: 'text/html' });
+                  const url = URL.createObjectURL(blob);
+                  const link = document.createElement('a');
+                  link.href = url;
+                  link.download = `ai-roadmap-${new Date().toISOString().split('T')[0]}.html`;
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                  URL.revokeObjectURL(url);
+                  
+                  toast.dismiss();
+                  toast.success('AI Roadmap downloaded! Open in browser and print to PDF.');
+                } catch (error) {
+                  const toast = (await import('react-hot-toast')).default;
+                  toast.dismiss();
+                  toast.error('Failed to generate roadmap. Please try again.');
+                  console.error('Download error:', error);
+                }
+              }}
+              className="flex items-center justify-center gap-2 px-4 py-2 rounded-xl font-bold text-xs uppercase tracking-wider transition-all hover:scale-105"
+              style={{
+                background: 'linear-gradient(135deg, #38BDF8, #0EA5E9)',
+                color: '#fff',
+                boxShadow: '0 0 15px rgba(56,189,248,0.3)',
+              }}
+            >
+              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+              Download PDF
+            </button>
           </div>
         </div>
 
