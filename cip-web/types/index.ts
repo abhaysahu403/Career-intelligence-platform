@@ -90,6 +90,60 @@ export interface InterviewResult {
   duration: number;
 }
 
+// ─── RAG & Semantic Similarity Types ─────────────────────────────────────────
+export interface InterviewAnswerResult {
+  score: number;              // Combined score
+  llm_score?: number;         // LLM evaluation
+  semantic_score?: number;    // Semantic similarity
+  feedback: {
+    good: string;
+    missing: string;
+    ideal: string;
+    tip: string;
+  };
+  topic: string;
+  difficulty: string;
+}
+
+export interface PersonalizedQuestionData {
+  question: string;
+  topic: string;
+  difficulty: string;
+  ideal_answer?: string;
+  personalized?: boolean;           // Is this question personalized?
+  resume_reference?: string;        // What resume section was referenced
+}
+
+export interface RAGResumeData {
+  skills: string[];
+  experience: Array<{
+    title: string;
+    company: string;
+    duration: string;
+    description: string;
+  }>;
+  projects: Array<{
+    name: string;
+    description: string;
+    technologies: string[];
+  }>;
+  education: Array<{
+    degree: string;
+    institution: string;
+    year: string;
+  }>;
+  score: number;
+  embeddings?: Record<string, number[]>;
+}
+
+export interface ResumeParsingStatus {
+  status: 'idle' | 'uploading' | 'parsing' | 'generating_embeddings' | 'complete' | 'error';
+  progress: number;
+  message: string;
+  data?: RAGResumeData;
+  error?: string;
+}
+
 // ─── Interview V3 Types ──────────────────────────────────────────────────────
 export type InterviewMode = 'RESUME_BASED' | 'COMPANY_SPECIFIC' | 'ROLE_BASED' | 'BRANCH_BASED' | 'TIME_BASED';
 export type InterviewDifficulty = 'EASY' | 'MEDIUM' | 'HARD' | 'FAANG';

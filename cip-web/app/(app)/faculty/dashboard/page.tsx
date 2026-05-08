@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Plus, Eye, Copy, Users, Clock, BarChart3 } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { api } from '@/lib/api';
+import { customInterviewApi } from '@/lib/api';
 
 interface Interview {
   id: number;
@@ -31,7 +31,7 @@ export default function FacultyDashboardPage() {
 
   const loadInterviews = async () => {
     try {
-      const response = await api.get('/custom-interview/my-interviews');
+      const response = await customInterviewApi.getMyInterviews();
       setInterviews(response.data.data);
     } catch (error) {
       console.error('Failed to load interviews:', error);

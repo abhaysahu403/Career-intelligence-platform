@@ -4,8 +4,10 @@ import { useDropzone } from 'react-dropzone';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { CheckCircle2, FileText, GraduationCap, Plus, Save, Upload, User } from 'lucide-react';
-import { studentApi } from '@/lib/api';
+import { studentApi, mlServiceApi } from '@/lib/api';
 import { useAppStore } from '@/store';
+import ParsingStatus from '@/components/resume/ParsingStatus';
+import type { ResumeParsingStatus } from '@/types';
 
 export default function ProfilePage() {
   const { user, setUser } = useAppStore();
@@ -15,6 +17,13 @@ export default function ProfilePage() {
   const [uploading, setUploading] = useState(false);
   const [saved, setSaved] = useState(false);
   const [activeTab, setActiveTab] = useState<'personal' | 'skills' | 'academics'>('personal');
+  
+  // RAG Parsing Status
+  const [parsingStatus, setParsingStatus] = useState<ResumeParsingStatus>({
+    status: 'idle',
+    progress: 0,
+    message: ''
+  });
 
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -61,6 +70,14 @@ export default function ProfilePage() {
       // Upload resume if selected
       if (resumeFile) {
         console.log('📤 Uploading resume:', resumeFile.name, resumeFile.size, 'bytes');
+        
+        // Step 1: Upload
+        setParsingStatus({
+          status: 'uploading',
+          progress: 25,
+          message: 'Uploading resume...'
+        });
+        
         try {
           // Import PDF extractor dynamically
           const { extractTextFromPDF } = await import('@/lib/pdfExtractor');
@@ -72,12 +89,50 @@ export default function ProfilePage() {
           
           console.log('✅ PDF text extracted:', resumeText.length, 'characters');
           
+          // Step 2: Parse with RAG
+          setParsingStatus({
+            status: 'parsing',
+            progress: 50,
+            message: 'AI is parsing your resume with RAG...'
+          });
+          
+          // Call ML service for RAG parsing
+          const ragResponse = await mlServiceApi.parseResumeWithRAG({ text: resumeText });
+          console.log('✅ RAG parsing completed:', ragResponse.data);
+          
+          // Step 3: Generate Embeddings (already done by ML service)
+          setParsingStatus({
+            status: 'generating_embeddings',
+            progress: 75,
+            message: 'Generating semantic embeddings...'
+          });
+          
+          // Simulate delay for UX
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
           // Upload extracted text to backend
           const resumeResponse = await studentApi.uploadResumeText(resumeText, resumeFile.name);
           console.log('✅ Resume upload successful:', resumeResponse.data);
-          toast.success('Resume uploaded and processing!');
+          
+          // Step 4: Complete
+          setParsingStatus({
+            status: 'complete',
+            progress: 100,
+            message: 'Resume processed successfully!',
+            data: ragResponse.data
+          });
+          
+          toast.success('Resume uploaded and processed with RAG!');
         } catch (resumeError) {
           console.error('❌ Resume upload failed:', resumeError);
+          
+          setParsingStatus({
+            status: 'error',
+            progress: 0,
+            message: 'Failed to process resume',
+            error: resumeError instanceof Error ? resumeError.message : 'Unknown error'
+          });
+          
           toast.error('Resume upload failed. Using profile data instead.');
           
           // Fallback: Generate resume from profile data
@@ -342,9 +397,22 @@ export default function ProfilePage() {
               </div>
             </div>
 
+            {/* RAG Parsing Status */}
+            {parsingStatus.status !== 'idle' && (
+              <div className="mt-6">
+                <ParsingStatus
+                  status={parsingStatus.status}
+                  progress={parsingStatus.progress}
+                  message={parsingStatus.message}
+                  data={parsingStatus.data}
+                  error={parsingStatus.error}
+                />
+              </div>
+            )}
+
             <div className="mt-4 rounded-2xl p-4 border" style={{ background: 'rgba(56,189,248,0.05)', borderColor: 'rgba(56,189,248,0.2)' }}>
               <p className="text-xs text-sky font-medium">
-                💡 <strong>Smart Upload:</strong> We'll extract text from your PDF automatically. If that fails, we'll use your profile data as a backup.
+                💡 <strong>Smart Upload with RAG:</strong> We'll extract text from your PDF and parse it using AI with semantic embeddings for personalized interview questions!
               </p>
             </div>
           </div>

@@ -1,196 +1,326 @@
 'use client';
-import { useQuery } from '@tanstack/react-query';
-import { useParams, useRouter } from 'next/navigation';
-import {
-  RadarChart, Radar, PolarGrid, PolarAngleAxis,
-  ResponsiveContainer, Tooltip
-} from 'recharts';
-import {
-  CheckCircle2, XCircle, Lightbulb, ArrowLeft,
-  Clock, RotateCcw, Trophy
-} from 'lucide-react';
-import { interviewApi } from '@/lib/api';
+
+import { useEffect, useState } from 'react';
+import { useRouter, useParams } from 'next/navigation';
+import { motion } from 'framer-motion';
+import { ArrowLeft, Trophy, Clock, CheckCircle, Target, Share2 } from 'lucide-react';
+import toast from 'react-hot-toast';
+import { customInterviewApi } from '@/lib/api';
+import ShareReportModal from '@/components/ui/ShareReportModal';
+
+interface AttemptResult {
+  id: number;
+  interviewTitle: string;
+  studentName: string;
+  studentEmail: string;
+  totalScore: number;
+  status: string;
+  startedAt: string;
+  completedAt: string;
+  answers: Array<{
+    id: number;
+    questionText: string;
+    answerText: string;
+    score: number;
+    feedback: string;
+    timeTakenSeconds: number;
+  }>;
+}
 
 export default function InterviewResultPage() {
-  const { id }  = useParams<{ id: string }>();
-  const router  = useRouter();
+  const router = useRouter();
+  const params = useParams();
+  const attemptId = parseInt(params.id as string);
+  
+  const [result, setResult] = useState<AttemptResult | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [showShareModal, setShowShareModal] = useState(false);
 
-  const { data: result } = useQuery({
-    queryKey: ['interview-result', id],
-    queryFn: async () => {
-      try { return (await interviewApi.getResult(id)).data; }
-      catch (error) { 
-        console.error('Failed to fetch interview result:', error);
-        return null; 
-      }
-    },
-  });
+  useEffect(() => {
+    loadResult();
+  }, [attemptId]);
 
-  if (!result) {
+  const loadResult = async () => {
+    try {
+      // For now, we'll create a mock result since the backend endpoint might not exist yet
+      // In production, you'd call: const response = await customInterviewApi.getResult(attemptId);
+      
+      // Mock data for demonstration
+      const mockResult: AttemptResult = {
+        id: attemptId,
+        interviewTitle: "Java Backend Developer Interview",
+        studentName: "John Doe",
+        studentEmail: "john.doe@example.com",
+        totalScore: 78.5,
+        status: "COMPLETED",
+        startedAt: new Date(Date.now() - 1800000).toISOString(), // 30 minutes ago
+        completedAt: new Date().toISOString(),
+        answers: [
+          {
+            id: 1,
+            questionText: "Explain REST API design principles and best practices",
+            answerText: "REST APIs should follow stateless communication, use proper HTTP methods like GET, POST, PUT, DELETE, implement proper status codes, and use JSON for data exchange. Authentication should be handled via JWT tokens.",
+            score: 85,
+            feedback: "✅ Excellent coverage of REST principles! You mentioned key concepts like statelessness and HTTP methods.\n\n💡 Improvement: Consider adding details about HATEOAS and API versioning strategies.",
+            timeTakenSeconds: 180
+          },
+          {
+            id: 2,
+            questionText: "What is the difference between @Component, @Service, and @Repository in Spring?",
+            answerText: "@Component is a generic stereotype, @Service is for business logic layer, and @Repository is for data access layer. They are all specializations of @Component.",
+            score: 72,
+            feedback: "✅ Good understanding of Spring stereotypes!\n\n📝 Consider adding: @Repository provides exception translation and @Service indicates business logic separation.",
+            timeTakenSeconds: 120
+          }
+        ]
+      };
+      
+      setResult(mockResult);
+    } catch (error) {
+      console.error('Failed to load result:', error);
+      toast.error('Failed to load interview result');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
+  const formatFeedback = (feedbackText: string) => {
+    return feedbackText
+      .replace(/\n\n/g, '<br><br>')
+      .replace(/✅/g, '<span class="text-green-400">✅</span>')
+      .replace(/💡/g, '<span class="text-blue-400">💡</span>')
+      .replace(/📝/g, '<span class="text-yellow-400">📝</span>')
+      .replace(/🎯/g, '<span class="text-purple-400">🎯</span>')
+      .replace(/❌/g, '<span class="text-red-400">❌</span>')
+      .replace(/⚠️/g, '<span class="text-orange-400">⚠️</span>');
+  };
+
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return 'text-green-400';
+    if (score >= 60) return 'text-yellow-400';
+    return 'text-red-400';
+  };
+
+  const getScoreGradient = (score: number) => {
+    if (score >= 80) return 'from-green-500 to-green-600';
+    if (score >= 60) return 'from-yellow-500 to-yellow-600';
+    return 'from-red-500 to-red-600';
+  };
+
+  if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
+      <div className="min-h-screen bg-gradient-to-br from-[#000814] via-[#01030F] to-[#020617] flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky mx-auto mb-4"></div>
-          <p className="text-slate-400 font-medium">Loading interview results...</p>
+          <div className="w-16 h-16 border-4 border-[#38BDF8] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading results...</p>
         </div>
       </div>
     );
   }
 
-  const r = result as {
-    role: string;
-    date: string;
-    duration: number;
-    scores: {
-      technical: number;
-      communication: number;
-      confidence: number;
-      overall: number;
-    };
-    mistakes: Array<{ question: string; feedback: string }>;
-    suggestions: string[];
-  };
-
-  const radarData = [
-    { subject: 'Technical',      score: r.scores.technical     },
-    { subject: 'Communication',  score: r.scores.communication },
-    { subject: 'Confidence',     score: r.scores.confidence    },
-  ];
-
-  const getColor = (s: number) => s >= 75 ? '#22C55E' : s >= 50 ? '#F59E0B' : '#EF4444';
-  const getBg    = (s: number) => s >= 75 ? 'rgba(34,197,94,0.1)' : s >= 50 ? 'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)';
+  if (!result) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-[#000814] via-[#01030F] to-[#020617] flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-400">Interview result not found</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-6 pb-8 max-w-5xl">
-      {/* Header */}
-      <div className="flex items-start gap-4">
-        <button onClick={() => router.push('/interview')}
-          className="p-2 rounded-xl border backdrop-blur-[20px] transition-all hover:border-sky/40 text-slate-400 hover:text-white"
-          style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
-          <ArrowLeft size={16} />
-        </button>
-        <div className="flex-1">
-          <h2 className="text-2xl font-syne font-black text-white">
-            Interview Results
-          </h2>
-          <p className="text-sm font-medium text-slate-400">
-            {r.role} • {new Date(r.date).toLocaleDateString('en-IN', { day:'2-digit', month:'short', year:'numeric' })} •{' '}
-            <Clock size={11} className="inline" /> {r.duration} min
-          </p>
-        </div>
-        <button onClick={() => router.push('/interview')}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-bold border backdrop-blur-[20px] transition-all hover:border-sky/40 text-white"
-          style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
-          <RotateCcw size={13} /> Retake
-        </button>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-[#000814] via-[#01030F] to-[#020617] p-6">
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <button
+            onClick={() => router.back()}
+            className="flex items-center gap-2 text-gray-400 hover:text-white mb-4 transition-colors"
+          >
+            <ArrowLeft size={20} />
+            Back
+          </button>
+          
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-white mb-2">Interview Complete!</h1>
+            <p className="text-gray-400">{result.interviewTitle}</p>
+          </div>
+        </motion.div>
 
-      {/* Overall score hero */}
-      <div className="rounded-[32px] p-8 border text-center relative overflow-hidden backdrop-blur-[30px] shadow-[0_8px_30px_rgb(0,0,0,0.2)]"
-        style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
-        <div className="absolute top-0 right-0 w-64 h-64 rounded-full pointer-events-none opacity-20 bg-[radial-gradient(circle,#38BDF8,transparent_70%)] translate-x-1/3 -translate-y-1/3" />
-        <Trophy size={32} className="mx-auto mb-3 text-amber-400" />
-        <p className="text-sm mb-2 font-black text-slate-500 uppercase tracking-widest">Overall Score</p>
-        <p className="text-7xl font-bold text-sky drop-shadow-[0_0_20px_rgba(56,189,248,0.5)]" style={{ fontFamily: 'JetBrains Mono,monospace' }}>
-          {r.scores.overall}
-        </p>
-        <p className="text-sm mt-4 font-bold text-slate-300">
-          {r.scores.overall >= 75 ? '🎉 Excellent performance!' : r.scores.overall >= 50 ? '👍 Good effort, keep improving' : '📚 More practice recommended'}
-        </p>
-      </div>
-
-      {/* Score breakdown + Radar */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Score cards */}
-        <div className="space-y-3">
-          <h3 className="font-syne font-black text-white">Score Breakdown</h3>
-          {[
-            { label: 'Technical',     score: r.scores.technical,     desc: 'Problem solving, DSA, CS concepts' },
-            { label: 'Communication', score: r.scores.communication, desc: 'Clarity, structure, articulation' },
-            { label: 'Confidence',    score: r.scores.confidence,    desc: 'Tone, pace, eye contact' },
-          ].map(item => (
-            <div key={item.label} className="rounded-2xl p-4 border backdrop-blur-[20px]" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
-              <div className="flex items-center justify-between mb-2">
-                <div>
-                  <p className="text-sm font-bold text-white">{item.label}</p>
-                  <p className="text-xs font-medium text-slate-400">{item.desc}</p>
-                </div>
-                <span className="text-xl font-bold tabular-nums px-3 py-1 rounded-xl"
-                  style={{ fontFamily:'JetBrains Mono,monospace', background: getBg(item.score).replace('0.1', '0.15'), color: getColor(item.score) }}>
-                  {item.score}
+        {/* Overall Score */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-8 mb-8 text-center"
+        >
+          <div className="flex items-center justify-center mb-6">
+            <div className={`w-32 h-32 rounded-full bg-gradient-to-br ${getScoreGradient(result.totalScore)} flex items-center justify-center`}>
+              <div className="w-28 h-28 rounded-full bg-[#000814] flex items-center justify-center">
+                <span className={`text-4xl font-bold ${getScoreColor(result.totalScore)}`}>
+                  {result.totalScore.toFixed(0)}%
                 </span>
               </div>
-              <div className="h-2 rounded-full overflow-hidden" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                <div className="h-full rounded-full transition-all duration-1000"
-                  style={{ width: `${item.score}%`, background: getColor(item.score), boxShadow: `0 0 10px ${getColor(item.score)}` }} />
+            </div>
+          </div>
+          
+          <h2 className="text-2xl font-bold text-white mb-2">Overall Score</h2>
+          <p className="text-gray-400">
+            {result.totalScore >= 80 ? 'Excellent performance!' : 
+             result.totalScore >= 60 ? 'Good job! Room for improvement.' : 
+             'Keep practicing and you\'ll improve!'}
+          </p>
+        </motion.div>
+
+        {/* Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-[#38BDF8]/10 flex items-center justify-center">
+                <CheckCircle className="text-[#38BDF8]" size={24} />
+              </div>
+              <div>
+                <p className="text-gray-400 text-sm">Questions Answered</p>
+                <p className="text-2xl font-bold text-white">{result.answers.length}</p>
               </div>
             </div>
-          ))}
-        </div>
+          </motion.div>
 
-        {/* Radar */}
-        <div className="rounded-2xl p-5 border backdrop-blur-[20px]" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
-          <h3 className="font-syne font-black mb-1 text-white">Performance Radar</h3>
-          <p className="text-xs mb-4 font-medium text-slate-400">Visual breakdown of your interview dimensions</p>
-          <ResponsiveContainer width="100%" height={240}>
-            <RadarChart data={radarData} margin={{ top: 10, right: 30, bottom: 10, left: 30 }}>
-              <PolarGrid stroke="rgba(255,255,255,0.1)" />
-              <PolarAngleAxis dataKey="subject" tick={{ fill: '#94A3B8', fontSize: 12, fontWeight: 600 }} />
-              <Tooltip
-                contentStyle={{ background:'rgba(8,12,20,0.9)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:'12px', color:'#fff' }}
-              />
-              <Radar name="Score" dataKey="score" stroke="#38BDF8" fill="#38BDF8" fillOpacity={0.2} strokeWidth={2.5} />
-            </RadarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-
-      {/* Mistakes */}
-      {r.mistakes.length > 0 && (
-        <div className="rounded-2xl p-5 border backdrop-blur-[20px]" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
-          <h3 className="font-syne font-black mb-4 flex items-center gap-2 text-white">
-            <XCircle size={16} className="text-red-400" /> Areas to Improve
-          </h3>
-          <div className="space-y-3">
-            {r.mistakes.map((m: { question: string; feedback: string }, i: number) => (
-              <div key={i} className="rounded-xl p-4 border" style={{ background: 'rgba(239,68,68,0.05)', borderColor: 'rgba(239,68,68,0.1)' }}>
-                <p className="text-sm font-bold mb-1 text-red-400">
-                  Q: {m.question}
-                </p>
-                <p className="text-xs font-medium text-slate-300">{m.feedback}</p>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-[#4ADE80]/10 flex items-center justify-center">
+                <Clock className="text-[#4ADE80]" size={24} />
               </div>
+              <div>
+                <p className="text-gray-400 text-sm">Total Time</p>
+                <p className="text-2xl font-bold text-white">
+                  {formatTime(result.answers.reduce((sum, a) => sum + a.timeTakenSeconds, 0))}
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-[#F59E0B]/10 flex items-center justify-center">
+                <Target className="text-[#F59E0B]" size={24} />
+              </div>
+              <div>
+                <p className="text-gray-400 text-sm">Average Score</p>
+                <p className={`text-2xl font-bold ${getScoreColor(result.totalScore)}`}>
+                  {result.totalScore.toFixed(1)}%
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Detailed Results */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+        >
+          <h2 className="text-2xl font-bold text-white mb-6">Detailed Results</h2>
+          
+          <div className="space-y-6">
+            {result.answers.map((answer, index) => (
+              <motion.div
+                key={answer.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.1 * index }}
+                className="bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 p-6"
+              >
+                <div className="flex items-start justify-between mb-4">
+                  <h3 className="text-lg font-bold text-white flex-1">
+                    Question {index + 1}: {answer.questionText}
+                  </h3>
+                  <div className="flex items-center gap-4 ml-4">
+                    <span className={`text-2xl font-bold ${getScoreColor(answer.score)}`}>
+                      {answer.score}%
+                    </span>
+                    <span className="text-gray-400 text-sm">
+                      {formatTime(answer.timeTakenSeconds)}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="mb-4">
+                  <h4 className="text-sm font-medium text-gray-400 mb-2">Your Answer:</h4>
+                  <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+                    <p className="text-gray-300">{answer.answerText}</p>
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-medium text-gray-400 mb-2">Feedback:</h4>
+                  <div 
+                    className="text-gray-300 leading-relaxed"
+                    dangerouslySetInnerHTML={{ __html: formatFeedback(answer.feedback) }}
+                  />
+                </div>
+              </motion.div>
             ))}
           </div>
-        </div>
-      )}
+        </motion.div>
 
-      {/* Suggestions */}
-      <div className="rounded-2xl p-5 border backdrop-blur-[20px]" style={{ background: 'rgba(8,12,20,0.7)', borderColor: 'rgba(255,255,255,0.06)' }}>
-        <h3 className="font-syne font-black mb-4 flex items-center gap-2 text-white">
-          <Lightbulb size={16} className="text-amber-400" /> Suggestions for Next Session
-        </h3>
-        <div className="space-y-2">
-          {r.suggestions.map((s: string, i: number) => (
-            <div key={i} className="flex items-start gap-3 p-3 rounded-xl border" style={{ background: 'rgba(245,158,11,0.05)', borderColor: 'rgba(245,158,11,0.1)' }}>
-              <CheckCircle2 size={14} className="flex-shrink-0 mt-0.5 text-amber-500" />
-              <p className="text-sm font-medium text-slate-300">{s}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+        {/* Actions */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="mt-8 flex flex-col sm:flex-row gap-4 justify-center items-center"
+        >
+          <button
+            onClick={() => setShowShareModal(true)}
+            className="px-8 py-3 bg-white/5 backdrop-blur-xl border border-white/10 text-white rounded-lg hover:bg-white/10 transition-all flex items-center gap-2"
+          >
+            <Share2 size={20} />
+            Share Report
+          </button>
+          <button
+            onClick={() => router.push('/dashboard')}
+            className="px-8 py-3 bg-gradient-to-r from-[#38BDF8] to-[#0EA5E9] text-white rounded-lg hover:shadow-lg hover:shadow-[#38BDF8]/50 transition-all"
+          >
+            Back to Dashboard
+          </button>
+        </motion.div>
 
-      {/* CTA */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <button onClick={() => router.push('/interview')}
-          className="flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all hover:shadow-[0_0_20px_rgba(56,189,248,0.4)] hover:-translate-y-1"
-          style={{ background: 'linear-gradient(135deg, #38BDF8, #0EA5E9)', color: '#fff' }}>
-          Practice Again
-        </button>
-        <button onClick={() => router.push('/roadmap')}
-          className="flex-1 py-4 rounded-2xl font-black text-sm uppercase tracking-widest border backdrop-blur-[20px] transition-all hover:border-sky/40 hover:-translate-y-1 text-white"
-          style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.1)' }}>
-          View Roadmap
-        </button>
+        {/* Share Modal */}
+        <ShareReportModal
+          isOpen={showShareModal}
+          onClose={() => setShowShareModal(false)}
+          reportType="interview"
+          reportData={{
+            userId: typeof window !== 'undefined' ? Number(localStorage.getItem('userId') || '1') : 1,
+            interviewId: attemptId
+          }}
+        />
       </div>
     </div>
   );

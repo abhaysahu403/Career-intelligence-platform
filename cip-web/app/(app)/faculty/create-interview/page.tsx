@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Plus, Trash2, Save, ArrowLeft } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { api } from '@/lib/api';
+import { customInterviewApi } from '@/lib/api';
 
 interface Question {
   questionText: string;
@@ -69,7 +69,7 @@ export default function CreateInterviewPage() {
 
     setLoading(true);
     try {
-      const response = await api.post('/custom-interview/create', {
+      const response = await customInterviewApi.create({
         title,
         description,
         durationMinutes,

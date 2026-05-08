@@ -136,6 +136,24 @@ export const interviewApi = {
       roundType?: 'TECHNICAL' | 'HR' | 'BEHAVIORAL';
     }) => api.post('/interview/v3/start', data),
     getSession: (id: number) => api.get(`/interview/v3/session/${id}`),
+    // NEW: Get next question (dynamic for RESUME_BASED)
+    getNextQuestion: (id: number) => api.get(`/interview/v3/${id}/next-question`),
+    // NEW: Evaluate answer only
+    evaluateAnswer: (id: number, data: {
+      question: string;
+      answer: string;
+      topic: string;
+      ideal: string;
+    }) => api.post(`/interview/v3/${id}/evaluate`, data),
+    // NEW: Submit and evaluate in one call (MAIN ENDPOINT)
+    submitAndEvaluate: (id: number, data: {
+      questionIndex: number;
+      question: string;
+      answer: string;
+      topic: string;
+      ideal: string;
+      timeTaken: number;
+    }) => api.post(`/interview/v3/${id}/submit-and-evaluate`, data),
     submitAnswer: (data: {
       interviewId: number;
       questionIndex: number;
@@ -152,6 +170,48 @@ export const interviewApi = {
     }) => api.post('/interview/v3/analytics/facial', data),
     getReport: (id: string) => api.get(`/interview/v3/report/${id}`),
   },
+};
+
+// ─── Custom Interview ─────────────────────────────────────────────────────────
+// Gateway routes: /custom-interview/** → custom interview endpoints
+export const customInterviewApi = {
+  // Faculty endpoints
+  create: (data: {
+    title: string;
+    description?: string;
+    durationMinutes?: number;
+    difficulty?: string;
+    questions: Array<{
+      questionText: string;
+      expectedAnswer?: string;
+      topic?: string;
+      difficulty?: string;
+      points?: number;
+    }>;
+  }) => api.post('/custom-interview/create', data),
+  
+  getMyInterviews: () => api.get('/custom-interview/my-interviews'),
+  
+  getResults: (interviewId: number) => api.get(`/custom-interview/${interviewId}/results`),
+  
+  // Student endpoints
+  joinByCode: (code: string) => api.get(`/custom-interview/join/${code}`),
+  
+  startAttempt: (data: { interviewCode: string }) => 
+    api.post('/custom-interview/attempt/start', data),
+  
+  getNextQuestion: (attemptId: number) => 
+    api.get(`/custom-interview/attempt/${attemptId}/next-question`),
+  
+  submitAnswer: (data: {
+    attemptId: number;
+    questionId: number;
+    answerText: string;
+    timeTakenSeconds: number;
+  }) => api.post('/custom-interview/attempt/answer', data),
+  
+  completeAttempt: (attemptId: number) => 
+    api.post(`/custom-interview/attempt/${attemptId}/complete`),
 };
 
 // ─── Jobs ─────────────────────────────────────────────────────────────────────
@@ -234,6 +294,35 @@ export const mlServiceApi = {
     mlApi.post('/ml/readiness', data),
   recommend: (data: unknown) =>
     mlApi.post('/ml/recommend', data),
+  
+  // ─── Phase 1: Semantic Similarity ─────────────────────────────────────────
+  generateEmbedding: (data: { text: string }) =>
+    mlApi.post('/ml/embeddings/generate', data),
+  
+  calculateSimilarity: (data: { text1: string; text2: string }) =>
+    mlApi.post('/ml/similarity/calculate', data),
+
+  // ─── Phase 2: RAG Resume Parsing ──────────────────────────────────────────
+  parseResumeWithRAG: (data: { text: string }) =>
+    mlApi.post('/ml/resume/rag-parse', data),
+  
+  getResumeContext: (data: { resume_id: string; query: string }) =>
+    mlApi.post('/ml/resume/context', data),
+  
+  generateResumeEmbeddings: (data: { sections: Record<string, string> }) =>
+    mlApi.post('/ml/resume/embeddings', data),
+
+  // ─── Phase 3: Enhanced Question Generation ────────────────────────────────
+  generatePersonalizedQuestion: (data: {
+    job_role: string;
+    difficulty: string;
+    previous_topics: string[];
+    resume_summary?: string;
+    resume_skills?: string[];
+    resume_context?: string;
+    use_resume_context?: boolean;
+  }) =>
+    mlApi.post('/ml/interview/question', data),
 };
 
 // WebSocket URL export

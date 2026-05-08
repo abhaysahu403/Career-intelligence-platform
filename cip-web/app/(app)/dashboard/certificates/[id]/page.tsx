@@ -2,7 +2,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getCertificateResult, getScoreColor, type CertificateResult } from '@/lib/api/certificates';
-import { ArrowLeft, ShieldCheck, AlertTriangle, CheckCircle, XCircle, FileText, Calendar, Hash, Users, QrCode, Clock, Download } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, AlertTriangle, CheckCircle, XCircle, FileText, Calendar, Hash, Users, QrCode, Clock, Download, Share2 } from 'lucide-react';
+import ShareReportModal from '@/components/ui/ShareReportModal';
 
 export default function CertificateDetailPage() {
   const params = useParams();
@@ -10,6 +11,7 @@ export default function CertificateDetailPage() {
   const [result, setResult] = useState<CertificateResult | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [showShareModal, setShowShareModal] = useState(false);
 
   useEffect(() => {
     load();
@@ -94,12 +96,21 @@ export default function CertificateDetailPage() {
         >
           <ArrowLeft size={16} /> Back to Certificates
         </button>
-        <button
-          className="flex items-center gap-2 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest border transition-all hover:bg-white/5"
-          style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.05)', color: '#fff' }}
-        >
-          <Download size={16} /> Download Report
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowShareModal(true)}
+            className="flex items-center gap-2 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest border transition-all hover:bg-sky-500/10 hover:border-sky-500/30"
+            style={{ background: 'rgba(56,189,248,0.05)', borderColor: 'rgba(56,189,248,0.1)', color: '#38BDF8' }}
+          >
+            <Share2 size={16} /> Share Report
+          </button>
+          <button
+            className="flex items-center gap-2 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest border transition-all hover:bg-white/5"
+            style={{ background: 'rgba(255,255,255,0.02)', borderColor: 'rgba(255,255,255,0.05)', color: '#fff' }}
+          >
+            <Download size={16} /> Download Report
+          </button>
+        </div>
       </div>
 
       {/* Hero Score Card */}
@@ -403,6 +414,17 @@ export default function CertificateDetailPage() {
           </div>
         )}
       </div>
+
+      {/* Share Modal */}
+      <ShareReportModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        reportType="certificate"
+        reportData={{
+          userId: typeof window !== 'undefined' ? Number(localStorage.getItem('userId') || '1') : 1,
+          certificateId: Number(params.id)
+        }}
+      />
     </div>
   );
 }

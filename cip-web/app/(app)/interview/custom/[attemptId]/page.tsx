@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
-import { Clock, Send, CheckCircle } from 'lucide-react';
+import { Clock, Send, CheckCircle, Volume2, VolumeX } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { api } from '@/lib/api';
+import { customInterviewApi } from '@/lib/api';
+import { getAudioManager, resetAudioManager } from '@/lib/audioManager';
 
 interface Question {
   id: number;
@@ -15,11 +16,14 @@ interface Question {
   questionOrder: number;
 }
 
-interface Attempt {
+interface AnswerResponse {
   id: number;
-  interviewTitle: string;
-  questions: Question[];
-  status: string;
+  questionId: number;
+  questionText: string;
+  answerText: string;
+  score: number;
+  feedback: string;
+  timeTakenSeconds: number;
 }
 
 export default function CustomInterviewLivePage() {
@@ -27,29 +31,80 @@ export default function CustomInterviewLivePage() {
   const params = useParams();
   const attemptId = parseInt(params.attemptId as string);
   
-  const [attempt, setAttempt] = useState<Attempt | null>(null);
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentQuestion, setCurrentQuestion] = useState<Question | null>(null);
   const [answer, setAnswer] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [startTime, setStartTime] = useState(Date.now());
-  const [answers, setAnswers] = useState<Map<number, string>>(new Map());
+  const [feedback, setFeedback] = useState<string | null>(null);
+  const [score, setScore] = useState<number | null>(null);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [questionCount, setQuestionCount] = useState(0);
+  const [currentQuestionNumber, setCurrentQuestionNumber] = useState(1);
+  const [audioEnabled, setAudioEnabled] = useState(true);
+  const [interviewTitle, setInterviewTitle] = useState('Custom Interview');
+  
+  const audioManager = useRef(getAudioManager());
+  const feedbackTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    loadAttempt();
+    loadNextQuestion();
+    
+    // Initialize audio manager
+    audioManager.current.initializeVoices();
+    
+    // Cleanup on unmount
+    return () => {
+      if (feedbackTimeoutRef.current) {
+        clearTimeout(feedbackTimeoutRef.current);
+      }
+      audioManager.current.cleanup();
+      resetAudioManager();
+    };
   }, [attemptId]);
 
-  const loadAttempt = async () => {
+  const loadNextQuestion = async () => {
     try {
-      // For now, we'll start the interview directly
-      // In production, you'd fetch the attempt details
-      toast.success('Interview loaded!');
-    } catch (error) {
-      console.error('Failed to load attempt:', error);
-      toast.error('Failed to load interview');
+      setLoading(true);
+      const response = await customInterviewApi.getNextQuestion(attemptId);
+      
+      if (!response.data.data) {
+        // No more questions - interview completed
+        toast.success('Interview completed!');
+        completeInterview();
+        return;
+      }
+
+      const question = response.data.data;
+      setCurrentQuestion(question);
+      setAnswer('');
+      setFeedback(null);
+      setScore(null);
+      setShowFeedback(false);
+      setStartTime(Date.now());
+      
+      // Reset audio for new question
+      audioManager.current.resetForNextQuestion();
+      
+      // Play question audio after a short delay
+      if (audioEnabled) {
+        setTimeout(() => {
+          audioManager.current.playQuestion(question.questionText);
+        }, 800);
+      }
+      
+    } catch (error: any) {
+      console.error('Failed to load next question:', error);
+      if (error.response?.data?.message?.includes('All questions have been answered')) {
+        toast.success('All questions completed!');
+        completeInterview();
+      } else {
+        toast.error('Failed to load question');
+      }
+    } finally {
+      setLoading(false);
     }
   };
-
-  const currentQuestion = attempt?.questions[currentQuestionIndex];
 
   const submitAnswer = async () => {
     if (!answer.trim()) {
@@ -63,28 +118,36 @@ export default function CustomInterviewLivePage() {
     try {
       const timeTaken = Math.floor((Date.now() - startTime) / 1000);
       
-      await api.post('/custom-interview/attempt/answer', {
+      const response = await customInterviewApi.submitAnswer({
         attemptId,
         questionId: currentQuestion.id,
         answerText: answer,
         timeTakenSeconds: timeTaken
       });
 
-      // Save answer locally
-      const newAnswers = new Map(answers);
-      newAnswers.set(currentQuestion.id, answer);
-      setAnswers(newAnswers);
+      const answerData: AnswerResponse = response.data.data;
+      
+      // Show feedback
+      setFeedback(answerData.feedback);
+      setScore(answerData.score);
+      setShowFeedback(true);
+
+      // Play feedback audio
+      if (audioEnabled && answerData.feedback) {
+        setTimeout(() => {
+          audioManager.current.playFeedback(answerData.feedback);
+        }, 500);
+      }
 
       toast.success('Answer submitted!');
 
-      // Move to next question or complete
-      if (currentQuestionIndex < (attempt?.questions.length || 0) - 1) {
-        setCurrentQuestionIndex(currentQuestionIndex + 1);
-        setAnswer('');
-        setStartTime(Date.now());
-      } else {
-        completeInterview();
-      }
+      // Auto-advance to next question after showing feedback
+      feedbackTimeoutRef.current = setTimeout(() => {
+        setShowFeedback(false);
+        setCurrentQuestionNumber(prev => prev + 1);
+        loadNextQuestion();
+      }, 4000); // Show feedback for 4 seconds
+
     } catch (error: any) {
       console.error('Failed to submit answer:', error);
       toast.error(error.response?.data?.message || 'Failed to submit answer');
@@ -95,16 +158,35 @@ export default function CustomInterviewLivePage() {
 
   const completeInterview = async () => {
     try {
-      await api.post(`/custom-interview/attempt/${attemptId}/complete`);
-      toast.success('Interview completed!');
-      router.push(`/interview/custom/${attemptId}/result`);
+      await customInterviewApi.completeAttempt(attemptId);
+      toast.success('Interview completed successfully!');
+      router.push(`/interview/result/${attemptId}`);
     } catch (error) {
       console.error('Failed to complete interview:', error);
       toast.error('Failed to complete interview');
     }
   };
 
-  if (!attempt) {
+  const toggleAudio = () => {
+    setAudioEnabled(!audioEnabled);
+    if (!audioEnabled) {
+      audioManager.current.stopAudio();
+    }
+    toast.success(audioEnabled ? 'Audio disabled' : 'Audio enabled');
+  };
+
+  const formatFeedback = (feedbackText: string) => {
+    return feedbackText
+      .replace(/\n\n/g, '<br><br>')
+      .replace(/✅/g, '<span class="text-green-400">✅</span>')
+      .replace(/💡/g, '<span class="text-blue-400">💡</span>')
+      .replace(/📝/g, '<span class="text-yellow-400">📝</span>')
+      .replace(/🎯/g, '<span class="text-purple-400">🎯</span>')
+      .replace(/❌/g, '<span class="text-red-400">❌</span>')
+      .replace(/⚠️/g, '<span class="text-orange-400">⚠️</span>');
+  };
+
+  if (loading && !currentQuestion) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-[#000814] via-[#01030F] to-[#020617] flex items-center justify-center">
         <div className="text-center">
@@ -125,37 +207,77 @@ export default function CustomInterviewLivePage() {
           className="mb-8"
         >
           <div className="flex items-center justify-between mb-4">
-            <h1 className="text-3xl font-bold text-white">{attempt.interviewTitle}</h1>
-            <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg">
-              <Clock className="text-[#38BDF8]" size={20} />
-              <span className="text-white font-mono">
-                {Math.floor((Date.now() - startTime) / 1000 / 60)}:{String(Math.floor((Date.now() - startTime) / 1000) % 60).padStart(2, '0')}
-              </span>
+            <h1 className="text-3xl font-bold text-white">{interviewTitle}</h1>
+            <div className="flex items-center gap-4">
+              {/* Audio Toggle */}
+              <button
+                onClick={toggleAudio}
+                className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-colors ${
+                  audioEnabled 
+                    ? 'bg-[#38BDF8]/20 text-[#38BDF8]' 
+                    : 'bg-white/10 text-gray-400'
+                }`}
+              >
+                {audioEnabled ? <Volume2 size={20} /> : <VolumeX size={20} />}
+              </button>
+              
+              {/* Timer */}
+              <div className="flex items-center gap-2 px-4 py-2 bg-white/10 rounded-lg">
+                <Clock className="text-[#38BDF8]" size={20} />
+                <span className="text-white font-mono">
+                  {Math.floor((Date.now() - startTime) / 1000 / 60)}:{String(Math.floor((Date.now() - startTime) / 1000) % 60).padStart(2, '0')}
+                </span>
+              </div>
             </div>
           </div>
 
           {/* Progress */}
-          <div className="flex items-center gap-2">
-            {attempt.questions.map((_, index) => (
-              <div
-                key={index}
-                className={`flex-1 h-2 rounded-full ${
-                  index < currentQuestionIndex
-                    ? 'bg-[#4ADE80]'
-                    : index === currentQuestionIndex
-                    ? 'bg-[#38BDF8]'
-                    : 'bg-white/10'
-                }`}
-              />
-            ))}
+          <div className="flex items-center justify-between mb-2">
+            <p className="text-gray-400 text-sm">
+              Question {currentQuestionNumber}
+            </p>
+            {score !== null && (
+              <p className="text-sm">
+                <span className="text-gray-400">Last Score: </span>
+                <span className={`font-bold ${
+                  score >= 80 ? 'text-green-400' : 
+                  score >= 60 ? 'text-yellow-400' : 'text-red-400'
+                }`}>
+                  {score.toFixed(0)}%
+                </span>
+              </p>
+            )}
           </div>
-          <p className="text-gray-400 text-sm mt-2">
-            Question {currentQuestionIndex + 1} of {attempt.questions.length}
-          </p>
         </motion.div>
 
+        {/* Feedback Display */}
+        {showFeedback && feedback && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-gradient-to-r from-[#38BDF8]/10 to-[#4ADE80]/10 backdrop-blur-xl rounded-2xl border border-[#38BDF8]/20 p-6 mb-6"
+          >
+            <h3 className="text-xl font-bold text-white mb-3">Feedback</h3>
+            <div 
+              className="text-gray-300 leading-relaxed"
+              dangerouslySetInnerHTML={{ __html: formatFeedback(feedback) }}
+            />
+            {score !== null && (
+              <div className="mt-4 flex items-center gap-2">
+                <span className="text-gray-400">Score:</span>
+                <span className={`text-2xl font-bold ${
+                  score >= 80 ? 'text-green-400' : 
+                  score >= 60 ? 'text-yellow-400' : 'text-red-400'
+                }`}>
+                  {score.toFixed(0)}%
+                </span>
+              </div>
+            )}
+          </motion.div>
+        )}
+
         {/* Question */}
-        {currentQuestion && (
+        {currentQuestion && !showFeedback && (
           <motion.div
             key={currentQuestion.id}
             initial={{ opacity: 0, x: 20 }}
@@ -169,6 +291,11 @@ export default function CustomInterviewLivePage() {
               <span className="px-3 py-1 bg-white/10 text-gray-300 rounded-full text-sm font-bold">
                 {currentQuestion.difficulty}
               </span>
+              {audioEnabled && (
+                <span className="px-3 py-1 bg-green-500/10 text-green-400 rounded-full text-sm font-bold">
+                  🔊 Audio Enabled
+                </span>
+              )}
             </div>
 
             <h2 className="text-2xl font-bold text-white mb-6">
@@ -181,6 +308,7 @@ export default function CustomInterviewLivePage() {
               placeholder="Type your answer here..."
               rows={10}
               className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#38BDF8] resize-none"
+              disabled={submitting}
             />
 
             <div className="flex justify-end gap-4 mt-6">
@@ -194,20 +322,23 @@ export default function CustomInterviewLivePage() {
                     <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                     Submitting...
                   </>
-                ) : currentQuestionIndex < attempt.questions.length - 1 ? (
-                  <>
-                    <Send size={20} />
-                    Submit & Next
-                  </>
                 ) : (
                   <>
-                    <CheckCircle size={20} />
-                    Submit & Complete
+                    <Send size={20} />
+                    Submit Answer
                   </>
                 )}
               </button>
             </div>
           </motion.div>
+        )}
+
+        {/* Loading next question */}
+        {loading && currentQuestion && (
+          <div className="text-center py-8">
+            <div className="w-8 h-8 border-2 border-[#38BDF8] border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+            <p className="text-gray-400">Loading next question...</p>
+          </div>
         )}
       </div>
     </div>

@@ -141,6 +141,9 @@ function LiveInterviewContent() {
     startListening();
     startAnalyticsTracking();
     toast.success('Interview started! Good luck!');
+    
+    // Auto-speak the first question
+    speakQuestion(0);
   };
 
   const handleSkipTips = async () => {
@@ -150,6 +153,26 @@ function LiveInterviewContent() {
     startListening();
     startAnalyticsTracking();
     toast('Tips skipped. Interview started!');
+    
+    // Auto-speak the first question
+    speakQuestion(0);
+  };
+
+  const speakQuestion = (questionIndex: number) => {
+    if (!speakerEnabled || !('speechSynthesis' in window)) return;
+    
+    const currentQ = interview?.questions?.[questionIndex];
+    if (!currentQ) return;
+    
+    // Build question announcement
+    let questionText = `Question ${questionIndex + 1}. ${currentQ.topic || 'General'} topic. `;
+    questionText += currentQ.question;
+    
+    // Speak the question
+    const utterance = new SpeechSynthesisUtterance(questionText);
+    utterance.rate = 1.0;
+    utterance.pitch = 1.0;
+    window.speechSynthesis.speak(utterance);
   };
 
   const startCamera = async () => {
@@ -287,28 +310,38 @@ function LiveInterviewContent() {
     }
 
     try {
-      // Submit answer to backend
-      await interviewApi.v3.submitAnswer({
-        interviewId: parseInt(interviewId!),
+      // Get current question details
+      const currentQ = interview?.questions?.[currentQuestionIndex];
+      
+      // NEW: Use submitAndEvaluate endpoint for hybrid evaluation
+      const evaluation = await interviewApi.v3.submitAndEvaluate(parseInt(interviewId!), {
         questionIndex: currentQuestionIndex,
+        question: currentQ?.question || questionDisplay.question,
         answer: transcript,
+        topic: currentQ?.topic || questionDisplay.topic,
+        ideal: currentQ?.ideal || '',
         timeTaken: 0, // You can track this if needed
       });
 
-      // Get AI evaluation from ML service
-      const evaluation = await mlServiceApi.evaluateInterview({
-        student_id: interviewId!,
-        question: questionDisplay.question,
-        answer_text: transcript,
-        domain: questionDisplay.topic,
-        difficulty: questionDisplay.difficulty,
-      });
+      // Extract evaluation data
+      const evalData = evaluation.data.data;
+      const score = evalData.score || 0;
+      const llmScore = evalData.llm_score || 0;
+      const semanticScore = evalData.semantic_score || 0;
+      const feedback = evalData.good || "Good answer!";
+      const missing = evalData.missing || "";
+      const tip = evalData.tip || "";
+      const completed = evalData.completed || false;
 
-      const feedback = evaluation.data.feedback || "Good answer! You covered the key points. Let me ask you the next question.";
+      // Build comprehensive feedback message
+      let feedbackMessage = `Your score: ${Math.round(score)} out of 100. `;
+      if (feedback) feedbackMessage += feedback + ". ";
+      if (missing) feedbackMessage += "However, " + missing + ". ";
+      if (tip) feedbackMessage += tip + ".";
       
       // Speak the feedback if speaker is enabled
       if (speakerEnabled && 'speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(feedback);
+        const utterance = new SpeechSynthesisUtterance(feedbackMessage);
         utterance.rate = 1.1;
         utterance.pitch = 1.0;
         utterance.onend = () => {
@@ -316,20 +349,29 @@ function LiveInterviewContent() {
           setTranscript('');
           setInterimTranscript('');
           
-          // Check if there are more questions
-          if (currentQuestionIndex < (interview?.questions?.length || 5) - 1) {
-            setCurrentQuestionIndex((prev) => prev + 1);
-          } else {
-            // Interview complete
+          // Check if interview is completed
+          if (completed) {
             toast.success('Interview completed!');
             setTimeout(() => {
               router.push(`/interview/report/${interviewId}`);
             }, 2000);
-          }
-          
-          // Resume listening
-          if (wasListening && currentQuestionIndex < (interview?.questions?.length || 5) - 1) {
-            setTimeout(() => startListening(), 500);
+          } else if (currentQuestionIndex < (interview?.questions?.length || 5) - 1) {
+            const nextIndex = currentQuestionIndex + 1;
+            setCurrentQuestionIndex(nextIndex);
+            // Speak the next question
+            setTimeout(() => {
+              speakQuestion(nextIndex);
+            }, 1000);
+            // Resume listening
+            if (wasListening) {
+              setTimeout(() => startListening(), 2000);
+            }
+          } else {
+            // All questions answered
+            toast.success('Interview completed!');
+            setTimeout(() => {
+              router.push(`/interview/report/${interviewId}`);
+            }, 2000);
           }
         };
         window.speechSynthesis.speak(utterance);
@@ -338,22 +380,32 @@ function LiveInterviewContent() {
         setTranscript('');
         setInterimTranscript('');
         
-        if (currentQuestionIndex < (interview?.questions?.length || 5) - 1) {
-          setCurrentQuestionIndex((prev) => prev + 1);
+        if (completed) {
+          toast.success('Interview completed!');
+          setTimeout(() => {
+            router.push(`/interview/report/${interviewId}`);
+          }, 2000);
+        } else if (currentQuestionIndex < (interview?.questions?.length || 5) - 1) {
+          const nextIndex = currentQuestionIndex + 1;
+          setCurrentQuestionIndex(nextIndex);
+          // Speak the next question
+          setTimeout(() => {
+            speakQuestion(nextIndex);
+          }, 1000);
+          // Resume listening
+          if (wasListening) {
+            setTimeout(() => startListening(), 2000);
+          }
         } else {
           toast.success('Interview completed!');
           setTimeout(() => {
             router.push(`/interview/report/${interviewId}`);
           }, 2000);
         }
-        
-        // Resume listening
-        if (wasListening && currentQuestionIndex < (interview?.questions?.length || 5) - 1) {
-          setTimeout(() => startListening(), 500);
-        }
       }
       
-      toast.success('AI feedback provided!');
+      // Show success toast with scores
+      toast.success(`Answer evaluated! Score: ${Math.round(score)}/100 (LLM: ${Math.round(llmScore)}, Semantic: ${Math.round(semanticScore)})`);
     } catch (error) {
       console.error('Error submitting answer:', error);
       toast.error('Failed to submit answer. Please try again.');
@@ -542,7 +594,7 @@ function LiveInterviewContent() {
         {/* Main Content - New Layout */}
         <div className="flex-1 grid grid-cols-2 gap-4 p-4 overflow-hidden">
           {/* Left: User Video Feed with Overlaid Analytics */}
-          <div className="space-y-3 flex flex-col h-full">
+          <div className="space-y-3 flex flex-col h-full overflow-y-auto">
             {/* Camera Feed with Overlaid Analytics */}
             <motion.div
               initial={{ opacity: 0, x: -20 }}

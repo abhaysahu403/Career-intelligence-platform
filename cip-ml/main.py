@@ -36,6 +36,8 @@ from shared.models import (  # noqa: E402
 from services.career_readiness.engine import compute_readiness, recommend_jobs  # noqa: E402
 from services.interview_evaluator.engine import evaluate_interview  # noqa: E402
 from services.resume_analyzer.engine import analyze_resume  # noqa: E402
+from services.embeddings_service import generate_embedding, calculate_similarity, batch_generate_embeddings  # noqa: E402
+from services.resume_rag_service import parse_resume_with_rag, get_resume_context, generate_resume_embeddings  # noqa: E402
 
 try:
     import google.generativeai as genai  # type: ignore
@@ -383,6 +385,11 @@ async def root():
         "gemini_enabled": _get_gemini_model() is not None,
         "endpoints": [
             "POST /ml/resume/analyze",
+            "POST /ml/resume/rag-parse",
+            "POST /ml/resume/context",
+            "POST /ml/resume/embeddings",
+            "POST /ml/embeddings/generate",
+            "POST /ml/similarity/calculate",
             "POST /ml/interview/question",
             "POST /ml/interview/evaluate",
             "POST /ml/interview/coach",
@@ -404,10 +411,222 @@ async def health_check():
             "career_readiness": "active",
             "recommendation_engine": "active",
             "certificate_validator": "active",
+            "embeddings_service": "active",
+            "resume_rag_service": "active",
         },
         "kafka": "connected" if KAFKA_ENABLED else "disconnected (offline mode)",
         "gemini": "configured" if _get_gemini_model() is not None else "not configured",
     }
+
+
+# ============================================================================
+# PHASE 1: SEMANTIC SIMILARITY ENDPOINTS
+# ============================================================================
+
+@app.post("/ml/embeddings/generate", tags=["Embeddings"])
+async def generate_embedding_endpoint(payload: dict):
+    """
+    Generate embedding vector for input text
+    
+    Request:
+    {
+        "text": "Machine learning is awesome"
+    }
+    
+    Response:
+    {
+        "embedding": [0.123, -0.456, ...],
+        "dimension": 384,
+        "model": "sentence-transformers/all-MiniLM-L6-v2"
+    }
+    """
+    try:
+        text = payload.get("text", "")
+        if not text:
+            raise HTTPException(status_code=400, detail="Text is required")
+        
+        result = generate_embedding(text)
+        return JSONResponse(content=result)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Embedding generation failed: {e}")
+
+
+@app.post("/ml/similarity/calculate", tags=["Embeddings"])
+async def calculate_similarity_endpoint(payload: dict):
+    """
+    Calculate semantic similarity between two texts
+    
+    Request:
+    {
+        "text1": "Machine learning is a subset of AI",
+        "text2": "ML is part of artificial intelligence"
+    }
+    
+    Response:
+    {
+        "similarity": 0.85,
+        "score": 85.0,
+        "method": "cosine",
+        "model": "sentence-transformers/all-MiniLM-L6-v2"
+    }
+    """
+    try:
+        text1 = payload.get("text1", "")
+        text2 = payload.get("text2", "")
+        
+        if not text1 or not text2:
+            raise HTTPException(status_code=400, detail="Both text1 and text2 are required")
+        
+        result = calculate_similarity(text1, text2)
+        return JSONResponse(content=result)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Similarity calculation failed: {e}")
+
+
+@app.post("/ml/embeddings/batch", tags=["Embeddings"])
+async def batch_generate_embeddings_endpoint(payload: dict):
+    """
+    Generate embeddings for multiple texts in batch
+    
+    Request:
+    {
+        "texts": ["text1", "text2", "text3"]
+    }
+    
+    Response:
+    {
+        "embeddings": [[...], [...], [...]],
+        "dimension": 384,
+        "count": 3,
+        "model": "sentence-transformers/all-MiniLM-L6-v2"
+    }
+    """
+    try:
+        texts = payload.get("texts", [])
+        if not texts:
+            raise HTTPException(status_code=400, detail="Texts list is required")
+        
+        result = batch_generate_embeddings(texts)
+        return JSONResponse(content=result)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Batch embedding generation failed: {e}")
+
+
+# ============================================================================
+# PHASE 2: RAG RESUME PARSING ENDPOINTS
+# ============================================================================
+
+@app.post("/ml/resume/rag-parse", tags=["Resume RAG"])
+async def rag_parse_resume_endpoint(payload: dict):
+    """
+    Parse resume with RAG - extract structured data and generate embeddings
+    
+    Request:
+    {
+        "text": "Full resume text content...",
+        "resume_id": "optional-resume-uuid"  // Optional: if provided, will use this ID
+    }
+    
+    Response:
+    {
+        "resume_id": "resume-uuid-123",  // The ID used to store this resume
+        "skills": ["Python", "Java", "Machine Learning"],
+        "experience": [...],
+        "projects": [...],
+        "education": [...],
+        "score": 85.0,
+        "embeddings": {
+            "skills": [0.1, 0.2, ...],
+            "experience": [0.3, 0.4, ...]
+        }
+    }
+    """
+    try:
+        text = payload.get("text", "")
+        resume_id = payload.get("resume_id")  # Optional
+        
+        if not text:
+            raise HTTPException(status_code=400, detail="Resume text is required")
+        
+        result = parse_resume_with_rag(text, resume_id)
+        return JSONResponse(content=result)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"RAG resume parsing failed: {e}")
+
+
+@app.post("/ml/resume/context", tags=["Resume RAG"])
+async def get_resume_context_endpoint(payload: dict):
+    """
+    Get relevant resume context using semantic search
+    
+    Request:
+    {
+        "resume_id": "resume-123",
+        "query": "Java programming"
+    }
+    
+    Response:
+    {
+        "context": "Candidate has 2 years of Java experience...",
+        "relevance_score": 0.92
+    }
+    """
+    try:
+        resume_id = payload.get("resume_id", "")
+        query = payload.get("query", "")
+        
+        if not resume_id or not query:
+            raise HTTPException(status_code=400, detail="Both resume_id and query are required")
+        
+        result = get_resume_context(resume_id, query)
+        return JSONResponse(content=result)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Context retrieval failed: {e}")
+
+
+@app.post("/ml/resume/embeddings", tags=["Resume RAG"])
+async def generate_resume_embeddings_endpoint(payload: dict):
+    """
+    Generate embeddings for resume sections
+    
+    Request:
+    {
+        "sections": {
+            "skills": "Python, Java, Machine Learning",
+            "experience": "Software Engineer at Tech Corp...",
+            "projects": "AI Chatbot using NLP..."
+        }
+    }
+    
+    Response:
+    {
+        "embeddings": {
+            "skills": [0.1, 0.2, ...],
+            "experience": [0.4, 0.5, ...],
+            "projects": [0.7, 0.8, ...]
+        }
+    }
+    """
+    try:
+        sections = payload.get("sections", {})
+        if not sections:
+            raise HTTPException(status_code=400, detail="Sections dictionary is required")
+        
+        result = generate_resume_embeddings(sections)
+        return JSONResponse(content=result)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Resume embeddings generation failed: {e}")
+
+
+# ============================================================================
+# EXISTING ENDPOINTS (Resume, Interview, etc.)
+# ============================================================================
 
 
 @app.post("/ml/resume/analyze", response_model=ResumeAnalyzeResponse, tags=["Resume"])

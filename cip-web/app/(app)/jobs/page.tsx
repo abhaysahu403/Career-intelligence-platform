@@ -2,12 +2,13 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { Search, Filter, Zap, X } from 'lucide-react';
+import { Search, Filter, Zap, X, Share2 } from 'lucide-react';
 import { jobsApi } from '@/lib/api';
 import JobCard from '@/components/ui/JobCard';
 import ScoreCircle from '@/components/ui/ScoreCircle';
 import { useAppStore } from '@/store';
 import type { Job } from '@/types';
+import ShareReportModal from '@/components/ui/ShareReportModal';
 
 const ROLES     = ['All Roles', 'Software', 'Engineer', 'Developer', 'Backend', 'Frontend', 'Full Stack', 'Data', 'DevOps', 'QA', 'Intern', 'Analyst'];
 const LOCATIONS = ['All Locations', 'Bangalore', 'Bengaluru', 'Hyderabad', 'Delhi', 'Pune', 'Mumbai', 'Chennai', 'Noida', 'Gurgaon', 'Remote', 'India'];
@@ -24,6 +25,7 @@ export default function JobsPage() {
   const [experienceFilter, setExperienceFilter] = useState('All Levels');
   const [onlyRecommended, setOnlyRecommended] = useState(false);
   const [minMatch, setMinMatch]           = useState(0);
+  const [showShareModal, setShowShareModal] = useState(false);
 
   // Fetch recommended jobs (with full intelligence)
   const { data: recommendedJobs, isLoading: loadingRecommended } = useQuery({
@@ -211,15 +213,27 @@ export default function JobsPage() {
             {isLoading ? 'Loading...' : `${filtered.length} opportunities matched • AI-powered recommendations`}
           </p>
         </div>
-        {score && (
-          <div className="flex items-center gap-3 px-4 py-2 rounded-2xl border flex-shrink-0 backdrop-blur-[20px] transition-all hover:border-sky/40 bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
-            <ScoreCircle score={score.readiness} size={52} strokeWidth={6} showLevel={false} />
-            <div>
-              <p className="text-xs font-black uppercase tracking-widest text-slate-500">Your Score</p>
-              <p className="text-sm font-bold text-slate-900 dark:text-white">{score.level}</p>
+        <div className="flex items-center gap-3">
+          {/* Share Button */}
+          {recommendedJobs && recommendedJobs.length > 0 && (
+            <button
+              onClick={() => setShowShareModal(true)}
+              className="px-4 py-2 rounded-2xl border flex items-center gap-2 backdrop-blur-[20px] transition-all hover:border-sky/40 bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)] text-slate-700 dark:text-slate-300 font-bold hover:bg-sky-500/10"
+            >
+              <Share2 size={18} />
+              Share Jobs
+            </button>
+          )}
+          {score && (
+            <div className="flex items-center gap-3 px-4 py-2 rounded-2xl border flex-shrink-0 backdrop-blur-[20px] transition-all hover:border-sky/40 bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
+              <ScoreCircle score={score.readiness} size={52} strokeWidth={6} showLevel={false} />
+              <div>
+                <p className="text-xs font-black uppercase tracking-widest text-slate-500">Your Score</p>
+                <p className="text-sm font-bold text-slate-900 dark:text-white">{score.level}</p>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
       <div className="relative rounded-2xl p-4 border backdrop-blur-[20px] space-y-3 shadow-[0_8px_30px_rgb(0,0,0,0.12)] bg-white dark:bg-[rgba(8,12,20,0.7)] border-slate-200 dark:border-[rgba(255,255,255,0.06)]">
@@ -316,6 +330,17 @@ export default function JobsPage() {
           ))}
         </div>
       )}
+
+      {/* Share Modal */}
+      <ShareReportModal
+        isOpen={showShareModal}
+        onClose={() => setShowShareModal(false)}
+        reportType="jobs"
+        reportData={{
+          userId: Number(user?.id) || 1,
+          jobIds: recommendedJobs?.map((j: any) => j.id) || []
+        }}
+      />
     </div>
   );
 }

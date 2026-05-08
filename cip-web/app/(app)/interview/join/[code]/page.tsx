@@ -5,7 +5,7 @@ import { useRouter, useParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import { Clock, FileText, AlertCircle, Play } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { api } from '@/lib/api';
+import { customInterviewApi } from '@/lib/api';
 
 interface Interview {
   id: number;
@@ -35,7 +35,7 @@ export default function JoinInterviewPage() {
 
   const loadInterview = async () => {
     try {
-      const response = await api.get(`/custom-interview/join/${code}`);
+      const response = await customInterviewApi.joinByCode(code);
       setInterview(response.data.data);
     } catch (error: any) {
       console.error('Failed to load interview:', error);
@@ -51,7 +51,7 @@ export default function JoinInterviewPage() {
     
     setStarting(true);
     try {
-      const response = await api.post('/custom-interview/attempt/start', {
+      const response = await customInterviewApi.startAttempt({
         interviewCode: code
       });
       
