@@ -50,6 +50,13 @@ logs/
 *.log
 .env
 
+# Security - Sensitive files
+*.pem
+*.key
+*-credentials.json
+db-credentials.json
+*-key.pem
+
 # Database
 *.db
 *.sqlite
