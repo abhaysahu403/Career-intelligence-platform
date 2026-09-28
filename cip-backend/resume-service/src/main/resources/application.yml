@@ -1,0 +1,42 @@
+server:
+  port: ${SERVER_PORT:8084}
+
+spring:
+  application:
+    name: resume-service
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.kafka.KafkaAutoConfiguration
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/cip_resumes
+    username: ${DB_USER:cip_user}
+    password: ${DB_PASSWORD:cip_password_123}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+      password: ${REDIS_PASSWORD:cip-redis-pass}
+
+storage:
+  type: ${STORAGE_TYPE:local}
+  local:
+    path: ${LOCAL_STORAGE_PATH:./uploads}
+  s3:
+    bucket: ${S3_BUCKET:cip-resumes}
+    region: ${AWS_REGION:ap-south-1}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics

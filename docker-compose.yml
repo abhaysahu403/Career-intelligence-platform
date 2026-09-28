@@ -1,0 +1,399 @@
+version: '3.9'
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Career Intelligence Platform - Complete Docker Compose
+# ═══════════════════════════════════════════════════════════════════════════
+# Services:
+#   - PostgreSQL Database
+#   - Redis Cache (optional)
+#   - 10 Backend Microservices (Java Spring Boot)
+#   - ML Service (Python FastAPI)
+#   - Frontend (Next.js)
+# ═══════════════════════════════════════════════════════════════════════════
+
+networks:
+  cip-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  redis-data:
+  storage-data:
+  uploads-data:
+
+# Common environment variables
+x-common-backend-env: &common-backend-env
+  DB_HOST: postgres
+  DB_PORT: 5432
+  DB_USER: cip_user
+  DB_PASSWORD: cip_password_123
+  REDIS_HOST: redis
+  REDIS_PORT: 6379
+  REDIS_PASSWORD: cip-redis-pass
+  JWT_SECRET: cip-super-secret-jwt-key-minimum-256-bits-for-hs256-algorithm
+  SPRING_PROFILES_ACTIVE: docker
+  KAFKA_BROKERS: ""
+
+services:
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # INFRASTRUCTURE
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: cip-postgres
+    environment:
+      POSTGRES_USER: cip_user
+      POSTGRES_PASSWORD: cip_password_123
+      POSTGRES_DB: career_intelligence
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./database/create_dbs.sql:/docker-entrypoint-initdb.d/01-create_dbs.sql
+      - ./database/seed_real_jobs.sql:/docker-entrypoint-initdb.d/02-seed_jobs.sql
+    networks:
+      - cip-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U cip_user -d career_intelligence"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: cip-redis
+    command: redis-server --requirepass cip-redis-pass --maxmemory 512mb --maxmemory-policy allkeys-lru --appendonly yes
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - cip-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "cip-redis-pass", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # BACKEND MICROSERVICES
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  api-gateway:
+    build:
+      context: ./cip-backend
+      dockerfile: Dockerfile
+      target: api-gateway
+    container_name: cip-api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      <<: *common-backend-env
+      AUTH_SERVICE_URL: http://auth-service:8081
+      STUDENT_SERVICE_URL: http://student-service:8082
+      INTERVIEW_SERVICE_URL: http://interview-service:8083
+      RESUME_SERVICE_URL: http://resume-service:8084
+      CERTIFICATE_SERVICE_URL: http://certificate-service:8085
+      JOB_SERVICE_URL: http://job-service:8086
+      RECOMMENDATION_SERVICE_URL: http://recommendation-service:8087
+      SCORE_SERVICE_URL: http://score-service:8088
+      ANALYTICS_SERVICE_URL: http://analytics-service:8089
+    networks:
+      - cip-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  auth-service:
+    build:
+      context: ./cip-backend
+      dockerfile: Dockerfile
+      target: auth-service
+    container_name: cip-auth-service
+    ports:
+      - "8081:8081"
+    environment:
+      <<: *common-backend-env
+      SERVER_PORT: 8081
+    networks:
+      - cip-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  student-service:
+    build:
+      context: ./cip-backend
+      dockerfile: Dockerfile
+      target: student-service
+    container_name: cip-student-service
+    ports:
+      - "8082:8082"
+    environment:
+      <<: *common-backend-env
+      SERVER_PORT: 8082
+    networks:
+      - cip-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  interview-service:
+    build:
+      context: ./cip-backend
+      dockerfile: Dockerfile
+      target: interview-service
+    container_name: cip-interview-service
+    ports:
+      - "8083:8083"
+    environment:
+      <<: *common-backend-env
+      SERVER_PORT: 8083
+      ML_SERVICE_URL: http://ml-service:8000
+    networks:
+      - cip-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ml-service:
+        condition: service_started
+    restart: unless-stopped
+
+  resume-service:
+    build:
+      context: ./cip-backend
+      dockerfile: Dockerfile
+      target: resume-service
+    container_name: cip-resume-service
+    ports:
+      - "8084:8084"
+    environment:
+      <<: *common-backend-env
+      SERVER_PORT: 8084
+      ML_SERVICE_URL: http://ml-service:8000
+      STORAGE_PATH: /app/uploads
+    volumes:
+      - uploads-data:/app/uploads
+    networks:
+      - cip-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ml-service:
+        condition: service_started
+    restart: unless-stopped
+
+  certificate-service:
+    build:
+      context: ./cip-backend
+      dockerfile: Dockerfile
+      target: certificate-service
+    container_name: cip-certificate-service
+    ports:
+      - "8085:8085"
+    environment:
+      <<: *common-backend-env
+      SERVER_PORT: 8085
+      ML_SERVICE_URL: http://ml-service:8000
+      STORAGE_PATH: /app/storage/certificates
+    volumes:
+      - storage-data:/app/storage
+    networks:
+      - cip-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ml-service:
+        condition: service_started
+    restart: unless-stopped
+
+  job-service:
+    build:
+      context: ./cip-backend
+      dockerfile: Dockerfile
+      target: job-service
+    container_name: cip-job-service
+    ports:
+      - "8086:8086"
+    environment:
+      <<: *common-backend-env
+      SERVER_PORT: 8086
+    networks:
+      - cip-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  recommendation-service:
+    build:
+      context: ./cip-backend
+      dockerfile: Dockerfile
+      target: recommendation-service
+    container_name: cip-recommendation-service
+    ports:
+      - "8087:8087"
+    environment:
+      <<: *common-backend-env
+      SERVER_PORT: 8087
+      ML_SERVICE_URL: http://ml-service:8000
+    networks:
+      - cip-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ml-service:
+        condition: service_started
+    restart: unless-stopped
+
+  score-service:
+    build:
+      context: ./cip-backend
+      dockerfile: Dockerfile
+      target: score-service
+    container_name: cip-score-service
+    ports:
+      - "8088:8088"
+    environment:
+      <<: *common-backend-env
+      SERVER_PORT: 8088
+      ML_SERVICE_URL: http://ml-service:8000
+    networks:
+      - cip-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ml-service:
+        condition: service_started
+    restart: unless-stopped
+
+  analytics-service:
+    build:
+      context: ./cip-backend
+      dockerfile: Dockerfile
+      target: analytics-service
+    container_name: cip-analytics-service
+    ports:
+      - "8089:8089"
+    environment:
+      <<: *common-backend-env
+      SERVER_PORT: 8089
+    networks:
+      - cip-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # ML SERVICE
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  ml-service:
+    build:
+      context: ./cip-ml
+      dockerfile: Dockerfile
+    container_name: cip-ml-service
+    ports:
+      - "8000:8000"
+    environment:
+      # Gemini AI API Key
+      GEMINI_API_KEY: AIzaSyAQ.Ab8RN6KdvfB7EUufOjb7cm4Mux5hVsZpTdrobKiYDdDt6PEblwth
+      DATABASE_URL: postgresql://cip_user:cip_password_123@postgres:5432/career_intelligence
+      REDIS_URL: redis://redis:6379/0
+      ENV: docker
+    networks:
+      - cip-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # ═══════════════════════════════════════════════════════════════════════════
+  # FRONTEND
+  # ═══════════════════════════════════════════════════════════════════════════
+
+  frontend:
+    build:
+      context: ./cip-web
+      dockerfile: Dockerfile
+    container_name: cip-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8080
+      NEXT_PUBLIC_ML_URL: http://localhost:8000
+      NODE_ENV: production
+    networks:
+      - cip-network
+    depends_on:
+      - api-gateway
+      - ml-service
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+# ═══════════════════════════════════════════════════════════════════════════
+# USAGE:
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# Start all services:
+#   docker-compose up -d
+#
+# Start specific service:
+#   docker-compose up -d postgres ml-service frontend
+#
+# View logs:
+#   docker-compose logs -f
+#   docker-compose logs -f ml-service
+#
+# Stop all services:
+#   docker-compose down
+#
+# Stop and remove volumes:
+#   docker-compose down -v
+#
+# Rebuild services:
+#   docker-compose build
+#   docker-compose up -d --build
+#
+# Scale services:
+#   docker-compose up -d --scale interview-service=3
+#
+# ═══════════════════════════════════════════════════════════════════════════
+# ACCESS:
+# ═══════════════════════════════════════════════════════════════════════════
+#
+# Frontend:    http://localhost:3000
+# API Gateway: http://localhost:8080
+# ML Service:  http://localhost:8000
+# ML Docs:     http://localhost:8000/docs
+# PostgreSQL:  localhost:5432
+# Redis:       localhost:6379
+#
+# ═══════════════════════════════════════════════════════════════════════════

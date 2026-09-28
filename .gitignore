@@ -1,0 +1,75 @@
+# Java / Maven
+target/
+*.class
+*.jar
+*.war
+*.ear
+*.log
+*.iml
+.idea/
+.settings/
+.classpath
+.project
+
+# Node / NPM
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+dist/
+build/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+.venv
+pip-log.txt
+pip-delete-this-directory.txt
+
+# IDEs
+.vscode/
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Application
+uploads/
+storage/
+logs/
+*.log
+.env
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*.cache
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Test files
+test-*.ps1
+token.txt
+
+# Reports
+*-REPORT.md
+*-STATUS.md
+*-SUMMARY.md

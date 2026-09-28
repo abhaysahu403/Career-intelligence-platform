@@ -1,0 +1,367 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Light Theme Colors */
+  --primary:   #2563EB;
+  --secondary: #0EA5E9;
+  --success:   #10B981;
+  --warning:   #F59E0B;
+  --danger:    #EF4444;
+  
+  /* Light Mode Backgrounds */
+  --bg:        #F8FAFC;
+  --bg-2:      #F1F5F9;
+  --bg-3:      #E2E8F0;
+  --bg-4:      #FFFFFF;
+  
+  /* Light Mode Card & Border */
+  --card:      #FFFFFF;
+  --card-hover: #F8FAFC;
+  --border:    #E2E8F0;
+  
+  /* Light Mode Text */
+  --text:      #0F172A;
+  --text-muted: #64748B;
+  --text-secondary: #475569;
+  
+  --sidebar-w: 240px;
+}
+
+/* Dark Theme */
+.dark {
+  /* Dark Mode Backgrounds */
+  --bg:        #020617;
+  --bg-2:      #0F172A;
+  --bg-3:      #080C14;
+  --bg-4:      #000000;
+  
+  /* Dark Mode Card & Border */
+  --card:      rgba(15, 23, 42, 0.6);
+  --card-hover: rgba(15, 23, 42, 0.8);
+  --border:    rgba(255, 255, 255, 0.1);
+  
+  /* Dark Mode Text */
+  --text:      #F8FAFC;
+  --text-muted: #94A3B8;
+  --text-secondary: #CBD5E1;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  /* Theme-aware background */
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Landing page dark body override (applied by LandingPage wrapper) */
+.landing-page-body {
+  background: #000000 !important;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 100px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(0,0,0,0.2); }
+
+/* Gradient text */
+.grad-text {
+  background: linear-gradient(135deg, #2563EB, #0EA5E9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Score circle animation */
+@keyframes dashOffset {
+  from { stroke-dashoffset: 440; }
+}
+
+/* Skeleton pulse */
+@keyframes skeleton-pulse {
+  0%, 100% { opacity: 0.4; }
+  50%       { opacity: 0.8; }
+}
+.skeleton {
+  background: linear-gradient(90deg, #F1F5F9 25%, #E2E8F0 50%, #F1F5F9 75%);
+  background-size: 200% 100%;
+  border-radius: 8px;
+  animation: skeleton-pulse 1.5s ease infinite;
+}
+
+/* Page fade-in */
+@keyframes fadeIn  { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes slideIn { from { opacity: 0; transform: translateX(-12px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes scaleIn { from { opacity: 0; transform: scale(0.95); }      to { opacity: 1; transform: scale(1); }      }
+
+.animate-fade-in  { animation: fadeIn  0.4s ease both; }
+.animate-fadeIn    { animation: fadeIn  0.5s ease both; }
+.animate-slide-in { animation: slideIn 0.4s ease both; }
+.animate-scale-in { animation: scaleIn 0.3s ease both; }
+
+/* Stagger children animation */
+.stagger-children > * { animation: fadeIn 0.4s ease both; }
+.stagger-children > *:nth-child(1) { animation-delay: 0.05s; }
+.stagger-children > *:nth-child(2) { animation-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { animation-delay: 0.15s; }
+.stagger-children > *:nth-child(4) { animation-delay: 0.2s; }
+.stagger-children > *:nth-child(5) { animation-delay: 0.25s; }
+.stagger-children > *:nth-child(6) { animation-delay: 0.3s; }
+
+/* Smooth page enter for app pages */
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-enter { animation: pageEnter 0.35s ease both; }
+
+/* Subtle pulse for live indicators */
+@keyframes subtlePulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.animate-subtle-pulse { animation: subtlePulse 2s ease-in-out infinite; }
+
+/* Glow effects */
+.glow-primary   { box-shadow: 0 0 30px rgba(37,99,235,0.2); }
+.glow-secondary { box-shadow: 0 0 30px rgba(14,165,233,0.2); }
+.glow-success   { box-shadow: 0 0 20px rgba(16,185,129,0.2); }
+
+/* Card hover glow */
+.card-hover-glow {
+  transition: all 0.2s cubic-bezier(0.4,0,0.2,1);
+}
+.card-hover-glow:hover {
+  border-color: rgba(37,99,235,0.2) !important;
+  box-shadow: 0 10px 25px -5px rgba(37,99,235,0.15), 0 8px 10px -6px rgba(37,99,235,0.1);
+  transform: translateY(-2px);
+}
+
+/* Input focus ring */
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: var(--primary) !important;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+}
+
+/* Sidebar transition */
+.sidebar-transition { transition: transform 0.3s cubic-bezier(0.4,0,0.2,1); }
+
+/* Mobile responsive helpers */
+@media (max-width: 768px) {
+  :root { --sidebar-w: 0px; }
+}
+
+/* No number spinner */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+/* Progress bar animation */
+@keyframes progressFill {
+  from { width: 0%; }
+}
+.progress-animate { animation: progressFill 1.2s cubic-bezier(0.4,0,0.2,1) both; }
+
+/* Tooltip */
+.tooltip { position: relative; }
+.tooltip::after {
+  content: attr(data-tip);
+  position: absolute; bottom: calc(100% + 6px); left: 50%;
+  transform: translateX(-50%); white-space: nowrap;
+  background: #FFFFFF; color: #0F172A; font-size: 12px; font-family: 'Plus Jakarta Sans', sans-serif;
+  padding: 5px 10px; border-radius: 8px; border: 1px solid #E2E8F0;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  pointer-events: none; opacity: 0; transition: opacity 0.2s; z-index: 99;
+}
+.tooltip:hover::after { opacity: 1; }
+
+/* Live metric pulse dot */
+@keyframes livePulse {
+  0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
+  70%  { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
+  100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+}
+.live-dot { animation: livePulse 2s infinite; }
+
+/* Recharts tooltip */
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  background: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 12px !important;
+  color: #0F172A !important;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1) !important;
+}
+
+/* ========================================
+   LANDING PAGE STYLES
+   ======================================== */
+
+/* Grid pattern background */
+.grid-pattern {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+/* Glass morphism — DARK (landing pages & dark UI) */
+.glass-card {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(40px) saturate(180%);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+  border-radius: 32px;
+}
+
+/* Glass morphism — LIGHT (app pages) */
+.glass-card-light {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* Animated gradient border */
+.gradient-border {
+  background: linear-gradient(#F8FAFC, #F8FAFC) padding-box,
+              linear-gradient(135deg, #2563EB, #0EA5E9, #2563EB) border-box;
+  border: 1px solid transparent;
+}
+
+/* Typewriter cursor */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.cursor::after {
+  content: '|';
+  animation: blink 1s step-end infinite;
+  color: #06B6D4;
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-15px) rotate(1deg); }
+  66% { transform: translateY(-8px) rotate(-1deg); }
+}
+
+.float { animation: float 6s ease-in-out infinite; }
+
+/* Orb pulse */
+@keyframes orb-pulse {
+  0%, 100% { transform: scale(1); opacity: 0.18; }
+  50% { transform: scale(1.1); opacity: 0.25; }
+}
+
+.orb-pulse { animation: orb-pulse 8s ease-in-out infinite; }
+
+/* Particle animation */
+@keyframes particle-float {
+  0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100px) rotate(720deg); opacity: 0; }
+}
+
+/* Line animation for timeline */
+@keyframes line-draw {
+  from { width: 0%; }
+  to { width: 100%; }
+}
+
+/* Counter animation */
+@keyframes count-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Shimmer — for background-position based animation on text-clip */
+@keyframes shimmer {
+  to { background-position: 200% center; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent, rgba(74,222,128,0.06), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2.5s linear infinite;
+}
+
+/* Animate-shimmer utility for gradient text */
+.animate-shimmer {
+  background-size: 200% auto !important;
+  animation: shimmer 3s linear infinite;
+}
+
+/* Rotating gradient for badge */
+@keyframes rotate-gradient {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Scan line effect */
+@keyframes scan {
+  0% { top: -2px; }
+  100% { top: 100%; }
+}
+
+/* Data flow animation */
+@keyframes data-flow {
+  0% { transform: translateX(-100%); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateX(200%); opacity: 0; }
+}
+
+.data-flow { animation: data-flow 3s linear infinite; }
+
+/* Hexagon rotation */
+@keyframes hex-rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Network connection pulse */
+@keyframes connection-pulse {
+  0%, 100% { stroke-dashoffset: 0; }
+  50% { stroke-dashoffset: 20; }
+}
+
+/* Landing page text gradient — mint to sky */
+.text-gradient {
+  background: linear-gradient(135deg, #38BDF8 0%, #4ADE80 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-primary {
+  background: linear-gradient(135deg, #4F46E5, #06B6D4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.bg-mesh {
+  background: 
+    radial-gradient(ellipse at 30% 40%, #080C14 0%, #000000 60%, #020617 100%);
+}
+
+/* Font utilities for landing */
+.font-syne { font-family: var(--font-syne), 'Syne', sans-serif; }
+.font-mono-jetbrains { font-family: var(--font-mono), 'JetBrains Mono', monospace; }
